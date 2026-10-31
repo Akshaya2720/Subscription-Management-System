@@ -198,10 +198,13 @@ A full suite of 19 automated integration and unit tests was written using `pytes
 
 ---
 
-# Part 1: Member 3 — Billing, Financial Verification, AI and Blockchain Developer
+# Part 3: Billing, Financial Verification, AI and Blockchain Developer
+
+**Developer**: Soorajpn2005  
+**GitHub**: [@Soorajpn2005](https://github.com/Soorajpn2005)  
 **Role**: Billing, Financial Verification, AI and Blockchain Developer  
 **Assigned Branch**: `feature/billing-verification`  
-**Target Branch for PR**: `develop`
+**Target Branch for PR**: `main`
 
 ## 1. Summary of Delivered Work
 As the Billing, Financial Verification, AI and Blockchain Developer (Member 3), I am responsible for the financial processing and intelligent verification layer of VERISUB. All financial calculations use deterministic Decimal arithmetic (`Numeric(14, 2)`), database-level uniqueness constraints, and strict organization-level multi-tenant isolation.

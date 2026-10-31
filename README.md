@@ -80,6 +80,7 @@ VERISUB was engineered collaboratively by four specialized roles:
 - **Change Impact Analysis (`/change-impact/*`)**: Real-time simulation of catalog price revisions against active recurring contracts.
 
 ### Role 3: Billing, Verification & AI Anomaly Detection Lead
+*Lead Developer: [@Soorajpn2005](https://github.com/Soorajpn2005)*  
 *Responsible for invoice execution, bank reconciliation, contract verification, and AI insights.*
 - **Automated Billing Runs**: Batch execution engine for recurring invoice generation with dunning retry tracking.
 - **Bank Statement Reconciliation**: CSV bank parser matching transactions against outstanding balances (Matched, Unmatched, Potential Duplicate).
