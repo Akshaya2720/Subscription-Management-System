@@ -3,17 +3,15 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
-import { Plus, Layers, Check, PauseCircle, RefreshCw } from 'lucide-react';
+import { Plus, Layers, PauseCircle, RefreshCw } from 'lucide-react';
 import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell, TableLoading, TableEmpty } from '../../components/common/Table';
 import { Button } from '../../components/common/Button';
 import { Input } from '../../components/common/Input';
 import { Select } from '../../components/common/Select';
 import { Badge } from '../../components/common/Badge';
 import { Modal } from '../../components/common/Modal';
-import { Card, CardHeader, CardTitle, CardContent } from '../../components/common/Card';
 import { SubNavTabs } from '../../components/common/SubNavTabs';
 import { productService } from '../../services/productService';
-import { Plan, BillingFrequency } from '../../types';
 import { formatCurrency } from '../../utils';
 
 const planSchema = z.object({
@@ -86,7 +84,7 @@ export const PlanList: React.FC = () => {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 text-left">
       {/* Sub Navigation Tabs */}
       <SubNavTabs
         items={[
@@ -99,10 +97,10 @@ export const PlanList: React.FC = () => {
 
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-xl font-bold tracking-tight text-white">
+          <h1 className="text-2xl font-bold tracking-tight text-[#1d1d1f]">
             Subscription Plans & Pricing Tiers
           </h1>
-          <p className="text-xs text-slate-400 mt-1">
+          <p className="text-xs sm:text-sm text-[#6e6e73] mt-1">
             Configure recurring cadences, trial periods, pause policies, and renewal automation
           </p>
         </div>
@@ -139,38 +137,38 @@ export const PlanList: React.FC = () => {
               <TableRow key={p.id}>
                 <TableCell>
                   <div className="flex items-center gap-2.5">
-                    <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-indigo-50 text-brand-600 dark:bg-indigo-950/60 dark:text-brand-400">
+                    <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-blue-50 text-[#0071e3] border border-blue-100 shadow-2xs">
                       <Layers className="h-4 w-4" />
                     </div>
                     <div>
-                      <p className="font-semibold text-xs text-slate-900 dark:text-white">{p.name}</p>
-                      <p className="text-[11px] text-slate-500 font-mono">{p.code}</p>
+                      <p className="font-semibold text-xs text-[#1d1d1f]">{p.name}</p>
+                      <p className="text-[11px] text-[#6e6e73] font-mono">{p.code}</p>
                     </div>
                   </div>
                 </TableCell>
-                <TableCell className="text-xs text-slate-600 dark:text-slate-300">
+                <TableCell className="text-xs text-[#1d1d1f]">
                   {p.product_name || 'General Product'}
                 </TableCell>
                 <TableCell>
-                  <span className="inline-flex items-center rounded-md bg-slate-100 px-2 py-0.5 text-xs font-semibold text-slate-700 capitalize dark:bg-slate-800 dark:text-slate-300">
+                  <span className="inline-flex items-center rounded-full bg-slate-100 px-2.5 py-0.5 text-xs font-semibold text-[#1d1d1f] capitalize">
                     {p.billing_frequency}
                   </span>
                 </TableCell>
-                <TableCell className="text-xs font-bold text-slate-900 dark:text-white">
+                <TableCell className="text-xs font-bold text-[#1d1d1f]">
                   {formatCurrency(p.price, p.currency)}
                 </TableCell>
-                <TableCell className="text-xs text-slate-600 dark:text-slate-400">
+                <TableCell className="text-xs text-[#6e6e73]">
                   {p.minimum_quantity} unit(s)
                 </TableCell>
                 <TableCell className="text-xs">
                   <div className="flex items-center gap-2">
                     {p.pause_allowed && (
-                      <span className="inline-flex items-center gap-1 text-[11px] text-amber-600" title="Pause permitted">
+                      <span className="inline-flex items-center gap-1 text-[11px] font-medium text-amber-700" title="Pause permitted">
                         <PauseCircle className="h-3 w-3" /> Pause
                       </span>
                     )}
                     {p.auto_renew && (
-                      <span className="inline-flex items-center gap-1 text-[11px] text-emerald-600" title="Auto-renewal enabled">
+                      <span className="inline-flex items-center gap-1 text-[11px] font-medium text-emerald-700" title="Auto-renewal enabled">
                         <RefreshCw className="h-3 w-3" /> Auto-Renew
                       </span>
                     )}
@@ -252,18 +250,18 @@ export const PlanList: React.FC = () => {
             {...register('description')}
           />
 
-          <div className="grid grid-cols-2 gap-4 rounded-xl bg-slate-50 p-4 dark:bg-slate-800/60 border border-slate-100 dark:border-slate-800">
-            <label className="flex items-center gap-2 cursor-pointer text-xs font-semibold text-slate-700 dark:text-slate-300">
-              <input type="checkbox" className="rounded text-brand-600" {...register('pause_allowed')} />
+          <div className="grid grid-cols-2 gap-4 rounded-2xl bg-[#f5f5f7] p-4 border border-black/[0.06]">
+            <label className="flex items-center gap-2 cursor-pointer text-xs font-semibold text-[#1d1d1f]">
+              <input type="checkbox" className="rounded text-[#0071e3]" {...register('pause_allowed')} />
               Allow Client Pause
             </label>
-            <label className="flex items-center gap-2 cursor-pointer text-xs font-semibold text-slate-700 dark:text-slate-300">
-              <input type="checkbox" className="rounded text-brand-600" {...register('auto_renew')} />
+            <label className="flex items-center gap-2 cursor-pointer text-xs font-semibold text-[#1d1d1f]">
+              <input type="checkbox" className="rounded text-[#0071e3]" {...register('auto_renew')} />
               Enable Auto-Renewal
             </label>
           </div>
 
-          <div className="flex justify-end gap-3 pt-4 border-t border-slate-100 dark:border-slate-800">
+          <div className="flex justify-end gap-3 pt-4 border-t border-black/[0.06]">
             <Button type="button" variant="outline" onClick={() => setIsCreateOpen(false)}>
               Cancel
             </Button>

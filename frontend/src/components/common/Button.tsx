@@ -26,25 +26,25 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     ref
   ) => {
     const baseStyles =
-      'inline-flex items-center justify-center font-medium rounded-full transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500/40 disabled:opacity-50 disabled:pointer-events-none select-none active:scale-[0.98]';
+      'inline-flex items-center justify-center font-medium rounded-full transition-all duration-150 focus:outline-none focus:ring-2 focus:ring-[#0071e3]/30 disabled:opacity-50 disabled:pointer-events-none select-none active:scale-[0.98]';
 
     const variants = {
       primary:
-        'bg-blue-600 text-white hover:bg-blue-500 active:bg-blue-700 shadow-glow-blue border border-blue-400/30',
+        'bg-[#0071e3] text-white hover:bg-[#0077ed] active:bg-[#0062c4] shadow-xs font-semibold',
       secondary:
-        'bg-white/[0.08] text-slate-100 border border-white/[0.12] hover:bg-white/[0.14] hover:text-white backdrop-blur-md',
+        'bg-[#e8e8ed] text-[#1d1d1f] hover:bg-[#dcdce2] active:bg-[#d0d0d8] font-medium',
       outline:
-        'border border-white/[0.15] bg-transparent text-slate-300 hover:bg-white/[0.06] hover:text-white hover:border-white/[0.25]',
+        'border border-[#d2d2d7] bg-white text-[#1d1d1f] hover:bg-[#f5f5f7] active:bg-[#e8e8ed] shadow-2xs font-medium',
       ghost:
-        'text-slate-400 hover:bg-white/[0.06] hover:text-white',
+        'text-[#1d1d1f] hover:bg-black/[0.05]',
       danger:
-        'bg-rose-600 text-white hover:bg-rose-500 active:bg-rose-700 border border-rose-500/30 shadow-[0_0_20px_rgba(244,63,94,0.3)]',
+        'bg-rose-600 text-white hover:bg-rose-700 active:bg-rose-800 shadow-xs font-medium',
     };
 
     const sizes = {
-      sm: 'text-xs px-3 py-1.5 gap-1.5',
-      md: 'text-xs font-semibold px-4 py-2 gap-2',
-      lg: 'text-sm font-semibold px-5 py-2.5 gap-2.5',
+      sm: 'text-xs px-3.5 py-1.5 gap-1.5',
+      md: 'text-xs px-4 py-2 gap-2',
+      lg: 'text-sm px-5 py-2.5 gap-2.5',
     };
 
     return (

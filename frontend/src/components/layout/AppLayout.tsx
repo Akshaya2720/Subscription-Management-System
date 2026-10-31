@@ -17,12 +17,12 @@ export const AppLayout: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen w-screen overflow-x-hidden font-sans text-slate-100 selection:bg-blue-600 selection:text-white flex flex-col">
-      {/* Supaste Floating Dynamic Island Header */}
+    <div className="min-h-screen w-screen overflow-x-hidden font-sans text-[#1d1d1f] bg-[#f5f5f7] selection:bg-[#0071e3] selection:text-white flex flex-col">
+      {/* Apple Store Frosted Header Bar */}
       <TopNav user={currentUser} onRoleChange={handleRoleChange} />
 
       {/* Main Content Viewport */}
-      <main className="flex-1 px-4 sm:px-6 pb-12">
+      <main className="flex-1 px-4 sm:px-6 pb-12 pt-4">
         <div className="mx-auto max-w-7xl">
           <Outlet />
         </div>

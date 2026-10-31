@@ -7,7 +7,7 @@ export const Table: React.FC<React.HTMLAttributes<HTMLTableElement>> = ({
   className,
   ...props
 }) => (
-  <div className="w-full overflow-x-auto rounded-2xl border border-white/[0.09] bg-[#0c1220]/70 backdrop-blur-2xl shadow-glass-card">
+  <div className="w-full overflow-x-auto rounded-2xl border border-black/[0.08] bg-white shadow-[0_2px_12px_rgba(0,0,0,0.03)]">
     <table className={cn('w-full caption-bottom text-xs', className)} {...props} />
   </div>
 );
@@ -17,7 +17,7 @@ export const TableHeader: React.FC<React.HTMLAttributes<HTMLTableSectionElement>
   ...props
 }) => (
   <thead
-    className={cn('bg-white/[0.03] border-b border-white/[0.06]', className)}
+    className={cn('bg-[#fbfbfd] border-b border-black/[0.06]', className)}
     {...props}
   />
 );
@@ -26,7 +26,7 @@ export const TableBody: React.FC<React.HTMLAttributes<HTMLTableSectionElement>> 
   className,
   ...props
 }) => (
-  <tbody className={cn('[&_tr:last-child]:border-0 divide-y divide-white/[0.04]', className)} {...props} />
+  <tbody className={cn('[&_tr:last-child]:border-0 divide-y divide-black/[0.05]', className)} {...props} />
 );
 
 export const TableRow: React.FC<React.HTMLAttributes<HTMLTableRowElement>> = ({
@@ -35,7 +35,7 @@ export const TableRow: React.FC<React.HTMLAttributes<HTMLTableRowElement>> = ({
 }) => (
   <tr
     className={cn(
-      'transition-colors duration-150 hover:bg-white/[0.04] text-left text-slate-300',
+      'transition-colors duration-150 hover:bg-black/[0.02] text-left text-[#1d1d1f]',
       className
     )}
     {...props}
@@ -48,7 +48,7 @@ export const TableHead: React.FC<React.ThHTMLAttributes<HTMLTableCellElement>> =
 }) => (
   <th
     className={cn(
-      'h-11 px-4 sm:px-5 text-left align-middle text-[11px] font-semibold tracking-wider text-slate-400 uppercase select-none',
+      'h-11 px-4 sm:px-5 text-left align-middle text-[11px] font-semibold tracking-wider text-[#6e6e73] uppercase select-none',
       className
     )}
     {...props}
@@ -60,7 +60,7 @@ export const TableCell: React.FC<React.TdHTMLAttributes<HTMLTableCellElement>> =
   ...props
 }) => (
   <td
-    className={cn('p-4 sm:p-5 align-middle text-slate-200 font-normal', className)}
+    className={cn('p-4 sm:p-5 align-middle text-[#1d1d1f] font-normal', className)}
     {...props}
   />
 );
@@ -70,7 +70,7 @@ export const TableFooter: React.FC<React.HTMLAttributes<HTMLTableSectionElement>
   ...props
 }) => (
   <tfoot
-    className={cn('border-t border-white/[0.06] bg-white/[0.02] font-medium text-slate-300', className)}
+    className={cn('border-t border-black/[0.06] bg-[#fbfbfd] font-medium text-[#1d1d1f]', className)}
     {...props}
   />
 );
@@ -105,12 +105,12 @@ export const TableEmpty: React.FC<TableEmptyProps> = ({
       <tr>
         <td colSpan={colSpan} className="py-14 text-center">
           <div className="flex flex-col items-center justify-center space-y-3">
-            <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-white/[0.05] text-slate-400 border border-white/[0.08] shadow-sm">
+            <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-slate-100 text-[#6e6e73] border border-slate-200 shadow-2xs">
               {icon || <Inbox className="h-6 w-6" />}
             </div>
             <div className="space-y-1">
-              <p className="text-sm font-semibold text-slate-200">{title}</p>
-              <p className="text-xs text-slate-400 max-w-sm">{description}</p>
+              <p className="text-sm font-semibold text-[#1d1d1f]">{title}</p>
+              <p className="text-xs text-[#6e6e73] max-w-sm">{description}</p>
             </div>
             {buttonLabel && buttonClick && (
               <Button size="sm" variant="secondary" onClick={buttonClick} className="mt-2">
@@ -141,8 +141,8 @@ export const TableLoading: React.FC<TableLoadingProps> = ({
     <tr>
       <td colSpan={colSpan || columnsCount} className="py-14 text-center">
         <div className="flex flex-col items-center justify-center space-y-3">
-          <RefreshCw className="h-6 w-6 animate-spin text-blue-400" />
-          <p className="text-xs text-slate-400 font-mono">Loading data...</p>
+          <RefreshCw className="h-6 w-6 animate-spin text-[#0071e3]" />
+          <p className="text-xs text-[#6e6e73] font-mono">Loading data...</p>
         </div>
       </td>
     </tr>
@@ -160,10 +160,10 @@ export const TableErrorState: React.FC<{
     <tr>
       <td colSpan={colSpan} className="py-12 text-center">
         <div className="flex flex-col items-center justify-center space-y-3">
-          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-rose-500/10 text-rose-400 border border-rose-500/20">
+          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-rose-50 text-rose-600 border border-rose-200">
             <AlertCircle className="h-5 w-5" />
           </div>
-          <p className="text-xs font-medium text-rose-400">{message}</p>
+          <p className="text-xs font-medium text-rose-600">{message}</p>
           {onRetry && (
             <Button size="sm" variant="secondary" onClick={onRetry} leftIcon={<RefreshCw className="h-3 w-3" />}>
               Retry Request

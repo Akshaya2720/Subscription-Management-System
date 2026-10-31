@@ -1,7 +1,6 @@
 import React from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { Repeat, Pause, Play, CheckCircle2, Shield } from 'lucide-react';
-import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '../../components/common/Card';
+import { Repeat, Pause, Play } from 'lucide-react';
 import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell, TableLoading } from '../../components/common/Table';
 import { Badge } from '../../components/common/Badge';
 import { Button } from '../../components/common/Button';
@@ -29,10 +28,10 @@ export const CustomerSubscriptions: React.FC = () => {
   return (
     <div className="space-y-6 text-left">
       <div>
-        <h1 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-white">
+        <h1 className="text-2xl font-bold tracking-tight text-[#1d1d1f]">
           My Subscriptions & Service Tiers
         </h1>
-        <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
+        <p className="text-xs sm:text-sm text-[#6e6e73] mt-1">
           Review your enrolled plans, billing frequencies, renewal dates, and manage operational pause controls
         </p>
       </div>
@@ -55,20 +54,20 @@ export const CustomerSubscriptions: React.FC = () => {
           <TableBody>
             {subscriptions.map((s) => (
               <TableRow key={s.id}>
-                <TableCell className="font-semibold text-xs text-slate-900 dark:text-white">
+                <TableCell className="font-semibold text-xs text-[#0071e3]">
                   <div className="flex items-center gap-2">
-                    <Repeat className="h-4 w-4 text-brand-600" />
+                    <Repeat className="h-4 w-4 text-[#0071e3]" />
                     {s.subscription_number}
                   </div>
                 </TableCell>
-                <TableCell className="text-xs">
+                <TableCell className="text-xs text-[#1d1d1f]">
                   {s.plan?.name || 'Cloud Infrastructure Tier'}
                 </TableCell>
-                <TableCell className="text-xs font-bold text-slate-900 dark:text-white">
+                <TableCell className="text-xs font-bold text-[#1d1d1f]">
                   {formatCurrency(s.contracted_price, s.currency)}
                 </TableCell>
-                <TableCell className="text-xs capitalize">{s.billing_frequency}</TableCell>
-                <TableCell className="text-xs text-slate-500">
+                <TableCell className="text-xs capitalize text-[#6e6e73]">{s.billing_frequency}</TableCell>
+                <TableCell className="text-xs text-[#6e6e73]">
                   {formatDate(s.next_billing_date)}
                 </TableCell>
                 <TableCell>

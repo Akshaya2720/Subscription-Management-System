@@ -38,9 +38,9 @@ export const SubscriptionTimeline: React.FC<SubscriptionTimelineProps> = ({
     <div className={cn('w-full py-4', className)}>
       <div className="relative flex items-center justify-between">
         {/* Connecting Progress Line */}
-        <div className="absolute left-6 right-6 top-5 -z-0 h-1 bg-slate-200 dark:bg-slate-800">
+        <div className="absolute left-6 right-6 top-5 -z-0 h-1 bg-slate-200">
           <motion.div
-            className="h-full bg-brand-600 dark:bg-brand-500"
+            className="h-full bg-[#0071e3]"
             initial={{ width: 0 }}
             animate={{
               width: currentIndex >= 0 ? `${(currentIndex / (STAGES.length - 1)) * 100}%` : '0%',
@@ -65,15 +65,15 @@ export const SubscriptionTimeline: React.FC<SubscriptionTimelineProps> = ({
                   backgroundColor: isCurrent
                     ? isPaused
                       ? '#f59e0b'
-                      : '#4f46e5'
+                      : '#0071e3'
                     : isPassed
                     ? '#10b981'
-                    : '#f1f5f9',
+                    : '#ffffff',
                 }}
                 className={cn(
-                  'flex h-10 w-10 items-center justify-center rounded-full border-2 text-white shadow-sm transition-colors',
-                  isCurrent && 'ring-4 ring-brand-100 dark:ring-brand-900/40',
-                  !isPassed && !isCurrent && 'border-slate-300 dark:border-slate-700 text-slate-400'
+                  'flex h-10 w-10 items-center justify-center rounded-full border-2 text-white shadow-2xs transition-colors',
+                  isCurrent && 'ring-4 ring-blue-100',
+                  !isPassed && !isCurrent && 'border-slate-300 text-[#86868b]'
                 )}
               >
                 {isPassed ? (
@@ -82,7 +82,7 @@ export const SubscriptionTimeline: React.FC<SubscriptionTimelineProps> = ({
                   <Icon
                     className={cn(
                       'h-5 w-5',
-                      isCurrent ? 'text-white' : 'text-slate-400 dark:text-slate-500'
+                      isCurrent ? 'text-white' : 'text-[#86868b]'
                     )}
                   />
                 )}
@@ -94,16 +94,16 @@ export const SubscriptionTimeline: React.FC<SubscriptionTimelineProps> = ({
                     'block text-xs font-semibold',
                     isCurrent
                       ? isPaused
-                        ? 'text-amber-600 dark:text-amber-400'
-                        : 'text-brand-600 dark:text-brand-400 font-bold'
+                        ? 'text-amber-700 font-bold'
+                        : 'text-[#0071e3] font-bold'
                       : isPassed
-                      ? 'text-slate-800 dark:text-slate-200'
-                      : 'text-slate-400 dark:text-slate-500'
+                      ? 'text-[#1d1d1f]'
+                      : 'text-[#86868b]'
                   )}
                 >
                   {isPaused ? 'Paused' : stage.label}
                 </span>
-                <span className="hidden sm:block text-[11px] text-slate-400 dark:text-slate-500">
+                <span className="hidden sm:block text-[11px] text-[#6e6e73]">
                   {stage.description}
                 </span>
               </div>
