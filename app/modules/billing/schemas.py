@@ -1,475 +1,204 @@
+"""Pydantic schemas for Taxes, Discounts, Invoicing, Payments, and Automated Billing Runs."""
+
 import uuid
-from datetime import date, datetime
 from decimal import Decimal
-from typing import List, Optional, Dict, Any
-from pydantic import BaseModel, ConfigDict, Field
+from datetime import datetime, date
+from typing import Optional, List
+from pydantic import BaseModel, Field
+
+from app.models.billing import InvoiceStatus, PaymentMethod, DiscountType
 
 
-# ==========================================
-# Tax Schemas
-# ==========================================
-class TaxRuleCreate(BaseModel):
-    name: str = Field(..., max_length=100)
-    tax_rate: Decimal = Field(..., ge=Decimal("0.0000"), le=Decimal("1.0000"))
-    tax_type: str = Field(default="GST", max_length=50)
-    inclusive_or_exclusive: str = Field(default="EXCLUSIVE")  # EXCLUSIVE, INCLUSIVE
-    effective_from: Optional[date] = None
-    effective_until: Optional[date] = None
-    active: bool = True
+# ── Tax Rules ─────────────────────────────────────────────────────────────
+
+class TaxRuleBase(BaseModel):
+    name: str = Field(..., min_length=2, max_length=100)
+    tax_code: str = Field(..., min_length=2, max_length=50)
+    rate_percent: Decimal = Field(..., ge=Decimal("0.00"), le=Decimal("100.00"))
+    country: Optional[str] = Field(None, max_length=100)
+    state_province: Optional[str] = Field(None, max_length=100)
+    is_default: bool = False
+    is_active: bool = True
+    description: Optional[str] = None
+
+
+class TaxRuleCreate(TaxRuleBase):
+    pass
 
 
 class TaxRuleUpdate(BaseModel):
     name: Optional[str] = None
-    tax_rate: Optional[Decimal] = None
-    tax_type: Optional[str] = None
-    inclusive_or_exclusive: Optional[str] = None
-    effective_from: Optional[date] = None
-    effective_until: Optional[date] = None
-    active: Optional[bool] = None
+    rate_percent: Optional[Decimal] = Field(None, ge=Decimal("0.00"), le=Decimal("100.00"))
+    country: Optional[str] = None
+    state_province: Optional[str] = None
+    is_default: Optional[bool] = None
+    is_active: Optional[bool] = None
+    description: Optional[str] = None
 
 
-class TaxRuleResponse(BaseModel):
+class TaxRuleResponse(TaxRuleBase):
     id: uuid.UUID
     organization_id: uuid.UUID
-    name: str
-    tax_rate: Decimal
-    tax_type: str
-    inclusive_or_exclusive: str
-    effective_from: date
-    effective_until: Optional[date] = None
-    active: bool
-    created_at: datetime
-
-    model_config = ConfigDict(from_attributes=True)
-
-
-# ==========================================
-# Discount Schemas
-# ==========================================
-class DiscountCreate(BaseModel):
-    discount_name: str = Field(..., max_length=100)
-    discount_code: Optional[str] = None
-    discount_type: str = Field(..., description="FIXED or PERCENTAGE")
-    discount_value: Decimal = Field(..., ge=Decimal("0.00"))
-    minimum_purchase: Decimal = Field(default=Decimal("0.00"), ge=Decimal("0.00"))
-    minimum_quantity: int = Field(default=0, ge=0)
-    start_date: Optional[date] = None
-    end_date: Optional[date] = None
-    usage_limit: Optional[int] = None
-    product_id: Optional[uuid.UUID] = None
-    subscription_wide: bool = True
-    active: bool = True
-
-
-class DiscountUpdate(BaseModel):
-    discount_name: Optional[str] = None
-    discount_code: Optional[str] = None
-    discount_type: Optional[str] = None
-    discount_value: Optional[Decimal] = None
-    minimum_purchase: Optional[Decimal] = None
-    minimum_quantity: Optional[int] = None
-    start_date: Optional[date] = None
-    end_date: Optional[date] = None
-    usage_limit: Optional[int] = None
-    product_id: Optional[uuid.UUID] = None
-    subscription_wide: Optional[bool] = None
-    active: Optional[bool] = None
-
-
-class DiscountValidateRequest(BaseModel):
-    purchase_subtotal: Decimal
-    quantity: int = 1
-    evaluation_date: Optional[date] = None
-
-
-class DiscountResponse(BaseModel):
-    id: uuid.UUID
-    organization_id: uuid.UUID
-    discount_name: str
-    discount_code: Optional[str] = None
-    discount_type: str
-    discount_value: Decimal
-    minimum_purchase: Decimal
-    minimum_quantity: int
-    start_date: date
-    end_date: Optional[date] = None
-    usage_limit: Optional[int] = None
-    usage_count: int
-    product_id: Optional[uuid.UUID] = None
-    subscription_wide: bool
-    active: bool
-    created_at: datetime
-
-    model_config = ConfigDict(from_attributes=True)
-
-
-# ==========================================
-# Invoice Schemas
-# ==========================================
-class InvoiceItemCreate(BaseModel):
-    product_id: Optional[uuid.UUID] = None
-    variant_id: Optional[uuid.UUID] = None
-    description_snapshot: str
-    quantity: int = Field(default=1, ge=1)
-    unit_price: Decimal = Field(..., ge=Decimal("0.00"))
-
-
-class InvoiceCreate(BaseModel):
-    customer_id: uuid.UUID
-    subscription_id: Optional[uuid.UUID] = None
-    due_date: date
-    billing_period_start: Optional[date] = None
-    billing_period_end: Optional[date] = None
-    currency: str = "INR"
-    invoice_type: str = "ONE_TIME"
-    discount_id: Optional[uuid.UUID] = None
-    tax_rule_ids: Optional[List[uuid.UUID]] = None
-    notes: Optional[str] = None
-    items: List[InvoiceItemCreate]
-
-
-class InvoiceItemResponse(BaseModel):
-    id: uuid.UUID
-    product_id: Optional[uuid.UUID] = None
-    variant_id: Optional[uuid.UUID] = None
-    description_snapshot: str
-    quantity: int
-    unit_price: Decimal
-    discount_amount: Decimal
-    tax_amount: Decimal
-    line_total: Decimal
-
-    model_config = ConfigDict(from_attributes=True)
-
-
-class InvoiceResponse(BaseModel):
-    id: uuid.UUID
-    organization_id: uuid.UUID
-    customer_id: uuid.UUID
-    subscription_id: Optional[uuid.UUID] = None
-    invoice_number: str
-    issue_date: date
-    due_date: date
-    billing_period_start: Optional[date] = None
-    billing_period_end: Optional[date] = None
-    currency: str
-    subtotal: Decimal
-    discount_total: Decimal
-    tax_total: Decimal
-    total_amount: Decimal
-    amount_paid: Decimal
-    amount_due: Decimal
-    status: str
-    invoice_type: str
-    verification_status: str
-    notes: Optional[str] = None
-    items: List[InvoiceItemResponse] = []
     created_at: datetime
     updated_at: datetime
 
-    model_config = ConfigDict(from_attributes=True)
+    model_config = {"from_attributes": True}
 
 
-class InvoiceStatusUpdate(BaseModel):
-    status: str
+# ── Discounts ─────────────────────────────────────────────────────────────
+
+class DiscountBase(BaseModel):
+    code: str = Field(..., min_length=2, max_length=50)
+    description: Optional[str] = None
+    discount_type: DiscountType = DiscountType.PERCENTAGE
+    amount: Decimal = Field(..., ge=Decimal("0.00"))
+    min_purchase_amount: Decimal = Field(default=Decimal("0.00"), ge=Decimal("0.00"))
+    min_quantity: int = Field(default=1, ge=1)
+    max_uses: Optional[int] = Field(None, ge=1)
+    start_date: Optional[date] = None
+    end_date: Optional[date] = None
+    product_id: Optional[uuid.UUID] = None
+    plan_id: Optional[uuid.UUID] = None
+    is_active: bool = True
 
 
-# ==========================================
-# Recurring Billing Schemas
-# ==========================================
-class BillingRunCreate(BaseModel):
-    as_of_date: Optional[date] = None
+class DiscountCreate(DiscountBase):
+    pass
 
 
-class BillingRunItemResponse(BaseModel):
-    id: uuid.UUID
-    subscription_id: uuid.UUID
-    invoice_id: Optional[uuid.UUID] = None
-    status: str
-    error_message: Optional[str] = None
-    created_at: datetime
+class DiscountUpdate(BaseModel):
+    description: Optional[str] = None
+    amount: Optional[Decimal] = Field(None, ge=Decimal("0.00"))
+    min_purchase_amount: Optional[Decimal] = None
+    min_quantity: Optional[int] = None
+    max_uses: Optional[int] = None
+    start_date: Optional[date] = None
+    end_date: Optional[date] = None
+    is_active: Optional[bool] = None
 
-    model_config = ConfigDict(from_attributes=True)
 
-
-class BillingRunResponse(BaseModel):
+class DiscountResponse(DiscountBase):
     id: uuid.UUID
     organization_id: uuid.UUID
-    run_reference: str
-    started_at: datetime
-    completed_at: Optional[datetime] = None
-    status: str
-    total_processed: int
-    successful_count: int
-    failed_count: int
-    logs: Optional[List[str]] = []
+    times_used: int
     created_at: datetime
-    items: List[BillingRunItemResponse] = []
+    updated_at: datetime
 
-    model_config = ConfigDict(from_attributes=True)
-
-
-# ==========================================
-# Payment Schemas
-# ==========================================
-class PaymentCreate(BaseModel):
-    customer_id: Optional[uuid.UUID] = None
-    invoice_id: Optional[uuid.UUID] = None
-    amount: Decimal = Field(..., gt=Decimal("0.00"))
-    payment_method: str = "BANK_TRANSFER"
-    currency: str = "INR"
-    reference: Optional[str] = None
-    transaction_reference: Optional[str] = None
-    notes: Optional[str] = None
+    model_config = {"from_attributes": True}
 
 
-class PaymentAllocateRequest(BaseModel):
-    invoice_id: uuid.UUID
-    amount: Decimal = Field(..., gt=Decimal("0.00"))
-    notes: Optional[str] = None
+# ── Invoices ──────────────────────────────────────────────────────────────
+
+class InvoiceItemBase(BaseModel):
+    product_id: Optional[uuid.UUID] = None
+    description: str
+    quantity: int = Field(..., ge=1)
+    unit_price: Decimal = Field(..., ge=Decimal("0.00"))
+    tax_percent: Decimal = Field(default=Decimal("0.00"), ge=Decimal("0.00"))
+    discount_amount: Decimal = Field(default=Decimal("0.00"), ge=Decimal("0.00"))
 
 
-class PaymentRefundRequest(BaseModel):
-    amount: Decimal = Field(..., gt=Decimal("0.00"))
-    reason: str
+class InvoiceItemCreate(InvoiceItemBase):
+    pass
 
 
-class PaymentAllocationResponse(BaseModel):
+class InvoiceItemResponse(InvoiceItemBase):
     id: uuid.UUID
-    payment_id: uuid.UUID
     invoice_id: uuid.UUID
-    amount_allocated: Decimal
-    allocated_at: datetime
+    tax_amount: Decimal = Decimal("0.00")
+    line_total: Decimal
+
+    model_config = {"from_attributes": True}
+
+
+class InvoiceBase(BaseModel):
+    customer_id: uuid.UUID
+    subscription_id: Optional[uuid.UUID] = None
+    issue_date: date = Field(default_factory=date.today)
+    due_date: date
+    period_start: Optional[date] = None
+    period_end: Optional[date] = None
+    currency: str = "USD"
     notes: Optional[str] = None
 
-    model_config = ConfigDict(from_attributes=True)
+
+class InvoiceCreate(InvoiceBase):
+    items: List[InvoiceItemCreate]
+    discount_code: Optional[str] = None
+
+
+class InvoiceUpdate(BaseModel):
+    due_date: Optional[date] = None
+    notes: Optional[str] = None
+
+
+class InvoiceResponse(InvoiceBase):
+    id: uuid.UUID
+    organization_id: uuid.UUID
+    invoice_number: str
+    status: InvoiceStatus
+    subtotal: Decimal
+    discount_amount: Decimal
+    tax_amount: Decimal
+    sla_credit_amount: Decimal
+    total_amount: Decimal
+    amount_paid: Decimal
+    amount_due: Decimal
+    items: List[InvoiceItemResponse] = []
+    created_at: datetime
+    updated_at: Optional[datetime] = None
+
+    model_config = {"from_attributes": True}
+
+
+# ── Payments ──────────────────────────────────────────────────────────────
+
+class PaymentCreate(BaseModel):
+    amount: Decimal = Field(..., gt=Decimal("0.00"))
+    payment_method: PaymentMethod = PaymentMethod.SIMULATED
+    reference: Optional[str] = None
+    notes: Optional[str] = None
 
 
 class PaymentResponse(BaseModel):
     id: uuid.UUID
-    organization_id: uuid.UUID
-    customer_id: Optional[uuid.UUID] = None
-    invoice_id: Optional[uuid.UUID] = None
-    payment_reference: str
-    amount: Decimal
-    currency: str
-    payment_method: str
-    payment_date: datetime
-    transaction_reference: Optional[str] = None
-    notes: Optional[str] = None
-    status: str
-    created_at: datetime
-    allocations: List[PaymentAllocationResponse] = []
-
-    model_config = ConfigDict(from_attributes=True)
-
-
-# ==========================================
-# Reconciliation Schemas
-# ==========================================
-class ReconciliationReviewRequest(BaseModel):
-    decision: str  # MATCH, REJECT
-    matched_invoice_id: Optional[uuid.UUID] = None
-    notes: Optional[str] = None
-
-
-class ReconciliationItemResponse(BaseModel):
-    id: uuid.UUID
-    transaction_date: date
-    reference: str
-    description: str
-    amount: Decimal
-    currency: str
-    matched_payment_id: Optional[uuid.UUID] = None
-    matched_invoice_id: Optional[uuid.UUID] = None
-    match_status: str
-    confidence_score: Decimal
-    review_notes: Optional[str] = None
-
-    model_config = ConfigDict(from_attributes=True)
-
-
-class ReconciliationRunResponse(BaseModel):
-    id: uuid.UUID
-    organization_id: uuid.UUID
-    run_reference: str
-    imported_at: datetime
-    filename: str
-    total_records: int
-    matched_count: int
-    unmatched_count: int
-    discrepancy_count: int
-    status: str
-    items: List[ReconciliationItemResponse] = []
-
-    model_config = ConfigDict(from_attributes=True)
-
-
-class MatchTransactionRequest(BaseModel):
-    transactionId: str
-    invoiceId: str
-
-
-# ==========================================
-# Verification Schemas
-# ==========================================
-class ServiceCommitmentCreate(BaseModel):
-    commitment_type: str
-    expected_value: Decimal
-    measurement_unit: str = "PERCENTAGE"
-    verification_rule: str = "GREATER_OR_EQUAL"
-    penalty_rate_per_unit: Decimal = Decimal("0.00")
-
-
-class ContractCreate(BaseModel):
-    subscription_id: uuid.UUID
-    contract_reference: str
-    start_date: date
-    end_date: Optional[date] = None
-    document_reference: Optional[str] = None
-    commitments: List[ServiceCommitmentCreate] = []
-
-
-class ServiceEventCreate(BaseModel):
-    subscription_id: uuid.UUID
-    commitment_id: Optional[uuid.UUID] = None
-    event_type: str
-    actual_value: Decimal
-    event_timestamp: datetime
-    evidence_reference: str
-    source: str = "MONITORING_SYSTEM"
-    status: str = "VERIFIED"
-
-
-class ServiceCreditResponse(BaseModel):
-    id: uuid.UUID
-    subscription_id: uuid.UUID
-    verification_result_id: uuid.UUID
-    proposed_credit: Decimal
-    approved_credit: Optional[Decimal] = None
-    status: str
-    approved_by: Optional[uuid.UUID] = None
-    approval_reason: Optional[str] = None
-    created_at: datetime
-
-    model_config = ConfigDict(from_attributes=True)
-
-
-class VerificationResultResponse(BaseModel):
-    id: uuid.UUID
-    commitment_id: uuid.UUID
-    expected_value: Decimal
-    actual_value: Decimal
-    variance: Decimal
-    result: str
-    explanation: str
-    evidence_reference: Optional[str] = None
-    service_credits: List[ServiceCreditResponse] = []
-
-    model_config = ConfigDict(from_attributes=True)
-
-
-class VerificationRunResponse(BaseModel):
-    id: uuid.UUID
-    subscription_id: uuid.UUID
-    contract_id: uuid.UUID
-    run_date: datetime
-    status: str
-    overall_result: str
-    results: List[VerificationResultResponse] = []
-    created_at: datetime
-
-    model_config = ConfigDict(from_attributes=True)
-
-
-class CreditApprovalRequest(BaseModel):
-    approved_amount: Optional[Decimal] = None
-    notes: Optional[str] = None
-    reason: Optional[str] = None
-
-
-# ==========================================
-# AI Schemas
-# ==========================================
-class AnomalyResponse(BaseModel):
-    id: uuid.UUID
-    organization_id: uuid.UUID
     invoice_id: uuid.UUID
-    anomaly_type: str
-    severity: str
-    detected_value: str
-    expected_value: str
-    explanation: str
-    detection_method: str
+    amount: Decimal
+    payment_method: PaymentMethod
+    payment_date: datetime
     status: str
-    reviewed_by: Optional[uuid.UUID] = None
-    reviewed_at: Optional[datetime] = None
+    reference: Optional[str] = None
+    notes: Optional[str] = None
+    gateway_transaction_id: Optional[str] = None
     created_at: datetime
 
-    model_config = ConfigDict(from_attributes=True)
+    model_config = {"from_attributes": True}
 
 
-class AnomalyReviewRequest(BaseModel):
-    decision: str = "RESOLVED"  # RESOLVED, FALSE_POSITIVE
-
-
-class AssistantQueryRequest(BaseModel):
-    prompt: Optional[str] = None
-    query: Optional[str] = None
-
-
-class AssistantQueryResponse(BaseModel):
-    query: str
-    category: str
-    answer: str
-    data: Any = None
-    sources: List[str] = []
-
-
-# ==========================================
-# Audit Schemas
-# ==========================================
-class AuditEventResponse(BaseModel):
-    id: uuid.UUID
-    organization_id: uuid.UUID
-    actor_id: Optional[uuid.UUID] = None
-    action: str
-    entity_type: str
-    entity_id: uuid.UUID
+class PaymentReceipt(BaseModel):
+    receipt_id: str
+    payment_id: uuid.UUID
+    invoice_id: uuid.UUID
+    invoice_number: str
+    amount_paid: Decimal
+    remaining_balance: Decimal
+    payment_method: str
     timestamp: datetime
-    change_summary: str
-    previous_hash: str
-    current_hash: str
-    is_anchored: bool
-    blockchain_tx_hash: Optional[str] = None
-    blockchain_network: Optional[str] = None
-    anchored_at: Optional[datetime] = None
-
-    model_config = ConfigDict(from_attributes=True)
+    status: str
+    message: str
 
 
-class AuditVerifyResponse(BaseModel):
-    is_valid: bool
-    total_blocks_checked: int = 0
-    head_hash: Optional[str] = None
-    verified_at: str
-    details: Optional[str] = None
-    tampered_block_index: Optional[int] = None
-    tampered_block_id: Optional[str] = None
-    expected_hash: Optional[str] = None
-    actual_hash: Optional[str] = None
-    expected_previous_hash: Optional[str] = None
-    actual_previous_hash: Optional[str] = None
+# ── Billing Run ───────────────────────────────────────────────────────────
+
+class BillingRunRequest(BaseModel):
+    run_date: date = Field(default_factory=date.today)
+    auto_confirm: bool = True
 
 
-class AuditAnchorRequest(BaseModel):
-    network: Optional[str] = "Ethereum Sepolia Testnet"
-
-
-class AuditAnchorResponse(BaseModel):
-    anchored: bool
-    tx_hash: Optional[str] = None
-    network: Optional[str] = None
-    head_hash: Optional[str] = None
-    anchored_at: Optional[str] = None
-    message: Optional[str] = None
+class BillingRunResponse(BaseModel):
+    run_date: date
+    subscriptions_scanned: int
+    invoices_created: int
+    invoices_skipped: int
+    total_billed_amount: Decimal
+    created_invoice_ids: List[uuid.UUID]

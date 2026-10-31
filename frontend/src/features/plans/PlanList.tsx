@@ -161,15 +161,25 @@ export const PlanList: React.FC = () => {
                   {p.minimum_quantity} unit(s)
                 </TableCell>
                 <TableCell className="text-xs">
-                  <div className="flex items-center gap-2">
-                    {p.pause_allowed && (
-                      <span className="inline-flex items-center gap-1 text-[11px] font-medium text-amber-700" title="Pause permitted">
-                        <PauseCircle className="h-3 w-3" /> Pause
+                  <div className="flex flex-wrap items-center gap-1.5 max-w-xs">
+                    {(p.pause_allowed || (p as any).is_pausable) && (
+                      <span className="inline-flex items-center gap-1 text-[10px] font-semibold text-amber-800 bg-amber-50 px-2 py-0.5 rounded-full border border-amber-200" title="Pause permitted">
+                        <PauseCircle className="h-2.5 w-2.5" /> Pausable
                       </span>
                     )}
-                    {p.auto_renew && (
-                      <span className="inline-flex items-center gap-1 text-[11px] font-medium text-emerald-700" title="Auto-renewal enabled">
-                        <RefreshCw className="h-3 w-3" /> Auto-Renew
+                    {(p.auto_renew || (p as any).is_renewable) && (
+                      <span className="inline-flex items-center gap-1 text-[10px] font-semibold text-emerald-800 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200" title="Auto-renewal enabled">
+                        <RefreshCw className="h-2.5 w-2.5" /> Renewable
+                      </span>
+                    )}
+                    {(p as any).is_closable_early !== false && (
+                      <span className="inline-flex items-center gap-1 text-[10px] font-semibold text-blue-800 bg-blue-50 px-2 py-0.5 rounded-full border border-blue-200" title="Early closure allowed">
+                        Early Close
+                      </span>
+                    )}
+                    {(p as any).is_auto_close_at_end && (
+                      <span className="inline-flex items-center gap-1 text-[10px] font-semibold text-purple-800 bg-purple-50 px-2 py-0.5 rounded-full border border-purple-200" title="Auto-close at end">
+                        Auto-Close
                       </span>
                     )}
                   </div>
@@ -250,14 +260,22 @@ export const PlanList: React.FC = () => {
             {...register('description')}
           />
 
-          <div className="grid grid-cols-2 gap-4 rounded-2xl bg-[#f5f5f7] p-4 border border-black/[0.06]">
-            <label className="flex items-center gap-2 cursor-pointer text-xs font-semibold text-[#1d1d1f]">
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 rounded-2xl bg-slate-50 p-4 border border-slate-200">
+            <label className="flex items-center gap-2 cursor-pointer text-xs font-semibold text-slate-900">
               <input type="checkbox" className="rounded text-[#0071e3]" {...register('pause_allowed')} />
-              Allow Client Pause
+              Allow Pause
             </label>
-            <label className="flex items-center gap-2 cursor-pointer text-xs font-semibold text-[#1d1d1f]">
+            <label className="flex items-center gap-2 cursor-pointer text-xs font-semibold text-slate-900">
               <input type="checkbox" className="rounded text-[#0071e3]" {...register('auto_renew')} />
-              Enable Auto-Renewal
+              Auto-Renew
+            </label>
+            <label className="flex items-center gap-2 cursor-pointer text-xs font-semibold text-slate-900">
+              <input type="checkbox" defaultChecked className="rounded text-[#0071e3]" />
+              Closable Early
+            </label>
+            <label className="flex items-center gap-2 cursor-pointer text-xs font-semibold text-slate-900">
+              <input type="checkbox" className="rounded text-[#0071e3]" />
+              Auto-Close at End
             </label>
           </div>
 

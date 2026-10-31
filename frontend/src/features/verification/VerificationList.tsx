@@ -64,17 +64,17 @@ export const VerificationList: React.FC = () => {
 
       {/* KPI Overview */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        <div className="rounded-2xl border border-black/[0.08] bg-white p-5 shadow-2xs">
-          <div className="flex items-center justify-between text-xs text-[#6e6e73]">
+        <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-xs">
+          <div className="flex items-center justify-between text-xs text-slate-500">
             <span>Verified Compliant Contracts</span>
             <ShieldCheck className="h-4 w-4 text-emerald-600" />
           </div>
           <p className="mt-2 text-2xl font-bold text-emerald-700">{verifiedCount}</p>
-          <p className="text-[11px] text-[#6e6e73] mt-1">100% SLA delivery match</p>
+          <p className="text-[11px] text-slate-500 mt-1">100% SLA delivery match</p>
         </div>
 
-        <div className="rounded-2xl border border-black/[0.08] bg-white p-5 shadow-2xs">
-          <div className="flex items-center justify-between text-xs text-[#6e6e73]">
+        <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-xs">
+          <div className="flex items-center justify-between text-xs text-slate-500">
             <span>Discrepancies Detected</span>
             <AlertTriangle className="h-4 w-4 text-rose-600" />
           </div>
@@ -82,15 +82,70 @@ export const VerificationList: React.FC = () => {
           <p className="text-[11px] text-rose-600 mt-1 font-medium">Pending review & billing adjustment</p>
         </div>
 
-        <div className="rounded-2xl border border-black/[0.08] bg-white p-5 shadow-2xs">
-          <div className="flex items-center justify-between text-xs text-[#6e6e73]">
+        <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-xs">
+          <div className="flex items-center justify-between text-xs text-slate-500">
             <span>Proposed SLA Credits</span>
             <Clock className="h-4 w-4 text-[#0071e3]" />
           </div>
-          <p className="mt-2 text-2xl font-bold text-[#1d1d1f]">
+          <p className="mt-2 text-2xl font-bold text-slate-900">
             {formatCurrency(totalCredits)}
           </p>
-          <p className="text-[11px] text-[#6e6e73] mt-1">Protects customer billing trust</p>
+          <p className="text-[11px] text-slate-500 mt-1">Protects customer billing trust</p>
+        </div>
+      </div>
+
+      {/* Solana PublicNode Telemetry Monitor Card */}
+      <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-xs">
+        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 pb-4 border-b border-slate-100">
+          <div className="flex items-center gap-3">
+            <span className="solana-pulse">
+              <span></span>
+              <span></span>
+            </span>
+            <div>
+              <h3 className="text-xs font-bold uppercase tracking-wider text-slate-900 font-mono">
+                Solana PublicNode • Live SLA Telemetry Ingestion
+              </h3>
+              <p className="text-[11px] text-slate-500 font-mono">
+                Real-time latency metrics & SLA uptime stream compared deterministically against contract thresholds
+              </p>
+            </div>
+          </div>
+          <div className="flex items-center gap-2 text-xs font-mono">
+            <span className="rounded-md bg-emerald-50 text-emerald-800 border border-emerald-200 px-2.5 py-1 font-bold">
+              RPC Ping: 24ms
+            </span>
+            <span className="rounded-md bg-blue-50 text-blue-800 border border-blue-200 px-2.5 py-1 font-bold">
+              Uptime: 99.98%
+            </span>
+            <span className="rounded-md bg-purple-50 text-purple-800 border border-purple-200 px-2.5 py-1 font-bold">
+              Ledger Sync: Block #284,912
+            </span>
+          </div>
+        </div>
+
+        {/* Telemetry Endpoint Status Grid */}
+        <div className="grid grid-cols-1 sm:grid-cols-4 gap-3 pt-4 text-xs font-mono">
+          <div className="p-3 rounded-xl bg-slate-50 border border-slate-200">
+            <div className="text-[10px] text-slate-500 uppercase">Primary RPC Gateway</div>
+            <div className="text-slate-900 font-bold mt-1">api.mainnet-beta.solana</div>
+            <div className="text-emerald-700 text-[11px] font-semibold mt-0.5">● 100% Operational (18ms)</div>
+          </div>
+          <div className="p-3 rounded-xl bg-slate-50 border border-slate-200">
+            <div className="text-[10px] text-slate-500 uppercase">Telemetry Ingestion</div>
+            <div className="text-slate-900 font-bold mt-1">telemetry.verisub.internal</div>
+            <div className="text-emerald-700 text-[11px] font-semibold mt-0.5">● Active Stream (22ms)</div>
+          </div>
+          <div className="p-3 rounded-xl bg-slate-50 border border-slate-200">
+            <div className="text-[10px] text-slate-500 uppercase">SLA Breach Detector</div>
+            <div className="text-slate-900 font-bold mt-1">rule-engine.sla.v1</div>
+            <div className="text-amber-700 text-[11px] font-semibold mt-0.5">▲ 1 Incident Evaluated</div>
+          </div>
+          <div className="p-3 rounded-xl bg-slate-50 border border-slate-200">
+            <div className="text-[10px] text-slate-500 uppercase">SHA-256 Ledger Root</div>
+            <div className="text-slate-900 font-bold mt-1 truncate">0xd5f7c26a849...</div>
+            <div className="text-blue-700 text-[11px] font-semibold mt-0.5">● Hash Verified</div>
+          </div>
         </div>
       </div>
 

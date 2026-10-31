@@ -9,7 +9,7 @@ export const auditService = {
     entity?: string;
   }): Promise<AuditLog[]> {
     try {
-      const res = await apiClient.get('/audit-logs', { params });
+      const res = await apiClient.get('/audit/logs', { params });
       return res.data;
     } catch {
       let logs = localStore.getAuditLogs();
@@ -35,7 +35,7 @@ export const auditService = {
     verified_at: string;
   }> {
     try {
-      const res = await apiClient.post('/audit-logs/verify-integrity');
+      const res = await apiClient.get('/audit/verify');
       return res.data;
     } catch {
       const logs = localStore.getAuditLogs();

@@ -50,19 +50,32 @@ export const TopNav: React.FC<TopNavProps> = ({ user, onRoleChange }) => {
     <div className="sticky top-0 z-40 w-full border-b border-black/[0.08] bg-white/80 backdrop-blur-xl">
       {/* Apple Store Minimal Navigation Header */}
       <header className="mx-auto flex h-14 max-w-7xl items-center justify-between px-4 sm:px-6">
-        {/* Left: Brand Identity with Apple-style Monomark */}
+        {/* Left: Brand Identity with Paddle + Solana Monomark */}
         <div className="flex items-center gap-3">
           <NavLink to="/admin/overview" className="flex items-center gap-2.5 group">
-            <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-[#1d1d1f] text-white font-bold text-xs shadow-2xs transition-transform group-hover:scale-105">
+            <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-slate-900 text-white font-bold text-xs shadow-xs transition-transform group-hover:scale-105">
               V
             </div>
             <div className="flex items-center gap-1.5">
-              <span className="font-bold text-[#1d1d1f] text-sm tracking-tight">VERISUB</span>
-              <span className="hidden sm:inline-block rounded-full bg-black/[0.05] border border-black/[0.06] px-2 py-0.2 text-[10px] font-mono text-[#6e6e73]">
-                Store
+              <span className="font-bold text-slate-900 text-sm tracking-tight">VERISUB</span>
+              <span className="hidden sm:inline-block rounded-full bg-slate-100 border border-slate-200 px-2 py-0.5 text-[10px] font-mono text-slate-600">
+                Fintech & Node
               </span>
             </div>
           </NavLink>
+
+          {/* Solana PublicNode Live Telemetry Indicator Pill */}
+          <div className="hidden xl:flex items-center gap-2 px-2.5 py-1 rounded-full bg-slate-50 border border-slate-200 text-[11px] font-mono">
+            <span className="solana-pulse">
+              <span></span>
+              <span></span>
+            </span>
+            <span className="font-semibold text-slate-700">NODE LIVE</span>
+            <span className="text-slate-300">|</span>
+            <span className="text-slate-500">32ms</span>
+            <span className="text-slate-300">|</span>
+            <span className="text-emerald-700 font-semibold">99.98% SLA</span>
+          </div>
         </div>
 
         {/* Center: Apple Pill Navigation */}

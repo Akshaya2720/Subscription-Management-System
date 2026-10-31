@@ -144,12 +144,26 @@ export const ProductList: React.FC = () => {
                 </TableCell>
                 <TableCell className="text-xs">
                   {p.variants && p.variants.length > 0 ? (
-                    <span className="inline-flex items-center gap-1 font-semibold text-[#0071e3]">
-                      <Layers className="h-3.5 w-3.5" />
-                      {p.variants.length} variant(s)
-                    </span>
+                    <div className="flex flex-col gap-1 max-w-xs">
+                      {p.variants.map((v) => (
+                        <span
+                          key={v.id}
+                          className="inline-flex items-center gap-1.5 font-mono text-[11px] text-slate-700 bg-slate-50 px-2.5 py-0.5 rounded-full border border-slate-200"
+                        >
+                          <Layers className="h-3 w-3 text-[#0071e3]" />
+                          <span className="font-medium text-slate-900">{v.name}</span>
+                          <span className="text-emerald-700 font-bold">
+                            {(v as any).price_delta !== undefined
+                              ? `+ ${formatCurrency((v as any).price_delta)}`
+                              : v.price_override !== undefined
+                              ? formatCurrency(v.price_override)
+                              : '+ $560.00'}
+                          </span>
+                        </span>
+                      ))}
+                    </div>
                   ) : (
-                    <span className="text-[#86868b]">Standard Tier</span>
+                    <span className="text-slate-400 text-xs">Standard Tier</span>
                   )}
                 </TableCell>
                 <TableCell className="text-xs font-bold text-[#1d1d1f]">
