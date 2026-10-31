@@ -11,7 +11,7 @@ import {
   Filter,
   Plus,
   ShieldCheck,
-  Sparkles,
+  Receipt,
 } from 'lucide-react';
 import {
   ResponsiveContainer,
@@ -53,10 +53,10 @@ import { Link, useNavigate } from 'react-router-dom';
 export const Dashboard: React.FC = () => {
   const navigate = useNavigate();
   const [dateRange, setDateRange] = useState('30d');
-  const [statusFilter, setStatusFilter] = useState('all');
+  const [statusFilter] = useState('all');
 
   // Fetch live metrics
-  const { data: metrics, isLoading: isMetricsLoading } = useQuery({
+  const { data: metrics } = useQuery({
     queryKey: ['dashboardMetrics', dateRange],
     queryFn: () => dashboardService.getMetrics(dateRange),
   });
@@ -79,40 +79,76 @@ export const Dashboard: React.FC = () => {
     queryFn: () => verificationService.getVerifications(),
   });
 
-  const overdueInvoices = invoices.filter((i) => i.status === 'overdue');
   const verificationAlerts = verifications.filter((v) => v.discrepancy_detected);
 
   return (
     <div className="space-y-6 text-left">
-      {/* Header & Quick Action Shortcuts */}
+      {/* Apple Shelf Category Pills */}
+      <div className="flex items-center gap-2 overflow-x-auto pb-1 no-scrollbar select-none">
+        <button
+          onClick={() => navigate('/admin/subscriptions')}
+          className="flex items-center gap-2 rounded-full bg-[#0071e3] px-4 py-1.5 text-xs font-semibold text-white shadow-xs transition-all hover:bg-[#0077ed]"
+        >
+          <Repeat className="h-3.5 w-3.5" />
+          <span>Active Subscriptions ({metrics?.active_subscriptions || 2})</span>
+        </button>
+
+        <button
+          onClick={() => navigate('/admin/verification')}
+          className="flex items-center gap-2 rounded-full bg-white border border-black/[0.08] px-4 py-1.5 text-xs font-medium text-[#1d1d1f] hover:bg-[#f5f5f7] shadow-2xs transition-all"
+        >
+          <ShieldCheck className="h-3.5 w-3.5 text-emerald-600" />
+          <span>Hash-Chain Verified</span>
+        </button>
+
+        <button
+          onClick={() => navigate('/admin/invoices')}
+          className="flex items-center gap-2 rounded-full bg-white border border-black/[0.08] px-4 py-1.5 text-xs font-medium text-[#1d1d1f] hover:bg-[#f5f5f7] shadow-2xs transition-all"
+        >
+          <Receipt className="h-3.5 w-3.5 text-[#0071e3]" />
+          <span>Automated Billing Ledger</span>
+        </button>
+
+        {verificationAlerts.length > 0 && (
+          <button
+            onClick={() => navigate('/admin/verification')}
+            className="flex items-center gap-2 rounded-full bg-rose-50 border border-rose-200 px-4 py-1.5 text-xs font-semibold text-rose-700 shadow-2xs hover:bg-rose-100 transition-all"
+          >
+            <ShieldAlert className="h-3.5 w-3.5 text-rose-600" />
+            <span>1 SLA Telemetry Discrepancy</span>
+          </button>
+        )}
+      </div>
+
+      {/* Hero Header & Quick Action Buttons */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <div className="flex items-center gap-2">
-            <h1 className="text-xl font-bold tracking-tight text-white">
+          <div className="flex items-center gap-2.5">
+            <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-[#1d1d1f] font-sans">
               Platform Overview
             </h1>
-            <span className="rounded-full bg-violet-500/15 border border-violet-500/30 px-2 py-0.5 text-[10px] font-mono font-medium text-violet-400">
-              Live Telemetry
+            <span className="rounded-full bg-black/[0.05] border border-black/[0.06] px-2.5 py-0.5 text-[10px] font-mono font-medium text-[#6e6e73]">
+              Store Edition
             </span>
           </div>
-          <p className="text-xs text-slate-400 mt-1">
-            Real-time contract verification, recurring revenue telemetry & automated settlement
+          <p className="text-xs sm:text-sm text-[#6e6e73] mt-1">
+            Contract-to-bill verification telemetry, recurring revenue velocity, and automated settlements
           </p>
         </div>
 
-        {/* Action buttons & date filter */}
+        {/* Action Controls */}
         <div className="flex flex-wrap items-center gap-2.5">
-          <div className="flex items-center gap-1.5 rounded-lg border border-white/[0.08] bg-[#0e1117] px-3 py-1.5 text-xs">
-            <Filter className="h-3.5 w-3.5 text-slate-400" />
+          <div className="flex items-center gap-1.5 rounded-full border border-black/[0.08] bg-white px-3.5 py-1.5 text-xs shadow-2xs">
+            <Filter className="h-3.5 w-3.5 text-[#86868b]" />
             <select
               value={dateRange}
               onChange={(e) => setDateRange(e.target.value)}
-              className="bg-transparent font-medium text-slate-200 outline-none cursor-pointer"
+              className="bg-transparent font-medium text-[#1d1d1f] outline-none cursor-pointer"
             >
-              <option value="7d" className="bg-[#0e1117]">Last 7 Days</option>
-              <option value="30d" className="bg-[#0e1117]">Last 30 Days</option>
-              <option value="90d" className="bg-[#0e1117]">Last 90 Days</option>
-              <option value="1y" className="bg-[#0e1117]">This Year</option>
+              <option value="7d">Last 7 Days</option>
+              <option value="30d">Last 30 Days</option>
+              <option value="90d">Last 90 Days</option>
+              <option value="1y">This Year</option>
             </select>
           </div>
 
@@ -127,22 +163,22 @@ export const Dashboard: React.FC = () => {
             size="sm"
             variant="secondary"
             onClick={() => navigate('/admin/verification')}
-            leftIcon={<ShieldCheck className="h-3.5 w-3.5 text-emerald-400" />}
+            leftIcon={<ShieldCheck className="h-3.5 w-3.5 text-emerald-600" />}
           >
-            Run SLA Verification
+            SLA Verification
           </Button>
         </div>
       </div>
 
-      {/* KPI Cards Grid */}
+      {/* Stat Cards Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-3.5">
         <StatCard
           title="Active Subs"
           value={metrics?.active_subscriptions || 0}
           change={metrics?.active_subscriptions_change}
           icon={<Repeat className="h-4 w-4" />}
-          iconBg="bg-violet-500/10 border border-violet-500/20"
-          iconColor="text-violet-400"
+          iconBg="bg-blue-50 border border-blue-100"
+          iconColor="text-[#0071e3]"
         />
 
         <StatCard
@@ -150,8 +186,8 @@ export const Dashboard: React.FC = () => {
           value={formatCurrency(metrics?.revenue_received)}
           change={metrics?.revenue_change}
           icon={<DollarSign className="h-4 w-4" />}
-          iconBg="bg-emerald-500/10 border border-emerald-500/20"
-          iconColor="text-emerald-400"
+          iconBg="bg-emerald-50 border border-emerald-100"
+          iconColor="text-[#0a6634]"
         />
 
         <StatCard
@@ -159,8 +195,8 @@ export const Dashboard: React.FC = () => {
           value={formatCurrency(metrics?.outstanding_amount)}
           change={metrics?.outstanding_change}
           icon={<Clock className="h-4 w-4" />}
-          iconBg="bg-amber-500/10 border border-amber-500/20"
-          iconColor="text-amber-400"
+          iconBg="bg-amber-50 border border-amber-100"
+          iconColor="text-[#9a5b00]"
         />
 
         <StatCard
@@ -168,8 +204,8 @@ export const Dashboard: React.FC = () => {
           value={metrics?.overdue_invoices || 0}
           badge={metrics?.overdue_invoices ? 'Action Required' : '0 Alerts'}
           icon={<AlertCircle className="h-4 w-4" />}
-          iconBg="bg-rose-500/10 border border-rose-500/20"
-          iconColor="text-rose-400"
+          iconBg="bg-rose-50 border border-rose-100"
+          iconColor="text-[#c41c26]"
         />
 
         <StatCard
@@ -177,8 +213,8 @@ export const Dashboard: React.FC = () => {
           value={metrics?.total_customers || 0}
           change={metrics?.total_customers_change}
           icon={<Users className="h-4 w-4" />}
-          iconBg="bg-sky-500/10 border border-sky-500/20"
-          iconColor="text-sky-400"
+          iconBg="bg-indigo-50 border border-indigo-100"
+          iconColor="text-[#5856d6]"
         />
 
         <StatCard
@@ -186,33 +222,33 @@ export const Dashboard: React.FC = () => {
           value={metrics?.upcoming_renewals || 0}
           subtitle="Next 30 days"
           icon={<ShieldAlert className="h-4 w-4" />}
-          iconBg="bg-indigo-500/10 border border-indigo-500/20"
-          iconColor="text-indigo-400"
+          iconBg="bg-purple-50 border border-purple-100"
+          iconColor="text-[#af52de]"
         />
       </div>
 
-      {/* Verification Discrepancy Alert Banner */}
+      {/* Discrepancy Alert Banner */}
       {verificationAlerts.length > 0 && (
-        <div className="flex items-center justify-between rounded-xl border border-rose-500/30 bg-rose-500/10 p-4">
-          <div className="flex items-center gap-3">
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-rose-600 text-white shadow-glow-rose shrink-0">
+        <div className="flex items-center justify-between rounded-2xl border border-rose-200 bg-rose-50 p-4.5 shadow-2xs">
+          <div className="flex items-center gap-3.5">
+            <div className="flex h-9 w-9 items-center justify-center rounded-2xl bg-rose-600 text-white shadow-2xs shrink-0">
               <ShieldAlert className="h-4 w-4" />
             </div>
             <div>
-              <h4 className="text-xs font-bold text-white flex items-center gap-2">
+              <h4 className="text-xs font-bold text-[#1d1d1f] flex items-center gap-2">
                 Contract Telemetry Discrepancy Detected
-                <span className="font-mono text-[10px] text-rose-400 bg-rose-500/20 px-1.5 py-0.5 rounded">
+                <span className="font-mono text-[10px] text-rose-700 bg-rose-100 px-2 py-0.5 rounded-full border border-rose-200">
                   {verificationAlerts[0]?.service_name}
                 </span>
               </h4>
-              <p className="text-[11px] text-slate-300 mt-0.5">
+              <p className="text-[11px] text-[#6e6e73] mt-0.5">
                 Automated telemetry detected SLA violation on {verificationAlerts[0]?.customer?.name}. Proposed credit: {formatCurrency(verificationAlerts[0]?.proposed_credit)}.
               </p>
             </div>
           </div>
           <Link
             to="/admin/verification"
-            className="flex items-center gap-1.5 rounded-lg bg-rose-600 px-3 py-1.5 text-xs font-semibold text-white hover:bg-rose-500 transition-colors shadow-sm"
+            className="flex items-center gap-1.5 rounded-full bg-rose-600 px-3.5 py-1.5 text-xs font-semibold text-white hover:bg-rose-700 transition-colors shadow-2xs"
           >
             Review Discrepancy
             <ArrowUpRight className="h-3.5 w-3.5" />
@@ -226,10 +262,10 @@ export const Dashboard: React.FC = () => {
         <Card>
           <CardHeader className="flex flex-row items-center justify-between pb-2">
             <div>
-              <CardTitle className="text-sm">Monthly Recurring Revenue (MRR)</CardTitle>
-              <CardDescription className="text-xs">Contracted vs collected telemetry revenue</CardDescription>
+              <CardTitle>Monthly Recurring Revenue (MRR)</CardTitle>
+              <CardDescription>Contracted vs collected telemetry revenue</CardDescription>
             </div>
-            <span className="text-[11px] font-mono text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-2 py-0.5 rounded">
+            <span className="text-[11px] font-mono text-emerald-800 bg-emerald-50 border border-emerald-200 px-2.5 py-0.5 rounded-full font-semibold">
               +14.2% MoM
             </span>
           </CardHeader>
@@ -238,93 +274,93 @@ export const Dashboard: React.FC = () => {
               <AreaChart data={metrics?.monthly_revenue || []}>
                 <defs>
                   <linearGradient id="colorRev" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#8b5cf6" stopOpacity={0.4} />
-                    <stop offset="95%" stopColor="#8b5cf6" stopOpacity={0.0} />
+                    <stop offset="5%" stopColor="#0071e3" stopOpacity={0.25} />
+                    <stop offset="95%" stopColor="#0071e3" stopOpacity={0.0} />
                   </linearGradient>
                 </defs>
-                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#1f2430" />
-                <XAxis dataKey="month" tickLine={false} axisLine={false} fontSize={11} stroke="#64748b" />
+                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e5e5ea" />
+                <XAxis dataKey="month" tickLine={false} axisLine={false} fontSize={11} stroke="#86868b" />
                 <YAxis
                   tickLine={false}
                   axisLine={false}
                   fontSize={11}
-                  stroke="#64748b"
+                  stroke="#86868b"
                   tickFormatter={(v) => `$${v / 1000}k`}
                 />
                 <Tooltip
                   formatter={(val: number) => [formatCurrency(val), 'Revenue']}
-                  contentStyle={{ backgroundColor: '#0e1117', color: '#fff', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.1)' }}
+                  contentStyle={{ backgroundColor: '#ffffff', color: '#1d1d1f', borderRadius: '12px', border: '1px solid rgba(0,0,0,0.08)', boxShadow: '0 4px 20px rgba(0,0,0,0.08)' }}
                 />
-                <Area type="monotone" dataKey="revenue" stroke="#8b5cf6" strokeWidth={2.5} fillOpacity={1} fill="url(#colorRev)" />
-                <Area type="monotone" dataKey="target" stroke="#64748b" strokeDasharray="3 3" strokeWidth={1.5} fill="none" />
+                <Area type="monotone" dataKey="revenue" stroke="#0071e3" strokeWidth={2.5} fillOpacity={1} fill="url(#colorRev)" />
+                <Area type="monotone" dataKey="target" stroke="#86868b" strokeDasharray="3 3" strokeWidth={1.5} fill="none" />
               </AreaChart>
             </ResponsiveContainer>
           </CardContent>
         </Card>
 
-        {/* Subscription Growth Chart */}
+        {/* Subscription Velocity Chart */}
         <Card>
           <CardHeader className="flex flex-row items-center justify-between pb-2">
             <div>
-              <CardTitle className="text-sm">Subscription Velocity</CardTitle>
-              <CardDescription className="text-xs">New acquired subscriptions vs churned</CardDescription>
+              <CardTitle>Subscription Velocity</CardTitle>
+              <CardDescription>New acquired accounts vs churned</CardDescription>
             </div>
-            <span className="text-[11px] font-mono text-violet-400 bg-violet-500/10 border border-violet-500/20 px-2 py-0.5 rounded">
+            <span className="text-[11px] font-mono text-[#0071e3] bg-blue-50 border border-blue-200 px-2.5 py-0.5 rounded-full font-semibold">
               Net Positive
             </span>
           </CardHeader>
           <CardContent className="h-64">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={metrics?.subscription_growth || []}>
-                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#1f2430" />
-                <XAxis dataKey="month" tickLine={false} axisLine={false} fontSize={11} stroke="#64748b" />
-                <YAxis tickLine={false} axisLine={false} fontSize={11} stroke="#64748b" />
+                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e5e5ea" />
+                <XAxis dataKey="month" tickLine={false} axisLine={false} fontSize={11} stroke="#86868b" />
+                <YAxis tickLine={false} axisLine={false} fontSize={11} stroke="#86868b" />
                 <Tooltip
-                  contentStyle={{ backgroundColor: '#0e1117', color: '#fff', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.1)' }}
+                  contentStyle={{ backgroundColor: '#ffffff', color: '#1d1d1f', borderRadius: '12px', border: '1px solid rgba(0,0,0,0.08)', boxShadow: '0 4px 20px rgba(0,0,0,0.08)' }}
                 />
-                <Bar dataKey="new" name="New Subscriptions" fill="#8b5cf6" radius={[4, 4, 0, 0]} />
-                <Bar dataKey="churned" name="Churned" fill="#f43f5e" radius={[4, 4, 0, 0]} />
+                <Bar dataKey="new" name="New Subscriptions" fill="#0071e3" radius={[6, 6, 0, 0]} />
+                <Bar dataKey="churned" name="Churned" fill="#e8e8ed" radius={[6, 6, 0, 0]} />
               </BarChart>
             </ResponsiveContainer>
           </CardContent>
         </Card>
 
-        {/* Payment Trends Line Chart */}
+        {/* Settlement Flow Line Chart */}
         <Card>
           <CardHeader className="flex flex-row items-center justify-between pb-2">
             <div>
-              <CardTitle className="text-sm">Settlement Flow</CardTitle>
-              <CardDescription className="text-xs">Processed volume across automated gateways</CardDescription>
+              <CardTitle>Settlement Flow</CardTitle>
+              <CardDescription>Processed volume across automated gateways</CardDescription>
             </div>
           </CardHeader>
           <CardContent className="h-64">
             <ResponsiveContainer width="100%" height="100%">
               <LineChart data={metrics?.payment_trends || []}>
-                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#1f2430" />
-                <XAxis dataKey="date" tickLine={false} axisLine={false} fontSize={11} stroke="#64748b" />
+                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e5e5ea" />
+                <XAxis dataKey="date" tickLine={false} axisLine={false} fontSize={11} stroke="#86868b" />
                 <YAxis
                   tickLine={false}
                   axisLine={false}
                   fontSize={11}
-                  stroke="#64748b"
+                  stroke="#86868b"
                   tickFormatter={(v) => `$${v / 1000}k`}
                 />
                 <Tooltip
                   formatter={(val: number) => [formatCurrency(val), 'Volume']}
-                  contentStyle={{ backgroundColor: '#0e1117', color: '#fff', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.1)' }}
+                  contentStyle={{ backgroundColor: '#ffffff', color: '#1d1d1f', borderRadius: '12px', border: '1px solid rgba(0,0,0,0.08)', boxShadow: '0 4px 20px rgba(0,0,0,0.08)' }}
                 />
-                <Line type="monotone" dataKey="volume" stroke="#06b6d4" strokeWidth={2.5} dot={{ r: 3, fill: '#06b6d4' }} />
+                <Line type="monotone" dataKey="volume" stroke="#0071e3" strokeWidth={2.5} dot={{ r: 3, fill: '#0071e3' }} />
               </LineChart>
             </ResponsiveContainer>
           </CardContent>
         </Card>
 
-        {/* Invoice Status Distribution (Donut Chart) */}
+        {/* Invoice Status Distribution */}
         <Card>
           <CardHeader className="flex flex-row items-center justify-between pb-2">
             <div>
-              <CardTitle className="text-sm">Invoice Health Distribution</CardTitle>
-              <CardDescription className="text-xs">Status breakdown of billed amounts</CardDescription>
+              <CardTitle>Invoice Health Distribution</CardTitle>
+              <CardDescription>Status breakdown of billed amounts</CardDescription>
             </div>
           </CardHeader>
           <CardContent className="h-64 flex items-center justify-center">
@@ -343,7 +379,7 @@ export const Dashboard: React.FC = () => {
                 </Pie>
                 <Tooltip
                   formatter={(val: number) => [`${val}%`, 'Share']}
-                  contentStyle={{ backgroundColor: '#0e1117', color: '#fff', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.1)' }}
+                  contentStyle={{ backgroundColor: '#ffffff', color: '#1d1d1f', borderRadius: '12px', border: '1px solid rgba(0,0,0,0.08)', boxShadow: '0 4px 20px rgba(0,0,0,0.08)' }}
                 />
               </PieChart>
             </ResponsiveContainer>
@@ -357,12 +393,12 @@ export const Dashboard: React.FC = () => {
         <Card>
           <CardHeader className="flex flex-row items-center justify-between pb-3">
             <div>
-              <CardTitle className="text-sm">Recent Subscriptions</CardTitle>
-              <CardDescription className="text-xs">Contracted accounts & operational state</CardDescription>
+              <CardTitle>Recent Subscriptions</CardTitle>
+              <CardDescription>Contracted accounts & operational state</CardDescription>
             </div>
             <Link
               to="/admin/subscriptions"
-              className="text-xs font-medium text-violet-400 hover:text-violet-300"
+              className="text-xs font-semibold text-[#0071e3] hover:underline"
             >
               View All →
             </Link>
@@ -387,13 +423,13 @@ export const Dashboard: React.FC = () => {
                     const badge = getStatusBadgeVariant(sub.status);
                     return (
                       <TableRow key={sub.id}>
-                        <TableCell className="font-mono text-xs font-semibold text-white">
-                          <Link to="/admin/subscriptions" className="hover:text-violet-400">
+                        <TableCell className="font-mono text-xs font-semibold text-[#0071e3]">
+                          <Link to="/admin/subscriptions" className="hover:underline">
                             {sub.subscription_number}
                           </Link>
                         </TableCell>
-                        <TableCell className="text-xs text-slate-300">{sub.customer?.name || 'Customer'}</TableCell>
-                        <TableCell className="text-xs font-mono font-medium text-white">
+                        <TableCell className="text-xs text-[#1d1d1f] font-medium">{sub.customer?.name || 'Customer'}</TableCell>
+                        <TableCell className="text-xs font-mono font-medium text-[#1d1d1f]">
                           {formatCurrency(sub.contracted_price, sub.currency)}
                         </TableCell>
                         <TableCell>
@@ -414,12 +450,12 @@ export const Dashboard: React.FC = () => {
         <Card>
           <CardHeader className="flex flex-row items-center justify-between pb-3">
             <div>
-              <CardTitle className="text-sm">Invoices Requiring Attention</CardTitle>
-              <CardDescription className="text-xs">Overdue & pending settlement invoices</CardDescription>
+              <CardTitle>Invoices Requiring Attention</CardTitle>
+              <CardDescription>Overdue & pending settlement invoices</CardDescription>
             </div>
             <Link
               to="/admin/invoices"
-              className="text-xs font-medium text-violet-400 hover:text-violet-300"
+              className="text-xs font-semibold text-[#0071e3] hover:underline"
             >
               View All →
             </Link>
@@ -445,16 +481,16 @@ export const Dashboard: React.FC = () => {
                     const isOverdue = inv.status === 'overdue';
                     return (
                       <TableRow key={inv.id}>
-                        <TableCell className="font-mono text-xs font-semibold text-white">
-                          <Link to="/admin/invoices" className="hover:text-violet-400">
+                        <TableCell className="font-mono text-xs font-semibold text-[#0071e3]">
+                          <Link to="/admin/invoices" className="hover:underline">
                             {inv.invoice_number}
                           </Link>
                         </TableCell>
-                        <TableCell className="text-xs text-slate-300">{inv.customer?.name || 'Customer'}</TableCell>
-                        <TableCell className="text-xs text-slate-400 font-mono">
+                        <TableCell className="text-xs text-[#1d1d1f] font-medium">{inv.customer?.name || 'Customer'}</TableCell>
+                        <TableCell className="text-xs text-[#6e6e73] font-mono">
                           {formatDate(inv.due_date)}
                         </TableCell>
-                        <TableCell className="text-xs font-mono font-bold text-white">
+                        <TableCell className="text-xs font-mono font-bold text-[#1d1d1f]">
                           {formatCurrency(inv.balance_due, inv.currency)}
                         </TableCell>
                         <TableCell>

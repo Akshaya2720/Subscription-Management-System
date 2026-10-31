@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { Outlet, Navigate } from 'react-router-dom';
-import { Sidebar } from './Sidebar';
 import { TopNav } from './TopNav';
 import { authService } from '../../services/auth';
 import { UserRole } from '../../types';
@@ -18,19 +17,16 @@ export const AppLayout: React.FC = () => {
   };
 
   return (
-    <div className="flex h-screen w-screen overflow-hidden bg-[#08090a] font-sans text-slate-100 selection:bg-violet-600 selection:text-white">
-      {/* Sidebar Navigation */}
-      <Sidebar role={currentUser.role} />
+    <div className="min-h-screen w-screen overflow-x-hidden font-sans text-[#1d1d1f] bg-[#f5f5f7] selection:bg-[#0071e3] selection:text-white flex flex-col">
+      {/* Apple Store Frosted Header Bar */}
+      <TopNav user={currentUser} onRoleChange={handleRoleChange} />
 
-      {/* Main Content Area */}
-      <div className="flex flex-1 flex-col overflow-hidden bg-[#08090a]">
-        <TopNav user={currentUser} onRoleChange={handleRoleChange} />
-        <main className="flex-1 overflow-y-auto p-5 md:p-8 bg-[#08090a]">
-          <div className="mx-auto max-w-7xl">
-            <Outlet />
-          </div>
-        </main>
-      </div>
+      {/* Main Content Viewport */}
+      <main className="flex-1 px-4 sm:px-6 pb-12 pt-4">
+        <div className="mx-auto max-w-7xl">
+          <Outlet />
+        </div>
+      </main>
     </div>
   );
 };

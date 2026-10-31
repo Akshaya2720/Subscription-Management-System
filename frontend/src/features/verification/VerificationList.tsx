@@ -5,21 +5,18 @@ import {
   AlertTriangle,
   CheckCircle2,
   XCircle,
-  FileText,
   Clock,
-  ArrowRight,
   ExternalLink,
   Shield,
   Eye,
 } from 'lucide-react';
 import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell, TableLoading, TableEmpty } from '../../components/common/Table';
-import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '../../components/common/Card';
 import { Button } from '../../components/common/Button';
 import { Badge } from '../../components/common/Badge';
 import { Modal } from '../../components/common/Modal';
 import { verificationService } from '../../services/verificationService';
 import { VerificationContract } from '../../types';
-import { formatCurrency, formatDate, getStatusBadgeVariant } from '../../utils';
+import { formatCurrency, getStatusBadgeVariant } from '../../utils';
 
 export const VerificationList: React.FC = () => {
   const queryClient = useQueryClient();
@@ -52,14 +49,14 @@ export const VerificationList: React.FC = () => {
   const totalCredits = verifications.reduce((sum, v) => sum + (v.proposed_credit || 0), 0);
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 text-left">
       {/* Page Title */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-white">
+          <h1 className="text-2xl font-bold tracking-tight text-[#1d1d1f]">
             Contract-to-Bill Value Verification
           </h1>
-          <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
+          <p className="text-xs sm:text-sm text-[#6e6e73] mt-1">
             Compare contracted SLA commitments against actual operational telemetry and adjudicate proposed service credits
           </p>
         </div>
@@ -67,33 +64,33 @@ export const VerificationList: React.FC = () => {
 
       {/* KPI Overview */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        <div className="rounded-xl border border-slate-200 bg-white p-5 shadow-2xs dark:border-slate-800 dark:bg-slate-900">
-          <div className="flex items-center justify-between text-xs text-slate-500">
+        <div className="rounded-2xl border border-black/[0.08] bg-white p-5 shadow-2xs">
+          <div className="flex items-center justify-between text-xs text-[#6e6e73]">
             <span>Verified Compliant Contracts</span>
-            <ShieldCheck className="h-4 w-4 text-emerald-500" />
+            <ShieldCheck className="h-4 w-4 text-emerald-600" />
           </div>
-          <p className="mt-2 text-2xl font-bold text-emerald-600">{verifiedCount}</p>
-          <p className="text-[11px] text-slate-400 mt-1">100% SLA delivery match</p>
+          <p className="mt-2 text-2xl font-bold text-emerald-700">{verifiedCount}</p>
+          <p className="text-[11px] text-[#6e6e73] mt-1">100% SLA delivery match</p>
         </div>
 
-        <div className="rounded-xl border border-slate-200 bg-white p-5 shadow-2xs dark:border-slate-800 dark:bg-slate-900">
-          <div className="flex items-center justify-between text-xs text-slate-500">
+        <div className="rounded-2xl border border-black/[0.08] bg-white p-5 shadow-2xs">
+          <div className="flex items-center justify-between text-xs text-[#6e6e73]">
             <span>Discrepancies Detected</span>
-            <AlertTriangle className="h-4 w-4 text-rose-500" />
+            <AlertTriangle className="h-4 w-4 text-rose-600" />
           </div>
-          <p className="mt-2 text-2xl font-bold text-rose-600">{discrepancyCount}</p>
-          <p className="text-[11px] text-rose-500 mt-1">Pending review & billing adjustment</p>
+          <p className="mt-2 text-2xl font-bold text-rose-700">{discrepancyCount}</p>
+          <p className="text-[11px] text-rose-600 mt-1 font-medium">Pending review & billing adjustment</p>
         </div>
 
-        <div className="rounded-xl border border-slate-200 bg-white p-5 shadow-2xs dark:border-slate-800 dark:bg-slate-900">
-          <div className="flex items-center justify-between text-xs text-slate-500">
+        <div className="rounded-2xl border border-black/[0.08] bg-white p-5 shadow-2xs">
+          <div className="flex items-center justify-between text-xs text-[#6e6e73]">
             <span>Proposed SLA Credits</span>
-            <Clock className="h-4 w-4 text-brand-600" />
+            <Clock className="h-4 w-4 text-[#0071e3]" />
           </div>
-          <p className="mt-2 text-2xl font-bold text-slate-900 dark:text-white">
+          <p className="mt-2 text-2xl font-bold text-[#1d1d1f]">
             {formatCurrency(totalCredits)}
           </p>
-          <p className="text-[11px] text-slate-400 mt-1">Protects customer billing trust</p>
+          <p className="text-[11px] text-[#6e6e73] mt-1">Protects customer billing trust</p>
         </div>
       </div>
 
@@ -125,35 +122,35 @@ export const VerificationList: React.FC = () => {
               const badge = getStatusBadgeVariant(v.status);
               return (
                 <TableRow key={v.id}>
-                  <TableCell className="font-mono text-xs font-semibold text-slate-900 dark:text-white">
+                  <TableCell className="font-mono text-xs font-semibold text-[#0071e3]">
                     <div className="flex items-center gap-2">
-                      <Shield className="h-4 w-4 text-brand-600" />
+                      <Shield className="h-4 w-4 text-[#0071e3]" />
                       {v.contract_number}
                     </div>
                   </TableCell>
-                  <TableCell className="text-xs font-medium">
+                  <TableCell className="text-xs font-medium text-[#1d1d1f]">
                     {v.customer?.name || 'Client Entity'}
                   </TableCell>
-                  <TableCell className="text-xs text-slate-700 dark:text-slate-300">
+                  <TableCell className="text-xs text-[#1d1d1f]">
                     {v.service_name}
                   </TableCell>
-                  <TableCell className="text-xs max-w-xs font-mono text-slate-600 dark:text-slate-400">
+                  <TableCell className="text-xs max-w-xs font-mono text-[#6e6e73]">
                     {v.contract_sla}
                   </TableCell>
                   <TableCell className="text-xs max-w-xs">
                     <span
                       className={
                         v.discrepancy_detected
-                          ? 'text-rose-600 font-semibold'
-                          : 'text-emerald-600 font-semibold'
+                          ? 'text-rose-700 font-semibold'
+                          : 'text-emerald-700 font-semibold'
                       }
                     >
                       {v.actual_recorded_delivery}
                     </span>
                   </TableCell>
-                  <TableCell className="text-xs font-bold text-slate-900 dark:text-white">
+                  <TableCell className="text-xs font-bold text-[#1d1d1f]">
                     {v.proposed_credit > 0 ? (
-                      <span className="text-rose-600">
+                      <span className="text-rose-700">
                         {formatCurrency(v.proposed_credit, v.currency)}
                       </span>
                     ) : (
@@ -204,9 +201,9 @@ export const VerificationList: React.FC = () => {
         >
           <div className="space-y-6">
             {/* Status Banner */}
-            <div className="flex items-center justify-between rounded-xl bg-slate-50 p-4 dark:bg-slate-800/60">
+            <div className="flex items-center justify-between rounded-2xl bg-[#f5f5f7] border border-black/[0.06] p-4">
               <div>
-                <span className="text-xs text-slate-500">Verification Status</span>
+                <span className="text-xs text-[#6e6e73]">Verification Status</span>
                 <div className="mt-1">
                   <Badge
                     variant={
@@ -223,8 +220,8 @@ export const VerificationList: React.FC = () => {
                 </div>
               </div>
               <div className="text-right">
-                <span className="text-xs text-slate-500">Proposed Service Credit</span>
-                <p className="text-xl font-bold text-rose-600">
+                <span className="text-xs text-[#6e6e73]">Proposed Service Credit</span>
+                <p className="text-xl font-bold text-rose-700">
                   {formatCurrency(selectedVerification.proposed_credit, selectedVerification.currency)}
                 </p>
               </div>
@@ -232,27 +229,27 @@ export const VerificationList: React.FC = () => {
 
             {/* Expected vs Actual Side-by-Side Comparison */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div className="rounded-xl border border-slate-200 bg-emerald-50/30 p-4 dark:border-slate-800 dark:bg-emerald-950/20">
-                <span className="text-xs font-bold uppercase tracking-wider text-emerald-800 dark:text-emerald-300">
+              <div className="rounded-2xl border border-emerald-200 bg-emerald-50/50 p-4">
+                <span className="text-xs font-bold uppercase tracking-wider text-emerald-800">
                   Contractual Expectation
                 </span>
-                <p className="mt-2 text-xs font-semibold text-slate-900 dark:text-white">
+                <p className="mt-2 text-xs font-semibold text-[#1d1d1f]">
                   {selectedVerification.contract_sla}
                 </p>
-                <p className="mt-1 text-[11px] text-slate-500">
+                <p className="mt-1 text-[11px] text-[#6e6e73]">
                   Target: {selectedVerification.expected_service_delivery}
                 </p>
               </div>
 
-              <div className="rounded-xl border border-slate-200 bg-rose-50/30 p-4 dark:border-slate-800 dark:bg-rose-950/20">
-                <span className="text-xs font-bold uppercase tracking-wider text-rose-800 dark:text-rose-300">
+              <div className="rounded-2xl border border-rose-200 bg-rose-50/50 p-4">
+                <span className="text-xs font-bold uppercase tracking-wider text-rose-800">
                   Actual Recorded Telemetry
                 </span>
-                <p className="mt-2 text-xs font-semibold text-rose-900 dark:text-rose-200">
+                <p className="mt-2 text-xs font-semibold text-rose-900">
                   {selectedVerification.actual_recorded_delivery}
                 </p>
                 {selectedVerification.discrepancy_details && (
-                  <p className="mt-1 text-[11px] text-rose-600 dark:text-rose-400">
+                  <p className="mt-1 text-[11px] text-rose-700">
                     Delta: {selectedVerification.discrepancy_details}
                   </p>
                 )}
@@ -261,14 +258,14 @@ export const VerificationList: React.FC = () => {
 
             {/* Evidence References */}
             <div className="space-y-2">
-              <span className="text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">
+              <span className="text-xs font-bold uppercase tracking-wider text-[#1d1d1f]">
                 Evidence References & Audit Trail Hashes
               </span>
-              <div className="rounded-xl border border-slate-200 p-3 dark:border-slate-800 bg-slate-50 dark:bg-slate-900 space-y-1.5">
+              <div className="rounded-2xl border border-black/[0.08] p-3.5 bg-[#fbfbfd] space-y-2">
                 {selectedVerification.evidence_references.map((ref, idx) => (
                   <div key={idx} className="flex items-center justify-between text-xs">
-                    <span className="font-mono text-slate-600 dark:text-slate-300">{ref}</span>
-                    <span className="inline-flex items-center gap-1 text-[11px] text-brand-600 font-medium cursor-pointer hover:underline">
+                    <span className="font-mono text-[#1d1d1f]">{ref}</span>
+                    <span className="inline-flex items-center gap-1 text-[11px] text-[#0071e3] font-medium cursor-pointer hover:underline">
                       Inspect Telemetry <ExternalLink className="h-3 w-3" />
                     </span>
                   </div>
@@ -278,7 +275,7 @@ export const VerificationList: React.FC = () => {
 
             {/* Adjudication Action Buttons */}
             {selectedVerification.discrepancy_detected && selectedVerification.status !== 'approved' && selectedVerification.status !== 'rejected' && (
-              <div className="flex items-center justify-end gap-3 pt-4 border-t border-slate-100 dark:border-slate-800">
+              <div className="flex items-center justify-end gap-3 pt-4 border-t border-black/[0.06]">
                 <Button
                   variant="outline"
                   onClick={() => rejectMutation.mutate(selectedVerification.id)}
@@ -290,7 +287,7 @@ export const VerificationList: React.FC = () => {
                 <Button
                   onClick={() => approveMutation.mutate(selectedVerification.id)}
                   isLoading={approveMutation.isPending}
-                  leftIcon={<CheckCircle2 className="h-4 w-4 text-emerald-400" />}
+                  leftIcon={<CheckCircle2 className="h-4 w-4 text-white" />}
                 >
                   Approve SLA Credit ({formatCurrency(selectedVerification.proposed_credit)})
                 </Button>

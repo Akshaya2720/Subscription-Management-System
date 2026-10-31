@@ -7,9 +7,7 @@ import {
   Search,
   Plus,
   Mail,
-  Building,
   Edit2,
-  Trash2,
   Eye,
   Filter,
 } from 'lucide-react';
@@ -19,7 +17,6 @@ import { Input } from '../../components/common/Input';
 import { Select } from '../../components/common/Select';
 import { Badge } from '../../components/common/Badge';
 import { Modal } from '../../components/common/Modal';
-import { Card, CardHeader, CardTitle, CardContent } from '../../components/common/Card';
 import { SubNavTabs } from '../../components/common/SubNavTabs';
 import { customerService } from '../../services/customerService';
 import { Customer } from '../../types';
@@ -98,7 +95,7 @@ export const CustomerList: React.FC = () => {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 text-left">
       {/* Sub Navigation Tabs */}
       <SubNavTabs
         items={[
@@ -112,10 +109,10 @@ export const CustomerList: React.FC = () => {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-xl font-bold tracking-tight text-white">
+          <h1 className="text-2xl font-bold tracking-tight text-[#1d1d1f]">
             Customer Directory
           </h1>
-          <p className="text-xs text-slate-400 mt-1">
+          <p className="text-xs sm:text-sm text-[#6e6e73] mt-1">
             Manage client accounts, contracts, tax IDs, and billing communication records
           </p>
         </div>
@@ -127,22 +124,22 @@ export const CustomerList: React.FC = () => {
       {/* Search and Filters */}
       <div className="flex flex-col sm:flex-row items-center gap-3">
         <div className="relative flex-1 w-full">
-          <Search className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+          <Search className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-[#86868b]" />
           <input
             type="text"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Search by customer name, company, or email..."
-            className="w-full rounded-lg border border-slate-200 bg-white pl-9 pr-4 py-2 text-xs text-slate-900 placeholder-slate-400 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/20 dark:border-slate-800 dark:bg-slate-900 dark:text-white"
+            className="w-full rounded-full border border-[#d2d2d7] bg-white pl-10 pr-4 py-2 text-xs text-[#1d1d1f] placeholder-[#86868b] focus:border-[#0071e3] focus:outline-none focus:ring-2 focus:ring-[#0071e3]/20 shadow-2xs"
           />
         </div>
 
         <div className="flex items-center gap-2 w-full sm:w-auto">
-          <Filter className="h-4 w-4 text-slate-400 shrink-0" />
+          <Filter className="h-4 w-4 text-[#86868b] shrink-0" />
           <select
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
-            className="rounded-lg border border-slate-200 bg-white px-3 py-2 text-xs font-medium text-slate-700 outline-none focus:border-brand-500 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-200 w-full sm:w-auto"
+            className="rounded-full border border-[#d2d2d7] bg-white px-4 py-2 text-xs font-medium text-[#1d1d1f] outline-none focus:border-[#0071e3] shadow-2xs w-full sm:w-auto cursor-pointer"
           >
             <option value="all">All Statuses</option>
             <option value="active">Active</option>
@@ -181,28 +178,28 @@ export const CustomerList: React.FC = () => {
               <TableRow key={c.id}>
                 <TableCell>
                   <div className="flex items-center gap-3">
-                    <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-slate-100 font-bold text-xs text-slate-700 dark:bg-slate-800 dark:text-slate-300">
+                    <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-slate-100 font-bold text-xs text-[#1d1d1f] shadow-2xs">
                       {c.name.charAt(0)}
                     </div>
                     <div>
-                      <p className="font-semibold text-xs text-slate-900 dark:text-white">{c.name}</p>
-                      <p className="text-[11px] text-slate-500">{c.company_name || 'Individual'}</p>
+                      <p className="font-semibold text-xs text-[#1d1d1f]">{c.name}</p>
+                      <p className="text-[11px] text-[#6e6e73]">{c.company_name || 'Individual'}</p>
                     </div>
                   </div>
                 </TableCell>
-                <TableCell className="text-xs text-slate-600 dark:text-slate-300">
+                <TableCell className="text-xs text-[#1d1d1f]">
                   <div className="flex items-center gap-1.5">
-                    <Mail className="h-3.5 w-3.5 text-slate-400" />
+                    <Mail className="h-3.5 w-3.5 text-[#86868b]" />
                     {c.email}
                   </div>
                 </TableCell>
-                <TableCell className="text-xs font-mono text-slate-500">
+                <TableCell className="text-xs font-mono text-[#6e6e73]">
                   {c.tax_number || '—'}
                 </TableCell>
-                <TableCell className="text-xs text-slate-600 dark:text-slate-400">
+                <TableCell className="text-xs text-[#6e6e73]">
                   {[c.city, c.country].filter(Boolean).join(', ') || 'Global'}
                 </TableCell>
-                <TableCell className="text-xs font-semibold text-slate-900 dark:text-white">
+                <TableCell className="text-xs font-semibold text-[#1d1d1f]">
                   {formatCurrency(c.total_spend, c.currency)}
                 </TableCell>
                 <TableCell>
@@ -214,14 +211,14 @@ export const CustomerList: React.FC = () => {
                   <div className="flex items-center justify-end gap-1">
                     <button
                       onClick={() => setViewingCustomer(c)}
-                      className="rounded p-1.5 text-slate-400 hover:bg-slate-100 hover:text-slate-600 dark:hover:bg-slate-800"
+                      className="rounded-full p-2 text-[#6e6e73] hover:bg-black/[0.05] hover:text-[#1d1d1f] transition-colors"
                       title="View Details & History"
                     >
                       <Eye className="h-3.5 w-3.5" />
                     </button>
                     <button
                       onClick={() => handleOpenEdit(c)}
-                      className="rounded p-1.5 text-slate-400 hover:bg-slate-100 hover:text-slate-600 dark:hover:bg-slate-800"
+                      className="rounded-full p-2 text-[#6e6e73] hover:bg-black/[0.05] hover:text-[#1d1d1f] transition-colors"
                       title="Edit Customer"
                     >
                       <Edit2 className="h-3.5 w-3.5" />
@@ -300,7 +297,7 @@ export const CustomerList: React.FC = () => {
             <Input label="City" placeholder="San Francisco" {...register('city')} />
           </div>
 
-          <div className="flex justify-end gap-3 pt-4 border-t border-slate-100 dark:border-slate-800">
+          <div className="flex justify-end gap-3 pt-4 border-t border-black/[0.06]">
             <Button type="button" variant="outline" onClick={() => setIsCreateOpen(false)}>
               Cancel
             </Button>
@@ -345,7 +342,7 @@ export const CustomerList: React.FC = () => {
               ]}
               id="edit-status"
             />
-            <div className="flex justify-end gap-3 pt-4 border-t border-slate-100 dark:border-slate-800">
+            <div className="flex justify-end gap-3 pt-4 border-t border-black/[0.06]">
               <Button variant="outline" onClick={() => setEditingCustomer(null)}>
                 Cancel
               </Button>
@@ -380,20 +377,20 @@ export const CustomerList: React.FC = () => {
         >
           <div className="space-y-6">
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-              <div className="rounded-xl bg-slate-50 p-4 dark:bg-slate-800/60">
-                <span className="text-[11px] font-semibold text-slate-500 uppercase">Total Spend</span>
-                <p className="text-xl font-bold text-slate-900 dark:text-white mt-1">
+              <div className="rounded-2xl bg-[#f5f5f7] border border-black/[0.06] p-4">
+                <span className="text-[11px] font-semibold text-[#6e6e73] uppercase">Total Spend</span>
+                <p className="text-xl font-bold text-[#1d1d1f] mt-1">
                   {formatCurrency(viewingCustomer.total_spend, viewingCustomer.currency)}
                 </p>
               </div>
-              <div className="rounded-xl bg-slate-50 p-4 dark:bg-slate-800/60">
-                <span className="text-[11px] font-semibold text-slate-500 uppercase">Active Subscriptions</span>
-                <p className="text-xl font-bold text-slate-900 dark:text-white mt-1">
+              <div className="rounded-2xl bg-[#f5f5f7] border border-black/[0.06] p-4">
+                <span className="text-[11px] font-semibold text-[#6e6e73] uppercase">Active Subscriptions</span>
+                <p className="text-xl font-bold text-[#1d1d1f] mt-1">
                   {viewingCustomer.active_subscriptions_count || 1}
                 </p>
               </div>
-              <div className="rounded-xl bg-slate-50 p-4 dark:bg-slate-800/60">
-                <span className="text-[11px] font-semibold text-slate-500 uppercase">Account Status</span>
+              <div className="rounded-2xl bg-[#f5f5f7] border border-black/[0.06] p-4">
+                <span className="text-[11px] font-semibold text-[#6e6e73] uppercase">Account Status</span>
                 <div className="mt-1">
                   <Badge variant={viewingCustomer.status === 'active' ? 'success' : 'default'}>
                     {viewingCustomer.status.toUpperCase()}
@@ -403,26 +400,26 @@ export const CustomerList: React.FC = () => {
             </div>
 
             {/* Contact Information */}
-            <div className="rounded-xl border border-slate-200 p-4 dark:border-slate-800 space-y-2">
-              <h4 className="text-xs font-bold text-slate-900 dark:text-white uppercase tracking-wider">
+            <div className="rounded-2xl border border-black/[0.08] p-4 bg-[#fbfbfd] space-y-2">
+              <h4 className="text-xs font-bold text-[#1d1d1f] uppercase tracking-wider">
                 Billing & Entity Details
               </h4>
               <div className="grid grid-cols-2 gap-2 text-xs">
                 <div>
-                  <span className="text-slate-500">Contact: </span>
-                  <span className="font-semibold text-slate-900 dark:text-white">{viewingCustomer.name}</span>
+                  <span className="text-[#6e6e73]">Contact: </span>
+                  <span className="font-semibold text-[#1d1d1f]">{viewingCustomer.name}</span>
                 </div>
                 <div>
-                  <span className="text-slate-500">Email: </span>
-                  <span className="font-semibold text-slate-900 dark:text-white">{viewingCustomer.email}</span>
+                  <span className="text-[#6e6e73]">Email: </span>
+                  <span className="font-semibold text-[#1d1d1f]">{viewingCustomer.email}</span>
                 </div>
                 <div>
-                  <span className="text-slate-500">Tax / VAT ID: </span>
-                  <span className="font-mono text-slate-900 dark:text-white">{viewingCustomer.tax_number || 'N/A'}</span>
+                  <span className="text-[#6e6e73]">Tax / VAT ID: </span>
+                  <span className="font-mono text-[#1d1d1f]">{viewingCustomer.tax_number || 'N/A'}</span>
                 </div>
                 <div>
-                  <span className="text-slate-500">Billing Address: </span>
-                  <span className="text-slate-900 dark:text-white">
+                  <span className="text-[#6e6e73]">Billing Address: </span>
+                  <span className="text-[#1d1d1f]">
                     {[viewingCustomer.address_line1, viewingCustomer.city, viewingCustomer.country].filter(Boolean).join(', ') || 'N/A'}
                   </span>
                 </div>

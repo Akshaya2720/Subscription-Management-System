@@ -6,27 +6,29 @@ export interface SubNavTabItem {
   label: string;
   path: string;
   badge?: string;
+  icon?: React.ReactNode;
 }
 
 export const SubNavTabs: React.FC<{ items: SubNavTabItem[] }> = ({ items }) => {
   return (
-    <div className="flex items-center gap-1.5 border-b border-white/[0.08] pb-2.5 text-xs font-medium overflow-x-auto">
+    <div className="flex items-center gap-1.5 p-1 rounded-full bg-[#e8e8ed]/80 border border-black/[0.05] overflow-x-auto select-none no-scrollbar w-fit max-w-full mb-2">
       {items.map((tab) => (
         <NavLink
           key={tab.path}
           to={tab.path}
           className={({ isActive }) =>
             cn(
-              'rounded-lg px-3 py-1.5 transition-all select-none flex items-center gap-1.5 shrink-0',
+              'rounded-full px-3.5 py-1.5 text-xs font-medium transition-all duration-150 flex items-center gap-2 shrink-0 select-none',
               isActive
-                ? 'bg-violet-600/20 text-violet-300 border border-violet-500/30 font-semibold shadow-[0_0_10px_rgba(139,92,246,0.2)]'
-                : 'text-slate-400 hover:text-white hover:bg-white/[0.04] border border-transparent'
+                ? 'bg-white text-[#1d1d1f] font-semibold shadow-xs'
+                : 'text-[#6e6e73] hover:text-[#1d1d1f] hover:bg-black/[0.04]'
             )
           }
         >
+          {tab.icon}
           <span>{tab.label}</span>
           {tab.badge && (
-            <span className="rounded-full bg-white/[0.08] px-1.5 py-0.2 text-[9px] font-mono text-slate-300">
+            <span className="rounded-full bg-black/[0.06] px-1.5 py-0.2 text-[10px] font-mono text-[#1d1d1f]">
               {tab.badge}
             </span>
           )}

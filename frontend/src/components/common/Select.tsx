@@ -22,7 +22,7 @@ export const Select = React.forwardRef<HTMLSelectElement, SelectProps>(
         {label && (
           <label
             htmlFor={selectId}
-            className="block text-[11px] font-semibold uppercase tracking-wider text-slate-300"
+            className="block text-[11px] font-semibold uppercase tracking-wider text-[#6e6e73]"
           >
             {label}
           </label>
@@ -31,23 +31,23 @@ export const Select = React.forwardRef<HTMLSelectElement, SelectProps>(
           id={selectId}
           ref={ref}
           className={cn(
-            'block w-full rounded-lg border bg-[#090b10] px-3.5 py-2 text-xs text-white transition-colors focus:border-violet-500 focus:outline-none focus:ring-1 focus:ring-violet-500/30 disabled:cursor-not-allowed disabled:bg-slate-900/50 disabled:text-slate-500 border-white/[0.1]',
+            'block w-full rounded-xl border border-[#d2d2d7] bg-white px-3 py-2 text-xs text-[#1d1d1f] transition-all focus:border-[#0071e3] focus:outline-none focus:ring-2 focus:ring-[#0071e3]/20 disabled:cursor-not-allowed disabled:bg-slate-100 disabled:text-slate-400',
             error
-              ? 'border-rose-500/60 text-rose-300 focus:border-rose-500 focus:ring-rose-500/30'
-              : 'hover:border-white/[0.18]',
+              ? 'border-rose-400 text-rose-800 focus:border-rose-500 focus:ring-rose-200'
+              : 'hover:border-[#a1a1a6]',
             className
           )}
           {...props}
         >
           {options.map((opt) => (
-            <option key={opt.value} value={opt.value} className="bg-[#0e1117] text-white">
+            <option key={opt.value} value={opt.value} className="bg-white text-[#1d1d1f]">
               {opt.label}
             </option>
           ))}
         </select>
-        {error && <p className="text-[11px] font-medium text-rose-400">{error}</p>}
+        {error && <p className="text-[11px] font-medium text-rose-600">{error}</p>}
         {helperText && !error && (
-          <p className="text-[11px] text-slate-500">{helperText}</p>
+          <p className="text-[11px] text-[#6e6e73]">{helperText}</p>
         )}
       </div>
     );

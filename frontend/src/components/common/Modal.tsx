@@ -56,44 +56,44 @@ export const Modal: React.FC<ModalProps> = ({
             exit={{ opacity: 0 }}
             transition={{ duration: 0.15 }}
             onClick={onClose}
-            className="fixed inset-0 bg-black/80 backdrop-blur-md"
+            className="fixed inset-0 bg-black/35 backdrop-blur-sm"
           />
 
           {/* Modal Dialog */}
           <motion.div
-            initial={{ opacity: 0, scale: 0.96, y: 10 }}
+            initial={{ opacity: 0, scale: 0.96, y: 8 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.96, y: 10 }}
-            transition={{ type: 'spring', damping: 25, stiffness: 350 }}
+            exit={{ opacity: 0, scale: 0.96, y: 8 }}
+            transition={{ type: 'spring', damping: 28, stiffness: 380 }}
             className={cn(
-              'relative w-full rounded-2xl border border-white/[0.1] bg-[#0e1117] text-left shadow-2xl z-10 overflow-hidden',
+              'relative w-full rounded-3xl border border-black/[0.08] bg-white text-left shadow-2xl z-10 overflow-hidden',
               maxWidths[maxWidth]
             )}
           >
             {/* Header */}
-            <div className="flex items-start justify-between p-6 border-b border-white/[0.06]">
+            <div className="flex items-start justify-between p-6 border-b border-black/[0.06]">
               <div>
-                <h3 className="text-base font-semibold text-white tracking-tight">
+                <h3 className="text-base font-semibold text-[#1d1d1f] tracking-tight">
                   {title}
                 </h3>
                 {description && (
-                  <p className="mt-1 text-xs text-slate-400">{description}</p>
+                  <p className="mt-1 text-xs text-[#6e6e73]">{description}</p>
                 )}
               </div>
               <button
                 onClick={onClose}
-                className="rounded-lg p-1.5 text-slate-400 hover:bg-white/[0.06] hover:text-white transition-colors"
+                className="rounded-full p-2 text-[#6e6e73] hover:bg-black/[0.05] hover:text-[#1d1d1f] transition-colors"
               >
                 <X className="h-4 w-4" />
               </button>
             </div>
 
             {/* Content Body */}
-            <div className="p-6 max-h-[75vh] overflow-y-auto">{children}</div>
+            <div className="p-6 max-h-[75vh] overflow-y-auto text-[#1d1d1f]">{children}</div>
 
             {/* Footer Actions */}
             {footer && (
-              <div className="flex items-center justify-end gap-3 p-5 border-t border-white/[0.06] bg-[#0a0c11]">
+              <div className="flex items-center justify-end gap-3 p-5 border-t border-black/[0.06] bg-[#fbfbfd]">
                 {footer}
               </div>
             )}

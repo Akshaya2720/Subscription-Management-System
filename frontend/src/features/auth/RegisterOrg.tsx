@@ -57,22 +57,22 @@ export const RegisterOrg: React.FC = () => {
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-slate-50 p-4 dark:bg-slate-950">
-      <div className="w-full max-w-lg rounded-2xl border border-slate-200 bg-white p-8 shadow-xl dark:border-slate-800 dark:bg-slate-900">
+    <div className="flex min-h-screen items-center justify-center bg-[#f5f5f7] p-6 selection:bg-[#0071e3] selection:text-white">
+      <div className="w-full max-w-lg rounded-3xl border border-black/[0.08] bg-white p-8 shadow-apple-card sm:p-10">
         <div className="text-center">
-          <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl bg-brand-600 text-white font-black text-xl shadow-md">
+          <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-[#1d1d1f] text-white font-black text-2xl shadow-sm tracking-tight">
             V
           </div>
-          <h2 className="mt-4 text-2xl font-bold tracking-tight text-slate-900 dark:text-white">
-            Register Organization & Admin
+          <h2 className="mt-5 text-2xl font-bold tracking-tight text-[#1d1d1f]">
+            Create your Organization
           </h2>
-          <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
-            Set up your enterprise subscription management and billing verification workspace
+          <p className="mt-1.5 text-xs text-[#6e6e73]">
+            Set up enterprise subscription management and billing verification
           </p>
         </div>
 
         {serverError && (
-          <div className="mt-4 rounded-lg bg-rose-50 p-3 text-xs text-rose-700 dark:bg-rose-950/40 dark:text-rose-400">
+          <div className="mt-4 rounded-xl bg-rose-50 border border-rose-200/80 p-3.5 text-xs font-medium text-rose-800">
             {serverError}
           </div>
         )}
@@ -82,14 +82,14 @@ export const RegisterOrg: React.FC = () => {
             <Input
               label="Organization Name"
               placeholder="e.g. Acme Corp"
-              leftIcon={<Building className="h-4 w-4" />}
+              leftIcon={<Building className="h-4 w-4 text-[#86868b]" />}
               error={errors.organization_name?.message}
               {...register('organization_name')}
             />
             <Input
               label="Company Domain"
               placeholder="acme.com"
-              leftIcon={<Globe className="h-4 w-4" />}
+              leftIcon={<Globe className="h-4 w-4 text-[#86868b]" />}
               error={errors.domain?.message}
               {...register('domain')}
             />
@@ -99,7 +99,7 @@ export const RegisterOrg: React.FC = () => {
             <Input
               label="Admin Full Name"
               placeholder="Jane Doe"
-              leftIcon={<UserIcon className="h-4 w-4" />}
+              leftIcon={<UserIcon className="h-4 w-4 text-[#86868b]" />}
               error={errors.admin_name?.message}
               {...register('admin_name')}
             />
@@ -107,7 +107,7 @@ export const RegisterOrg: React.FC = () => {
               label="Admin Work Email"
               type="email"
               placeholder="jane@acme.com"
-              leftIcon={<Mail className="h-4 w-4" />}
+              leftIcon={<Mail className="h-4 w-4 text-[#86868b]" />}
               error={errors.admin_email?.message}
               {...register('admin_email')}
             />
@@ -117,7 +117,7 @@ export const RegisterOrg: React.FC = () => {
             label="Master Admin Password"
             type="password"
             placeholder="At least 8 characters"
-            leftIcon={<Lock className="h-4 w-4" />}
+            leftIcon={<Lock className="h-4 w-4 text-[#86868b]" />}
             error={errors.password?.message}
             {...register('password')}
           />
@@ -157,11 +157,11 @@ export const RegisterOrg: React.FC = () => {
           </Button>
         </form>
 
-        <div className="mt-6 text-center text-xs text-slate-500">
+        <div className="mt-6 text-center text-xs text-[#6e6e73]">
           Already registered?{' '}
           <Link
             to="/auth/login"
-            className="font-semibold text-brand-600 hover:underline dark:text-brand-400"
+            className="font-semibold text-[#0071e3] hover:underline"
           >
             Sign in here
           </Link>

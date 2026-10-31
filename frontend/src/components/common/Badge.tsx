@@ -15,22 +15,22 @@ export const Badge: React.FC<BadgeProps> = ({
 }) => {
   const variants = {
     default:
-      'bg-zinc-800/80 text-zinc-300 border-zinc-700/60',
+      'bg-slate-100 text-[#1d1d1f] border-slate-200/80',
     success:
-      'bg-emerald-500/10 text-emerald-400 border-emerald-500/30',
+      'bg-emerald-50 text-emerald-800 border-emerald-200 font-semibold',
     warning:
-      'bg-amber-500/10 text-amber-400 border-amber-500/30',
+      'bg-amber-50 text-amber-900 border-amber-200 font-semibold',
     danger:
-      'bg-rose-500/10 text-rose-400 border-rose-500/30',
+      'bg-rose-50 text-rose-800 border-rose-200 font-semibold',
     info:
-      'bg-sky-500/10 text-sky-400 border-sky-500/30',
+      'bg-blue-50 text-[#0071e3] border-blue-200 font-semibold',
     purple:
-      'bg-violet-500/10 text-violet-300 border-violet-500/30',
+      'bg-purple-50 text-purple-800 border-purple-200 font-semibold',
   };
 
   const sizes = {
-    sm: 'text-[10px] px-2 py-0.5 rounded-full font-medium',
-    md: 'text-xs px-2.5 py-0.5 rounded-full font-medium',
+    sm: 'text-[10px] px-2.5 py-0.5 rounded-full font-medium',
+    md: 'text-xs px-3 py-1 rounded-full font-medium',
   };
 
   return (

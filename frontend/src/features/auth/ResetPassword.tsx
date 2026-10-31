@@ -45,27 +45,27 @@ export const ResetPassword: React.FC = () => {
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-slate-50 p-4 dark:bg-slate-950">
-      <div className="w-full max-w-md rounded-2xl border border-slate-200 bg-white p-8 shadow-xl dark:border-slate-800 dark:bg-slate-900">
+    <div className="flex min-h-screen items-center justify-center bg-[#f5f5f7] p-6 selection:bg-[#0071e3] selection:text-white">
+      <div className="w-full max-w-md rounded-3xl border border-black/[0.08] bg-white p-8 shadow-apple-card sm:p-10">
         <div className="text-center">
-          <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl bg-brand-600 text-white font-black text-xl shadow-md">
+          <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-[#1d1d1f] text-white font-black text-2xl shadow-sm tracking-tight">
             V
           </div>
-          <h2 className="mt-4 text-2xl font-bold tracking-tight text-slate-900 dark:text-white">
+          <h2 className="mt-5 text-2xl font-bold tracking-tight text-[#1d1d1f]">
             Set New Password
           </h2>
-          <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
+          <p className="mt-1.5 text-xs text-[#6e6e73]">
             Create a secure new password for your account
           </p>
         </div>
 
         {isSuccess ? (
-          <div className="mt-6 rounded-xl bg-emerald-50 p-6 text-center dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800">
-            <CheckCircle2 className="mx-auto h-8 w-8 text-emerald-600 dark:text-emerald-400" />
-            <h4 className="mt-2 text-sm font-bold text-emerald-900 dark:text-emerald-300">
+          <div className="mt-6 rounded-2xl bg-emerald-50/80 p-6 text-center border border-emerald-200">
+            <CheckCircle2 className="mx-auto h-8 w-8 text-emerald-600" />
+            <h4 className="mt-2 text-sm font-bold text-emerald-950">
               Password Updated Successfully!
             </h4>
-            <p className="mt-1 text-xs text-emerald-700 dark:text-emerald-400">
+            <p className="mt-1 text-xs text-emerald-800">
               Redirecting you to login...
             </p>
           </div>
@@ -75,7 +75,7 @@ export const ResetPassword: React.FC = () => {
               label="New Password"
               type="password"
               placeholder="••••••••"
-              leftIcon={<Lock className="h-4 w-4" />}
+              leftIcon={<Lock className="h-4 w-4 text-[#86868b]" />}
               error={errors.password?.message}
               {...register('password')}
             />
@@ -84,19 +84,19 @@ export const ResetPassword: React.FC = () => {
               label="Confirm New Password"
               type="password"
               placeholder="••••••••"
-              leftIcon={<Lock className="h-4 w-4" />}
+              leftIcon={<Lock className="h-4 w-4 text-[#86868b]" />}
               error={errors.confirmPassword?.message}
               {...register('confirmPassword')}
             />
 
-            <Button type="submit" className="w-full mt-2" size="lg" isLoading={isLoading}>
+            <Button type="submit" className="w-full mt-3" size="lg" isLoading={isLoading}>
               Update Password
             </Button>
 
-            <div className="text-center">
+            <div className="text-center pt-2">
               <Link
                 to="/auth/login"
-                className="text-xs font-semibold text-slate-600 hover:text-slate-900 dark:text-slate-400"
+                className="text-xs font-medium text-[#6e6e73] hover:text-[#1d1d1f] transition-colors"
               >
                 Cancel and back to Login
               </Link>
