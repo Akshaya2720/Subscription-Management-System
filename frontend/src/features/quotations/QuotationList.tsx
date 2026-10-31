@@ -7,6 +7,7 @@ import { Input } from '../../components/common/Input';
 import { Select } from '../../components/common/Select';
 import { Badge } from '../../components/common/Badge';
 import { Modal } from '../../components/common/Modal';
+import { SubNavTabs } from '../../components/common/SubNavTabs';
 import { quotationService } from '../../services/quotationService';
 import { customerService } from '../../services/customerService';
 import { productService } from '../../services/productService';
@@ -154,16 +155,26 @@ export const QuotationList: React.FC = () => {
 
   return (
     <div className="space-y-6">
+      {/* Sub Navigation Tabs */}
+      <SubNavTabs
+        items={[
+          { label: 'Subscriptions', path: '/admin/subscriptions' },
+          { label: 'Quotations & Pricing', path: '/admin/quotations', badge: `${quotations.length}` },
+          { label: 'Product Catalog & Plans', path: '/admin/plans' },
+          { label: 'Customers', path: '/admin/customers' },
+        ]}
+      />
+
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-white">
+          <h1 className="text-xl font-bold tracking-tight text-white">
             Quotations & Proposals
           </h1>
-          <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
+          <p className="text-xs text-slate-400 mt-1">
             Authoritative backend tax and discount computation, quotation lifecycle, and 1-click subscription conversion
           </p>
         </div>
-        <Button onClick={() => setIsCreateOpen(true)} leftIcon={<Plus className="h-4 w-4" />}>
+        <Button onClick={() => setIsCreateOpen(true)} leftIcon={<Plus className="h-3.5 w-3.5" />}>
           Draft Quotation
         </Button>
       </div>

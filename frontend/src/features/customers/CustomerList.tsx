@@ -20,6 +20,7 @@ import { Select } from '../../components/common/Select';
 import { Badge } from '../../components/common/Badge';
 import { Modal } from '../../components/common/Modal';
 import { Card, CardHeader, CardTitle, CardContent } from '../../components/common/Card';
+import { SubNavTabs } from '../../components/common/SubNavTabs';
 import { customerService } from '../../services/customerService';
 import { Customer } from '../../types';
 import { formatCurrency, formatDate } from '../../utils';
@@ -98,17 +99,27 @@ export const CustomerList: React.FC = () => {
 
   return (
     <div className="space-y-6">
+      {/* Sub Navigation Tabs */}
+      <SubNavTabs
+        items={[
+          { label: 'Subscriptions', path: '/admin/subscriptions' },
+          { label: 'Quotations & Pricing', path: '/admin/quotations' },
+          { label: 'Product Catalog & Plans', path: '/admin/plans' },
+          { label: 'Customers', path: '/admin/customers', badge: `${customers.length}` },
+        ]}
+      />
+
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-white">
+          <h1 className="text-xl font-bold tracking-tight text-white">
             Customer Directory
           </h1>
-          <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
+          <p className="text-xs text-slate-400 mt-1">
             Manage client accounts, contracts, tax IDs, and billing communication records
           </p>
         </div>
-        <Button onClick={() => setIsCreateOpen(true)} leftIcon={<Plus className="h-4 w-4" />}>
+        <Button onClick={() => setIsCreateOpen(true)} leftIcon={<Plus className="h-3.5 w-3.5" />}>
           Add Customer
         </Button>
       </div>
