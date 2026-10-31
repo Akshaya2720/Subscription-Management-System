@@ -8,7 +8,10 @@ export const customerService = {
       const response = await apiClient.get('/customers', {
         params: { search: query, status },
       });
-      return response.data;
+      const data = response.data;
+      const items = Array.isArray(data) ? data : (data?.items || []);
+      if (items && items.length > 0) return items;
+      return localStore.getCustomers();
     } catch {
       let list = localStore.getCustomers();
       if (query) {

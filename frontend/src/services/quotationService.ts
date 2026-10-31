@@ -6,7 +6,7 @@ export const quotationService = {
   async getQuotations(): Promise<Quotation[]> {
     try {
       const res = await apiClient.get('/quotations');
-      return res.data;
+      return Array.isArray(res.data) ? res.data : (res.data?.items || []);
     } catch {
       return localStore.getQuotations();
     }

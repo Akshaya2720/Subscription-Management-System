@@ -79,7 +79,9 @@ export const Dashboard: React.FC = () => {
     queryFn: () => verificationService.getVerifications(),
   });
 
-  const verificationAlerts = verifications.filter((v) => v.discrepancy_detected);
+  const subsList = Array.isArray(subscriptions) ? subscriptions : ((subscriptions as any)?.items || []);
+  const invoicesList = Array.isArray(invoices) ? invoices : ((invoices as any)?.items || []);
+  const verificationAlerts = Array.isArray(verifications) ? verifications.filter((v) => v.discrepancy_detected) : [];
 
   return (
     <div className="space-y-6 text-left">
@@ -471,11 +473,11 @@ export const Dashboard: React.FC = () => {
               </TableHeader>
               {isSubsLoading ? (
                 <TableLoadingState colSpan={4} />
-              ) : subscriptions.length === 0 ? (
+              ) : subsList.length === 0 ? (
                 <TableEmptyState title="No subscriptions" description="No subscriptions found." />
               ) : (
                 <TableBody>
-                  {subscriptions.slice(0, 4).map((sub) => {
+                  {subsList.slice(0, 4).map((sub: any) => {
                     const badge = getStatusBadgeVariant(sub.status);
                     return (
                       <TableRow key={sub.id}>
@@ -529,11 +531,11 @@ export const Dashboard: React.FC = () => {
               </TableHeader>
               {isInvoicesLoading ? (
                 <TableLoadingState colSpan={5} />
-              ) : invoices.length === 0 ? (
+              ) : invoicesList.length === 0 ? (
                 <TableEmptyState title="No invoices" description="No invoices found." />
               ) : (
                 <TableBody>
-                  {invoices.slice(0, 4).map((inv) => {
+                  {invoicesList.slice(0, 4).map((inv: any) => {
                     const isOverdue = inv.status === 'overdue';
                     return (
                       <TableRow key={inv.id}>
