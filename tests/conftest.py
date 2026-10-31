@@ -8,6 +8,7 @@ from sqlalchemy.pool import StaticPool
 
 from app.core.database import Base, get_db
 from app.core.auth import Organization, User, get_current_organization, get_current_user
+from app.core.rate_limiter import auth_rate_limiter
 from app.main import app
 
 # Test SQLite in-memory database
@@ -19,6 +20,14 @@ engine = create_engine(
     poolclass=StaticPool,
 )
 TestingSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+
+
+@pytest.fixture(autouse=True)
+def reset_auth_rate_limiter():
+    """Reset rate limiter before and after each test."""
+    auth_rate_limiter.reset()
+    yield
+    auth_rate_limiter.reset()
 
 
 @pytest.fixture(scope="function")

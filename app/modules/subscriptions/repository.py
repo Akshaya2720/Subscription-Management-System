@@ -3,7 +3,7 @@
 import uuid
 from datetime import date
 from typing import Optional, List, Tuple
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, selectinload
 
 from app.modules.subscriptions.models import Subscription, SubscriptionItem, SubscriptionEvent
 
@@ -15,6 +15,7 @@ class SubscriptionRepository:
     def get_by_id(self, org_id: uuid.UUID, subscription_id: uuid.UUID) -> Optional[Subscription]:
         return (
             self.db.query(Subscription)
+            .options(selectinload(Subscription.items))
             .filter(Subscription.organization_id == org_id, Subscription.id == subscription_id)
             .first()
         )
@@ -22,6 +23,7 @@ class SubscriptionRepository:
     def get_by_number(self, org_id: uuid.UUID, subscription_number: str) -> Optional[Subscription]:
         return (
             self.db.query(Subscription)
+            .options(selectinload(Subscription.items))
             .filter(Subscription.organization_id == org_id, Subscription.subscription_number == subscription_number)
             .first()
         )
@@ -45,7 +47,8 @@ class SubscriptionRepository:
 
         total = query.count()
         items = (
-            query.order_by(Subscription.created_at.desc())
+            query.options(selectinload(Subscription.items))
+            .order_by(Subscription.created_at.desc())
             .offset((page - 1) * per_page)
             .limit(per_page)
             .all()
@@ -53,9 +56,10 @@ class SubscriptionRepository:
         return items, total
 
     def get_due_for_billing(self, org_id: uuid.UUID, as_of_date: date) -> List[Subscription]:
-        """Find active subscriptions due for recurring billing."""
+        """Find active subscriptions due for recurring billing with items eagerly loaded."""
         return (
             self.db.query(Subscription)
+            .options(selectinload(Subscription.items))
             .filter(
                 Subscription.organization_id == org_id,
                 Subscription.status == "ACTIVE",

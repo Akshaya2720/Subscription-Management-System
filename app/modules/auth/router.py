@@ -6,6 +6,7 @@ from sqlalchemy.orm import Session
 
 from app.core.database import get_db
 from app.core.auth import get_current_organization, get_current_user, require_role
+from app.core.rate_limiter import rate_limit_auth
 from app.models.auth import Organization, User, UserRole
 from app.modules.auth.schemas import (
     RegisterRequest,
@@ -29,14 +30,14 @@ org_router = APIRouter(prefix="/organizations", tags=["Organizations"])
 
 # ── Auth Endpoints ──────────────────────────────────────────────────────────
 
-@auth_router.post("/register", response_model=TokenResponse, status_code=status.HTTP_201_CREATED)
+@auth_router.post("/register", response_model=TokenResponse, status_code=status.HTTP_201_CREATED, dependencies=[Depends(rate_limit_auth)])
 def register(req: RegisterRequest, db: Session = Depends(get_db)):
     """Register a new organization and root ADMIN account."""
     service = AuthService(db)
     return service.register(req)
 
 
-@auth_router.post("/login", response_model=TokenResponse)
+@auth_router.post("/login", response_model=TokenResponse, dependencies=[Depends(rate_limit_auth)])
 def login(req: LoginRequest, db: Session = Depends(get_db)):
     """Authenticate with email and password, returning JWT tokens."""
     service = AuthService(db)
@@ -57,14 +58,14 @@ def logout(req: RefreshRequest, db: Session = Depends(get_db)):
     return service.logout(req.refresh_token)
 
 
-@auth_router.post("/forgot-password")
+@auth_router.post("/forgot-password", dependencies=[Depends(rate_limit_auth)])
 def forgot_password(req: ForgotPasswordRequest, db: Session = Depends(get_db)):
     """Request a password reset link / token."""
     service = AuthService(db)
     return service.forgot_password(req.email)
 
 
-@auth_router.post("/reset-password")
+@auth_router.post("/reset-password", dependencies=[Depends(rate_limit_auth)])
 def reset_password(req: ResetPasswordRequest, db: Session = Depends(get_db)):
     """Reset password using a verified reset token."""
     service = AuthService(db)

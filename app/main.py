@@ -34,6 +34,7 @@ from app.modules.quotations.router import router as quotation_router
 from app.modules.subscriptions.router import subscription_router, impact_router
 from app.modules.billing.router import tax_router, discount_router, invoice_router
 from app.modules.verification.router import verification_router, audit_router
+from app.modules.dashboard.router import dashboard_router
 
 
 @asynccontextmanager
@@ -79,6 +80,7 @@ app.include_router(discount_router, prefix=api_v1_prefix)
 app.include_router(invoice_router, prefix=api_v1_prefix)
 app.include_router(verification_router, prefix=api_v1_prefix)
 app.include_router(audit_router, prefix=api_v1_prefix)
+app.include_router(dashboard_router, prefix=api_v1_prefix)
 
 
 @app.get("/health", tags=["Health"])

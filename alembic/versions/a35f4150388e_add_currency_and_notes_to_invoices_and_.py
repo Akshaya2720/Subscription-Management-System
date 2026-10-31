@@ -24,6 +24,12 @@ def upgrade() -> None:
     inspector = sa.inspect(bind)
     tables = inspector.get_table_names()
 
+    if 'users' in tables:
+        user_cols = [c['name'] for c in inspector.get_columns('users')]
+        with op.batch_alter_table('users') as batch_op:
+            if 'updated_at' not in user_cols:
+                batch_op.add_column(sa.Column('updated_at', sa.DateTime(timezone=True), nullable=True))
+
     if 'tax_rules' in tables:
         tax_cols = [c['name'] for c in inspector.get_columns('tax_rules')]
         with op.batch_alter_table('tax_rules') as batch_op:
@@ -36,6 +42,12 @@ def upgrade() -> None:
             if 'currency' not in inv_cols:
                 batch_op.add_column(sa.Column('currency', sa.String(length=10), nullable=False, server_default='USD'))
             if 'notes' not in inv_cols:
+                batch_op.add_column(sa.Column('notes', sa.Text(), nullable=True))
+
+    if 'payments' in tables:
+        pay_cols = [c['name'] for c in inspector.get_columns('payments')]
+        with op.batch_alter_table('payments') as batch_op:
+            if 'notes' not in pay_cols:
                 batch_op.add_column(sa.Column('notes', sa.Text(), nullable=True))
 
 
@@ -52,6 +64,12 @@ def downgrade() -> None:
                 batch_op.drop_column('notes')
             if 'currency' in inv_cols:
                 batch_op.drop_column('currency')
+
+    if 'users' in tables:
+        user_cols = [c['name'] for c in inspector.get_columns('users')]
+        with op.batch_alter_table('users') as batch_op:
+            if 'updated_at' not in user_cols:
+                batch_op.add_column(sa.Column('updated_at', sa.DateTime(timezone=True), nullable=True))
 
     if 'tax_rules' in tables:
         tax_cols = [c['name'] for c in inspector.get_columns('tax_rules')]

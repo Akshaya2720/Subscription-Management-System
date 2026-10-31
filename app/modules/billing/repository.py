@@ -4,7 +4,7 @@ import uuid
 from decimal import Decimal
 from datetime import date, datetime
 from typing import Optional, List, Tuple
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, selectinload
 from sqlalchemy import or_
 
 from app.models.billing import (
@@ -115,7 +115,12 @@ class InvoiceRepository:
         self.db = db
 
     def get_by_id(self, org_id: uuid.UUID, invoice_id: uuid.UUID) -> Optional[Invoice]:
-        return self.db.query(Invoice).filter(Invoice.organization_id == org_id, Invoice.id == invoice_id).first()
+        return (
+            self.db.query(Invoice)
+            .options(selectinload(Invoice.items))
+            .filter(Invoice.organization_id == org_id, Invoice.id == invoice_id)
+            .first()
+        )
 
     def get_by_subscription_and_period(
         self, subscription_id: uuid.UUID, period_start: date, period_end: date
@@ -148,7 +153,13 @@ class InvoiceRepository:
             query = query.filter(Invoice.due_date <= due_date_before)
 
         total = query.count()
-        items = query.order_by(Invoice.created_at.desc()).offset((page - 1) * per_page).limit(per_page).all()
+        items = (
+            query.options(selectinload(Invoice.items))
+            .order_by(Invoice.created_at.desc())
+            .offset((page - 1) * per_page)
+            .limit(per_page)
+            .all()
+        )
         return items, total
 
     def save(self, invoice: Invoice) -> Invoice:
