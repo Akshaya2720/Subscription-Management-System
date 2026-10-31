@@ -39,8 +39,9 @@ def list_plans(
     org: Organization = Depends(get_current_organization),
 ):
     """List plans with pagination and filtering."""
+    skip = (page - 1) * per_page
     items, total = PlanService.list_plans(
-        db, org.id, search=search, status=status, frequency=frequency, page=page, per_page=per_page
+        db, org.id, search=search, status=status, billing_frequency=frequency, skip=skip, limit=per_page
     )
     pages = math.ceil(total / per_page) if per_page else 1
     return PlanPaginatedResponse(items=items, total=total, page=page, per_page=per_page, pages=pages)
