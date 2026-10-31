@@ -5,6 +5,7 @@ import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell, TableLoa
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '../../components/common/Card';
 import { Button } from '../../components/common/Button';
 import { Badge } from '../../components/common/Badge';
+import { SubNavTabs } from '../../components/common/SubNavTabs';
 import { billingService } from '../../services/billingService';
 import { subscriptionService } from '../../services/subscriptionService';
 import { formatDateTime } from '../../utils';
@@ -37,19 +38,29 @@ export const BillingRuns: React.FC = () => {
 
   return (
     <div className="space-y-6">
+      {/* Sub Navigation Tabs */}
+      <SubNavTabs
+        items={[
+          { label: 'Invoices', path: '/admin/invoices' },
+          { label: 'Payments & Reconciliation', path: '/admin/payments' },
+          { label: 'Automated Billing Runs', path: '/admin/billing', badge: `${runs.length}` },
+          { label: 'Discount Rules', path: '/admin/discounts' },
+        ]}
+      />
+
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-white">
+          <h1 className="text-xl font-bold tracking-tight text-white">
             Automated Billing Engine & Execution Runs
           </h1>
-          <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
+          <p className="text-xs text-slate-400 mt-1">
             Trigger recurring invoice generation runs, view batch logs, and inspect due subscriptions
           </p>
         </div>
         <Button
           onClick={() => executeMutation.mutate()}
           isLoading={executeMutation.isPending}
-          leftIcon={<Play className="h-4 w-4" />}
+          leftIcon={<Play className="h-3.5 w-3.5" />}
         >
           Execute Billing Run Now
         </Button>

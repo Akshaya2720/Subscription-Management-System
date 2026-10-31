@@ -17,6 +17,7 @@ import { Button } from '../../components/common/Button';
 import { Input } from '../../components/common/Input';
 import { Select } from '../../components/common/Select';
 import { Badge } from '../../components/common/Badge';
+import { SubNavTabs } from '../../components/common/SubNavTabs';
 import { settingsService, OrgSettingsPayload } from '../../services/settingsService';
 import { authService } from '../../services/auth';
 
@@ -59,11 +60,20 @@ export const SettingsView: React.FC = () => {
 
   return (
     <div className="space-y-6 text-left">
+      {/* Sub Navigation Tabs */}
+      <SubNavTabs
+        items={[
+          { label: 'Organization & Governance', path: '/admin/settings' },
+          { label: 'Audit Trail (SHA-256)', path: '/admin/audit', badge: 'Active' },
+          { label: 'Financial Reports', path: '/admin/reports' },
+        ]}
+      />
+
       <div>
-        <h1 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-white">
+        <h1 className="text-xl font-bold tracking-tight text-white">
           Workspace Settings & Governance
         </h1>
-        <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
+        <p className="text-xs text-slate-400 mt-1">
           Configure organization identity, tax rules, automated dunning retry policies, and team permissions
         </p>
       </div>

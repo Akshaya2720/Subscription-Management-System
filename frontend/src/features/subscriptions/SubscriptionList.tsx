@@ -19,6 +19,7 @@ import { Select } from '../../components/common/Select';
 import { Badge } from '../../components/common/Badge';
 import { Modal } from '../../components/common/Modal';
 import { SubscriptionTimeline } from '../../components/common/Timeline';
+import { SubNavTabs } from '../../components/common/SubNavTabs';
 import { SubscriptionDigitalTwin } from './SubscriptionDigitalTwin';
 import { subscriptionService } from '../../services/subscriptionService';
 import { customerService } from '../../services/customerService';
@@ -120,17 +121,27 @@ export const SubscriptionList: React.FC = () => {
 
   return (
     <div className="space-y-6">
+      {/* Sub Navigation Tabs */}
+      <SubNavTabs
+        items={[
+          { label: 'Subscriptions', path: '/admin/subscriptions', badge: `${subscriptions.length} Active` },
+          { label: 'Quotations & Pricing', path: '/admin/quotations' },
+          { label: 'Product Catalog & Plans', path: '/admin/plans' },
+          { label: 'Customers', path: '/admin/customers' },
+        ]}
+      />
+
       {/* Title */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-white">
+          <h1 className="text-xl font-bold tracking-tight text-white">
             Subscription Operations & Digital Twin
           </h1>
-          <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
+          <p className="text-xs text-slate-400 mt-1">
             Manage contract lifecycle (Pause, Resume, Renew, Close) and inspect telemetry digital twins
           </p>
         </div>
-        <Button onClick={() => setIsCreateOpen(true)} leftIcon={<Plus className="h-4 w-4" />}>
+        <Button onClick={() => setIsCreateOpen(true)} leftIcon={<Plus className="h-3.5 w-3.5" />}>
           New Subscription
         </Button>
       </div>

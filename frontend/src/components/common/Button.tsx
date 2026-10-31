@@ -26,25 +26,25 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     ref
   ) => {
     const baseStyles =
-      'inline-flex items-center justify-center font-medium rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none select-none';
+      'inline-flex items-center justify-center font-medium rounded-lg transition-all duration-150 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-[#08090a] disabled:opacity-50 disabled:pointer-events-none select-none active:scale-[0.99]';
 
     const variants = {
       primary:
-        'bg-brand-600 text-white hover:bg-brand-700 active:bg-brand-800 focus:ring-brand-500 shadow-sm',
+        'bg-violet-600 text-white hover:bg-violet-500 active:bg-violet-700 focus:ring-violet-500 shadow-glow-sm border border-violet-400/20',
       secondary:
-        'bg-slate-100 text-slate-800 hover:bg-slate-200 active:bg-slate-300 dark:bg-slate-800 dark:text-slate-100 dark:hover:bg-slate-700 focus:ring-slate-400',
+        'bg-[#161a24] text-slate-200 border border-white/[0.09] hover:bg-[#1e2333] hover:text-white focus:ring-slate-500',
       outline:
-        'border border-slate-300 bg-white text-slate-700 hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800 focus:ring-brand-500 shadow-sm',
+        'border border-white/[0.12] bg-transparent text-slate-300 hover:bg-white/[0.05] hover:text-white hover:border-white/[0.2] focus:ring-violet-500',
       ghost:
-        'text-slate-600 hover:bg-slate-100 hover:text-slate-900 dark:text-slate-300 dark:hover:bg-slate-800 dark:hover:text-white focus:ring-slate-400',
+        'text-slate-400 hover:bg-white/[0.06] hover:text-slate-200 focus:ring-slate-500',
       danger:
-        'bg-rose-600 text-white hover:bg-rose-700 active:bg-rose-800 focus:ring-rose-500 shadow-sm',
+        'bg-rose-600/90 text-white hover:bg-rose-500 active:bg-rose-700 focus:ring-rose-500 border border-rose-500/30 shadow-glow-rose',
     };
 
     const sizes = {
       sm: 'text-xs px-2.5 py-1.5 gap-1.5',
-      md: 'text-sm px-3.5 py-2 gap-2',
-      lg: 'text-base px-5 py-2.5 gap-2.5',
+      md: 'text-xs font-semibold px-3.5 py-2 gap-2',
+      lg: 'text-sm font-semibold px-4.5 py-2.5 gap-2.5',
     };
 
     return (

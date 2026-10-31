@@ -2,23 +2,15 @@ import React, { useState } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
 import {
   LayoutDashboard,
-  Users,
-  Package,
-  Layers,
-  FileCheck2,
   Repeat,
-  Zap,
   Receipt,
-  CreditCard,
-  Percent,
   ShieldCheck,
-  BrainCircuit,
-  History,
-  BarChart3,
+  Sparkles,
   Settings,
   ChevronLeft,
   ChevronRight,
   ShieldAlert,
+  Layers,
 } from 'lucide-react';
 import { cn } from '../../utils';
 import { UserRole } from '../../types';
@@ -33,39 +25,53 @@ interface NavItem {
   icon: React.ComponentType<{ className?: string }>;
   roles: UserRole[];
   badge?: string;
-  badgeColor?: string;
+  badgeVariant?: 'purple' | 'danger' | 'success';
 }
 
+// Simplified high-level navigation (Cerebrium minimal style)
 const NAV_ITEMS: NavItem[] = [
-  { label: 'Overview', path: '/admin/overview', icon: LayoutDashboard, roles: ['admin', 'staff'] },
-  { label: 'Customers', path: '/admin/customers', icon: Users, roles: ['admin', 'staff'] },
-  { label: 'Products', path: '/admin/products', icon: Package, roles: ['admin'] },
-  { label: 'Plans', path: '/admin/plans', icon: Layers, roles: ['admin'] },
-  { label: 'Quotations', path: '/admin/quotations', icon: FileCheck2, roles: ['admin', 'staff'] },
-  { label: 'Subscriptions', path: '/admin/subscriptions', icon: Repeat, roles: ['admin', 'staff'] },
-  { label: 'Billing', path: '/admin/billing', icon: Zap, roles: ['admin'] },
-  { label: 'Invoices', path: '/admin/invoices', icon: Receipt, roles: ['admin', 'staff'] },
-  { label: 'Payments', path: '/admin/payments', icon: CreditCard, roles: ['admin', 'staff'] },
-  { label: 'Discounts', path: '/admin/discounts', icon: Percent, roles: ['admin'] },
+  {
+    label: 'Overview',
+    path: '/admin/overview',
+    icon: LayoutDashboard,
+    roles: ['admin', 'staff'],
+  },
+  {
+    label: 'Subscriptions',
+    path: '/admin/subscriptions',
+    icon: Repeat,
+    roles: ['admin', 'staff'],
+    badge: '3 Active',
+    badgeVariant: 'purple',
+  },
+  {
+    label: 'Billing & Invoices',
+    path: '/admin/invoices',
+    icon: Receipt,
+    roles: ['admin', 'staff'],
+  },
   {
     label: 'Value Verification',
     path: '/admin/verification',
     icon: ShieldCheck,
     roles: ['admin', 'staff'],
     badge: '1 Alert',
-    badgeColor: 'bg-rose-500 text-white',
+    badgeVariant: 'danger',
   },
   {
-    label: 'AI Insights',
+    label: 'AI Copilot',
     path: '/admin/ai-insights',
-    icon: BrainCircuit,
+    icon: Sparkles,
     roles: ['admin', 'staff'],
-    badge: 'New',
-    badgeColor: 'bg-brand-500 text-white',
+    badge: 'AI',
+    badgeVariant: 'purple',
   },
-  { label: 'Audit Trail', path: '/admin/audit', icon: History, roles: ['admin'] },
-  { label: 'Reports', path: '/admin/reports', icon: BarChart3, roles: ['admin'] },
-  { label: 'Settings', path: '/admin/settings', icon: Settings, roles: ['admin'] },
+  {
+    label: 'Settings & Audit',
+    path: '/admin/settings',
+    icon: Settings,
+    roles: ['admin'],
+  },
 ];
 
 export const Sidebar: React.FC<SidebarProps> = ({ role = 'admin' }) => {
@@ -77,23 +83,26 @@ export const Sidebar: React.FC<SidebarProps> = ({ role = 'admin' }) => {
   return (
     <aside
       className={cn(
-        'relative flex flex-col border-r border-slate-200 bg-white transition-all duration-300 dark:border-slate-800 dark:bg-slate-900 z-30 select-none',
+        'relative flex flex-col border-r border-white/[0.08] bg-[#0a0c10] transition-all duration-300 z-30 select-none',
         collapsed ? 'w-20' : 'w-64'
       )}
     >
       {/* Brand Header */}
-      <div className="flex h-16 items-center justify-between px-5 border-b border-slate-100 dark:border-slate-800">
+      <div className="flex h-16 items-center justify-between px-5 border-b border-white/[0.08]">
         <div className="flex items-center gap-3 overflow-hidden">
-          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-brand-600 text-white shadow-sm font-black tracking-wider text-base">
+          <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-gradient-to-br from-violet-600 to-indigo-600 text-white shadow-glow-sm font-bold tracking-wider text-sm border border-violet-400/30">
             V
           </div>
           {!collapsed && (
             <div className="flex flex-col">
-              <span className="font-extrabold text-slate-900 tracking-tight text-base leading-none dark:text-white">
+              <span className="font-bold text-white tracking-tight text-sm leading-none flex items-center gap-1.5">
                 VERISUB
+                <span className="rounded-full bg-violet-500/10 border border-violet-500/30 px-1.5 py-0.2 text-[9px] font-mono font-medium text-violet-400">
+                  v2.4
+                </span>
               </span>
-              <span className="text-[10px] uppercase font-semibold text-brand-600 dark:text-brand-400 tracking-widest mt-0.5">
-                {role === 'staff' ? 'Staff Portal' : 'Enterprise Admin'}
+              <span className="text-[10px] text-slate-400 tracking-wider mt-1 uppercase">
+                {role === 'staff' ? 'Staff Workspace' : 'SaaS Console'}
               </span>
             </div>
           )}
@@ -101,37 +110,56 @@ export const Sidebar: React.FC<SidebarProps> = ({ role = 'admin' }) => {
 
         <button
           onClick={() => setCollapsed(!collapsed)}
-          className="rounded-lg p-1 text-slate-400 hover:bg-slate-100 hover:text-slate-600 dark:hover:bg-slate-800 dark:hover:text-slate-200"
+          className="rounded-lg p-1 text-slate-400 hover:bg-white/[0.06] hover:text-white transition-colors"
           title={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
         >
           {collapsed ? <ChevronRight className="h-4 w-4" /> : <ChevronLeft className="h-4 w-4" />}
         </button>
       </div>
 
-      {/* Navigation List */}
+      {/* Main Navigation List */}
       <div className="flex-1 overflow-y-auto px-3 py-4 space-y-1">
+        {!collapsed && (
+          <p className="px-3 pb-2 text-[10px] font-semibold uppercase tracking-wider text-slate-500">
+            Platform
+          </p>
+        )}
+
         {filteredNav.map((item) => {
           const Icon = item.icon;
-          const isActive = location.pathname.startsWith(item.path);
+          // Match active route: either exact or sub-route
+          const isActive =
+            location.pathname === item.path ||
+            (item.path === '/admin/subscriptions' &&
+              ['/admin/subscriptions', '/admin/quotations', '/admin/plans', '/admin/products', '/admin/customers'].some(
+                (p) => location.pathname.startsWith(p)
+              )) ||
+            (item.path === '/admin/invoices' &&
+              ['/admin/invoices', '/admin/billing', '/admin/payments', '/admin/discounts'].some((p) =>
+                location.pathname.startsWith(p)
+              )) ||
+            (item.path === '/admin/settings' &&
+              ['/admin/settings', '/admin/audit', '/admin/reports'].some((p) =>
+                location.pathname.startsWith(p)
+              )) ||
+            (item.path !== '/admin/overview' && location.pathname.startsWith(item.path));
 
           return (
             <NavLink
               key={item.path}
               to={item.path}
               className={cn(
-                'group flex items-center gap-3 rounded-lg px-3 py-2.5 text-xs font-semibold transition-colors',
+                'group flex items-center gap-3 rounded-lg px-3 py-2 text-xs font-medium transition-all duration-150',
                 isActive
-                  ? 'bg-brand-50 text-brand-700 dark:bg-brand-950/60 dark:text-brand-300'
-                  : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800/60 dark:hover:text-slate-100'
+                  ? 'bg-violet-600/15 text-white border border-violet-500/30 shadow-[0_0_12px_rgba(139,92,246,0.15)]'
+                  : 'text-slate-400 hover:bg-white/[0.04] hover:text-slate-200 border border-transparent'
               )}
               title={collapsed ? item.label : undefined}
             >
               <Icon
                 className={cn(
                   'h-4 w-4 shrink-0 transition-colors',
-                  isActive
-                    ? 'text-brand-600 dark:text-brand-400'
-                    : 'text-slate-400 group-hover:text-slate-600 dark:text-slate-500 dark:group-hover:text-slate-300'
+                  isActive ? 'text-violet-400' : 'text-slate-500 group-hover:text-slate-300'
                 )}
               />
 
@@ -142,8 +170,13 @@ export const Sidebar: React.FC<SidebarProps> = ({ role = 'admin' }) => {
               {!collapsed && item.badge && (
                 <span
                   className={cn(
-                    'rounded-full px-2 py-0.5 text-[10px] font-bold leading-none',
-                    item.badgeColor || 'bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-300'
+                    'rounded-full px-2 py-0.5 text-[9px] font-mono font-semibold uppercase leading-none border',
+                    item.badgeVariant === 'danger' &&
+                      'bg-rose-500/15 text-rose-400 border-rose-500/30',
+                    item.badgeVariant === 'purple' &&
+                      'bg-violet-500/15 text-violet-300 border-violet-500/30',
+                    (!item.badgeVariant || item.badgeVariant === 'success') &&
+                      'bg-emerald-500/15 text-emerald-400 border-emerald-500/30'
                   )}
                 >
                   {item.badge}
@@ -154,17 +187,17 @@ export const Sidebar: React.FC<SidebarProps> = ({ role = 'admin' }) => {
         })}
       </div>
 
-      {/* System Integrity Footer Status */}
+      {/* Contract Verification Health Indicator */}
       {!collapsed && (
-        <div className="p-4 border-t border-slate-100 dark:border-slate-800">
-          <div className="flex items-center gap-2.5 rounded-xl bg-slate-50 p-2.5 text-xs text-slate-600 dark:bg-slate-800/60 dark:text-slate-300">
-            <ShieldAlert className="h-4 w-4 text-emerald-500 shrink-0" />
+        <div className="p-3 border-t border-white/[0.08]">
+          <div className="flex items-center gap-2.5 rounded-lg bg-[#0e1117] p-2.5 text-xs border border-white/[0.06]">
+            <div className="flex h-2 w-2 rounded-full bg-emerald-400 animate-pulse shadow-[0_0_8px_rgba(52,211,153,0.8)]" />
             <div className="truncate">
-              <p className="font-semibold text-[11px] text-slate-900 dark:text-slate-100">
-                Hash-Chain Verified
+              <p className="font-semibold text-[11px] text-white flex items-center gap-1">
+                Telemetry Connected
               </p>
-              <p className="text-[10px] text-slate-500 dark:text-slate-400 truncate">
-                Contract integrity active
+              <p className="text-[10px] text-slate-400 font-mono truncate">
+                Hash-Chain: #8f04c...9d
               </p>
             </div>
           </div>

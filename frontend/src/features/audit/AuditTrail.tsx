@@ -15,6 +15,7 @@ import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell, TableLoa
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '../../components/common/Card';
 import { Button } from '../../components/common/Button';
 import { Badge } from '../../components/common/Badge';
+import { SubNavTabs } from '../../components/common/SubNavTabs';
 import { auditService } from '../../services/auditService';
 import { formatDateTime } from '../../utils';
 
@@ -48,20 +49,29 @@ export const AuditTrail: React.FC = () => {
 
   return (
     <div className="space-y-6 text-left">
+      {/* Sub Navigation Tabs */}
+      <SubNavTabs
+        items={[
+          { label: 'Organization & Governance', path: '/admin/settings' },
+          { label: 'Audit Trail (SHA-256)', path: '/admin/audit', badge: `${auditLogs.length} Blocks` },
+          { label: 'Financial Reports', path: '/admin/reports' },
+        ]}
+      />
+
       {/* Title */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-white">
+          <h1 className="text-xl font-bold tracking-tight text-white">
             Immutable Audit Trail & Hash-Chain Verification
           </h1>
-          <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
+          <p className="text-xs text-slate-400 mt-1">
             Tamper-evident system ledger with SHA-256 parent hash linking and blockchain anchoring transparency
           </p>
         </div>
         <Button
           onClick={() => verifyIntegrityMutation.mutate()}
           isLoading={verifyIntegrityMutation.isPending}
-          leftIcon={<ShieldCheck className="h-4 w-4" />}
+          leftIcon={<ShieldCheck className="h-3.5 w-3.5" />}
         >
           Verify Hash-Chain Integrity
         </Button>
