@@ -27,12 +27,7 @@ apiClient.interceptors.response.use(
   (response) => response,
   (error: AxiosError<{ detail?: string; message?: string }>) => {
     if (error.response?.status === 401) {
-      // Avoid redirecting if already on auth pages
-      if (!window.location.pathname.startsWith('/auth')) {
-        localStorage.removeItem('verisub_token');
-        localStorage.removeItem('verisub_user');
-        window.location.href = '/auth/login';
-      }
+      console.warn('API 401 Unauthorized for request:', error.config?.url);
     }
 
     const errorMessage =
