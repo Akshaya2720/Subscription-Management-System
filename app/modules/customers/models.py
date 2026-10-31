@@ -36,3 +36,7 @@ class Customer(Base):
     # Relationships
     subscriptions = relationship("Subscription", back_populates="customer", cascade="all, delete-orphan")
     quotations = relationship("Quotation", back_populates="customer", cascade="all, delete-orphan")
+
+    @property
+    def name(self) -> str:
+        return self.company_name or self.contact_name
