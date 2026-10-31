@@ -7,7 +7,7 @@ export const Table: React.FC<React.HTMLAttributes<HTMLTableElement>> = ({
   className,
   ...props
 }) => (
-  <div className="w-full overflow-x-auto rounded-xl border border-white/[0.08] bg-[#0e1117]/90 shadow-sm backdrop-blur-sm">
+  <div className="w-full overflow-x-auto rounded-2xl border border-white/[0.09] bg-[#0c1220]/70 backdrop-blur-2xl shadow-glass-card">
     <table className={cn('w-full caption-bottom text-xs', className)} {...props} />
   </div>
 );
@@ -17,7 +17,7 @@ export const TableHeader: React.FC<React.HTMLAttributes<HTMLTableSectionElement>
   ...props
 }) => (
   <thead
-    className={cn('bg-[#131722]/80 border-b border-white/[0.06]', className)}
+    className={cn('bg-white/[0.03] border-b border-white/[0.06]', className)}
     {...props}
   />
 );
@@ -35,7 +35,7 @@ export const TableRow: React.FC<React.HTMLAttributes<HTMLTableRowElement>> = ({
 }) => (
   <tr
     className={cn(
-      'transition-colors hover:bg-white/[0.03] text-left text-slate-300',
+      'transition-colors duration-150 hover:bg-white/[0.04] text-left text-slate-300',
       className
     )}
     {...props}
@@ -48,7 +48,7 @@ export const TableHead: React.FC<React.ThHTMLAttributes<HTMLTableCellElement>> =
 }) => (
   <th
     className={cn(
-      'h-10 px-4 text-left align-middle text-[11px] font-semibold tracking-wider text-slate-400 uppercase select-none',
+      'h-11 px-4 sm:px-5 text-left align-middle text-[11px] font-semibold tracking-wider text-slate-400 uppercase select-none',
       className
     )}
     {...props}
@@ -60,7 +60,7 @@ export const TableCell: React.FC<React.TdHTMLAttributes<HTMLTableCellElement>> =
   ...props
 }) => (
   <td
-    className={cn('p-4 align-middle text-slate-300 font-normal', className)}
+    className={cn('p-4 sm:p-5 align-middle text-slate-200 font-normal', className)}
     {...props}
   />
 );
@@ -70,7 +70,7 @@ export const TableFooter: React.FC<React.HTMLAttributes<HTMLTableSectionElement>
   ...props
 }) => (
   <tfoot
-    className={cn('border-t border-white/[0.06] bg-[#121620]/60 font-medium text-slate-300', className)}
+    className={cn('border-t border-white/[0.06] bg-white/[0.02] font-medium text-slate-300', className)}
     {...props}
   />
 );
@@ -103,17 +103,17 @@ export const TableEmpty: React.FC<TableEmptyProps> = ({
   return (
     <tbody>
       <tr>
-        <td colSpan={colSpan} className="py-12 text-center">
+        <td colSpan={colSpan} className="py-14 text-center">
           <div className="flex flex-col items-center justify-center space-y-3">
-            <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-white/[0.04] text-slate-500 border border-white/[0.06]">
+            <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-white/[0.05] text-slate-400 border border-white/[0.08] shadow-sm">
               {icon || <Inbox className="h-6 w-6" />}
             </div>
             <div className="space-y-1">
               <p className="text-sm font-semibold text-slate-200">{title}</p>
-              <p className="text-xs text-slate-500 max-w-sm">{description}</p>
+              <p className="text-xs text-slate-400 max-w-sm">{description}</p>
             </div>
             {buttonLabel && buttonClick && (
-              <Button size="sm" variant="outline" onClick={buttonClick} className="mt-2">
+              <Button size="sm" variant="secondary" onClick={buttonClick} className="mt-2">
                 {buttonLabel}
               </Button>
             )}
@@ -139,10 +139,10 @@ export const TableLoading: React.FC<TableLoadingProps> = ({
 }) => (
   <tbody>
     <tr>
-      <td colSpan={colSpan || columnsCount} className="py-12 text-center">
+      <td colSpan={colSpan || columnsCount} className="py-14 text-center">
         <div className="flex flex-col items-center justify-center space-y-3">
-          <RefreshCw className="h-6 w-6 animate-spin text-violet-400" />
-          <p className="text-xs text-slate-400 font-mono">Querying ledger telemetry...</p>
+          <RefreshCw className="h-6 w-6 animate-spin text-blue-400" />
+          <p className="text-xs text-slate-400 font-mono">Loading data...</p>
         </div>
       </td>
     </tr>
@@ -158,14 +158,14 @@ export const TableErrorState: React.FC<{
 }> = ({ colSpan = 6, message = 'Failed to load data from backend API.', onRetry }) => (
   <tbody>
     <tr>
-      <td colSpan={colSpan} className="py-10 text-center">
+      <td colSpan={colSpan} className="py-12 text-center">
         <div className="flex flex-col items-center justify-center space-y-3">
           <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-rose-500/10 text-rose-400 border border-rose-500/20">
             <AlertCircle className="h-5 w-5" />
           </div>
           <p className="text-xs font-medium text-rose-400">{message}</p>
           {onRetry && (
-            <Button size="sm" variant="outline" onClick={onRetry} leftIcon={<RefreshCw className="h-3 w-3" />}>
+            <Button size="sm" variant="secondary" onClick={onRetry} leftIcon={<RefreshCw className="h-3 w-3" />}>
               Retry Request
             </Button>
           )}

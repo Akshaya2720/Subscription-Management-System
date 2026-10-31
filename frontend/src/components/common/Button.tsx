@@ -26,25 +26,25 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     ref
   ) => {
     const baseStyles =
-      'inline-flex items-center justify-center font-medium rounded-lg transition-all duration-150 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-[#08090a] disabled:opacity-50 disabled:pointer-events-none select-none active:scale-[0.99]';
+      'inline-flex items-center justify-center font-medium rounded-full transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500/40 disabled:opacity-50 disabled:pointer-events-none select-none active:scale-[0.98]';
 
     const variants = {
       primary:
-        'bg-violet-600 text-white hover:bg-violet-500 active:bg-violet-700 focus:ring-violet-500 shadow-glow-sm border border-violet-400/20',
+        'bg-blue-600 text-white hover:bg-blue-500 active:bg-blue-700 shadow-glow-blue border border-blue-400/30',
       secondary:
-        'bg-[#161a24] text-slate-200 border border-white/[0.09] hover:bg-[#1e2333] hover:text-white focus:ring-slate-500',
+        'bg-white/[0.08] text-slate-100 border border-white/[0.12] hover:bg-white/[0.14] hover:text-white backdrop-blur-md',
       outline:
-        'border border-white/[0.12] bg-transparent text-slate-300 hover:bg-white/[0.05] hover:text-white hover:border-white/[0.2] focus:ring-violet-500',
+        'border border-white/[0.15] bg-transparent text-slate-300 hover:bg-white/[0.06] hover:text-white hover:border-white/[0.25]',
       ghost:
-        'text-slate-400 hover:bg-white/[0.06] hover:text-slate-200 focus:ring-slate-500',
+        'text-slate-400 hover:bg-white/[0.06] hover:text-white',
       danger:
-        'bg-rose-600/90 text-white hover:bg-rose-500 active:bg-rose-700 focus:ring-rose-500 border border-rose-500/30 shadow-glow-rose',
+        'bg-rose-600 text-white hover:bg-rose-500 active:bg-rose-700 border border-rose-500/30 shadow-[0_0_20px_rgba(244,63,94,0.3)]',
     };
 
     const sizes = {
-      sm: 'text-xs px-2.5 py-1.5 gap-1.5',
-      md: 'text-xs font-semibold px-3.5 py-2 gap-2',
-      lg: 'text-sm font-semibold px-4.5 py-2.5 gap-2.5',
+      sm: 'text-xs px-3 py-1.5 gap-1.5',
+      md: 'text-xs font-semibold px-4 py-2 gap-2',
+      lg: 'text-sm font-semibold px-5 py-2.5 gap-2.5',
     };
 
     return (

@@ -54,24 +54,24 @@ export const Modal: React.FC<ModalProps> = ({
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 0.15 }}
+            transition={{ duration: 0.2 }}
             onClick={onClose}
-            className="fixed inset-0 bg-black/80 backdrop-blur-md"
+            className="fixed inset-0 bg-black/75 backdrop-blur-md"
           />
 
           {/* Modal Dialog */}
           <motion.div
-            initial={{ opacity: 0, scale: 0.96, y: 10 }}
+            initial={{ opacity: 0, scale: 0.95, y: 12 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.96, y: 10 }}
-            transition={{ type: 'spring', damping: 25, stiffness: 350 }}
+            exit={{ opacity: 0, scale: 0.95, y: 12 }}
+            transition={{ type: 'spring', damping: 26, stiffness: 350 }}
             className={cn(
-              'relative w-full rounded-2xl border border-white/[0.1] bg-[#0e1117] text-left shadow-2xl z-10 overflow-hidden',
+              'relative w-full rounded-3xl border border-white/[0.14] bg-[#0c1220]/90 text-left shadow-2xl z-10 overflow-hidden backdrop-blur-3xl',
               maxWidths[maxWidth]
             )}
           >
             {/* Header */}
-            <div className="flex items-start justify-between p-6 border-b border-white/[0.06]">
+            <div className="flex items-start justify-between p-6 border-b border-white/[0.07]">
               <div>
                 <h3 className="text-base font-semibold text-white tracking-tight">
                   {title}
@@ -82,7 +82,7 @@ export const Modal: React.FC<ModalProps> = ({
               </div>
               <button
                 onClick={onClose}
-                className="rounded-lg p-1.5 text-slate-400 hover:bg-white/[0.06] hover:text-white transition-colors"
+                className="rounded-full p-2 text-slate-400 hover:bg-white/[0.08] hover:text-white transition-colors"
               >
                 <X className="h-4 w-4" />
               </button>
@@ -93,7 +93,7 @@ export const Modal: React.FC<ModalProps> = ({
 
             {/* Footer Actions */}
             {footer && (
-              <div className="flex items-center justify-end gap-3 p-5 border-t border-white/[0.06] bg-[#0a0c11]">
+              <div className="flex items-center justify-end gap-3 p-5 border-t border-white/[0.07] bg-white/[0.02]">
                 {footer}
               </div>
             )}
