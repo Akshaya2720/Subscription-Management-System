@@ -38,12 +38,33 @@ htmlcov/
 .DS_Store
 *.swp
 *.swo
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
 
 # Environment variables
 .env
 .env.local
+*.local
 
 # Database
 *.db
 *.sqlite
 *.sqlite3
+
+# Node & Frontend
+node_modules
+dist
+dist-ssr
+tsconfig.tsbuildinfo
+
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
