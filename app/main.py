@@ -10,13 +10,35 @@ from app.modules.products.models import Product, ProductVariant
 from app.modules.plans.models import SubscriptionPlan, PlanPriceHistory
 from app.modules.quotations.models import Quotation, QuotationItem
 from app.modules.subscriptions.models import Subscription, SubscriptionItem, SubscriptionEvent
-from app.modules.billing.models import Invoice, Payment
+from app.modules.billing.models import (
+    Invoice,
+    InvoiceItem,
+    BillingRun,
+    BillingRunItem,
+    TaxRule,
+    Discount,
+    DiscountRedemption,
+    Payment,
+    PaymentAllocation,
+    PaymentRefund,
+    ReconciliationRun,
+    ReconciliationItem,
+    Contract,
+    ServiceCommitment,
+    ServiceEvent,
+    VerificationRun,
+    VerificationResult,
+    ServiceCredit,
+    InvoiceAnomaly,
+    AuditEvent,
+)
 
 from app.modules.customers.router import router as customer_router
 from app.modules.products.router import product_router, variant_router
 from app.modules.plans.router import router as plan_router
 from app.modules.quotations.router import router as quotation_router
 from app.modules.subscriptions.router import subscription_router, impact_router
+from app.modules.billing.router import router as billing_router
 
 
 @asynccontextmanager
@@ -29,7 +51,7 @@ async def lifespan(app: FastAPI):
 app = FastAPI(
     title=settings.PROJECT_NAME,
     version=settings.VERSION,
-    description="VERISUB Subscription Engine Backend API - Managing complete software subscription lifecycle, quotation conversion, digital twin, and change impact preview.",
+    description="VERISUB Intelligent Subscription & Billing Verification Platform - Billing runs, invoices, taxes, discounts, payments, reconciliation, SLA contract verification, AI anomaly detection, and tamper-evident audit trail.",
     lifespan=lifespan,
     docs_url="/docs",
     redoc_url="/redoc",
@@ -54,13 +76,14 @@ app.include_router(plan_router, prefix=api_v1_prefix)
 app.include_router(quotation_router, prefix=api_v1_prefix)
 app.include_router(subscription_router, prefix=api_v1_prefix)
 app.include_router(impact_router, prefix=api_v1_prefix)
+app.include_router(billing_router, prefix=api_v1_prefix)
 
 
 @app.get("/health", tags=["Health"])
 def health_check():
     return {
         "status": "healthy",
-        "service": "verisub-subscription-engine",
+        "service": "verisub-billing-verification",
         "version": settings.VERSION,
     }
 
@@ -68,7 +91,7 @@ def health_check():
 @app.get("/", tags=["Root"])
 def root():
     return {
-        "message": "Welcome to VERISUB Subscription Management System API",
+        "message": "Welcome to VERISUB Intelligent Subscription & Billing Verification API",
         "docs": "/docs",
         "version": settings.VERSION,
     }
