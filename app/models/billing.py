@@ -19,7 +19,7 @@ from sqlalchemy import (
     CheckConstraint,
     Index,
 )
-from sqlalchemy.orm import Mapped, mapped_column, relationship
+from sqlalchemy.orm import Mapped, mapped_column, relationship, synonym
 
 from app.models.base import Base, TimestampMixin, UUIDPrimaryKeyMixin
 
@@ -27,6 +27,14 @@ from app.models.base import Base, TimestampMixin, UUIDPrimaryKeyMixin
 class DiscountType(str, enum.Enum):
     PERCENTAGE = "PERCENTAGE"
     FIXED_AMOUNT = "FIXED_AMOUNT"
+
+
+class PaymentMethod(str, enum.Enum):
+    BANK_TRANSFER = "BANK_TRANSFER"
+    CREDIT_CARD = "CREDIT_CARD"
+    CRYPTO = "CRYPTO"
+    SIMULATED = "SIMULATED"
+    MANUAL = "MANUAL"
 
 
 class InvoiceStatus(str, enum.Enum):
@@ -62,7 +70,13 @@ class TaxRule(Base, UUIDPrimaryKeyMixin, TimestampMixin):
     rate_percentage: Mapped[Decimal] = mapped_column(Numeric(5, 2), nullable=False)
     country_code: Mapped[str] = mapped_column(String(10), default="US", nullable=False)
     state_or_province: Mapped[Optional[str]] = mapped_column(String(100), nullable=True)
+    is_default: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
     is_active: Mapped[bool] = mapped_column(Boolean, default=True, nullable=False)
+
+    tax_code = synonym("tax_type")
+    rate_percent = synonym("rate_percentage")
+    country = synonym("country_code")
+    state_province = synonym("state_or_province")
 
     __table_args__ = (
         UniqueConstraint("organization_id", "name", name="uq_org_tax_rule_name"),
@@ -104,6 +118,9 @@ class Discount(Base, UUIDPrimaryKeyMixin, TimestampMixin):
     applies_to_subscription: Mapped[bool] = mapped_column(Boolean, default=True, nullable=False)
     is_active: Mapped[bool] = mapped_column(Boolean, default=True, nullable=False)
 
+    description = synonym("name")
+    amount = synonym("discount_value")
+
     __table_args__ = (
         UniqueConstraint("organization_id", "code", name="uq_org_discount_code"),
         CheckConstraint("discount_value >= 0", name="ck_discount_value_nonneg"),
@@ -144,6 +161,7 @@ class Invoice(Base, UUIDPrimaryKeyMixin):
     due_date: Mapped[date] = mapped_column(Date, nullable=False, index=True)
     period_start: Mapped[Optional[date]] = mapped_column(Date, nullable=True)
     period_end: Mapped[Optional[date]] = mapped_column(Date, nullable=True)
+    currency: Mapped[str] = mapped_column(String(10), default="USD", nullable=False)
 
     subtotal: Mapped[Decimal] = mapped_column(Numeric(12, 2), default=Decimal("0.00"), nullable=False)
     discount_total: Mapped[Decimal] = mapped_column(Numeric(12, 2), default=Decimal("0.00"), nullable=False)
@@ -152,6 +170,10 @@ class Invoice(Base, UUIDPrimaryKeyMixin):
     total_amount: Mapped[Decimal] = mapped_column(Numeric(12, 2), default=Decimal("0.00"), nullable=False)
     amount_paid: Mapped[Decimal] = mapped_column(Numeric(12, 2), default=Decimal("0.00"), nullable=False)
     amount_due: Mapped[Decimal] = mapped_column(Numeric(12, 2), default=Decimal("0.00"), nullable=False)
+    notes: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
+
+    discount_amount = synonym("discount_total")
+    tax_amount = synonym("tax_total")
 
     status: Mapped[str] = mapped_column(String(30), default="ISSUED", nullable=False, index=True)
     verification_status: Mapped[str] = mapped_column(String(30), default="VERIFIED", nullable=False)

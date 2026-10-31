@@ -3,9 +3,9 @@ from decimal import Decimal
 from datetime import datetime, date, timezone
 from typing import Optional, List, Tuple
 from sqlalchemy.orm import Session
-from sqlalchemy import or_
 
 from app.modules.plans.models import SubscriptionPlan, PlanPriceHistory
+from app.modules.plans.repository import PlanRepository
 from app.modules.plans.schemas import PlanCreate, PlanUpdate
 from app.core.exceptions import (
     EntityNotFoundException,
@@ -17,13 +17,15 @@ from app.core.exceptions import (
 class PlanService:
     @staticmethod
     def create_plan(db: Session, org_id: uuid.UUID, data: PlanCreate) -> SubscriptionPlan:
-        existing = (
-            db.query(SubscriptionPlan)
-            .filter(SubscriptionPlan.organization_id == org_id, SubscriptionPlan.name == data.name)
-            .first()
-        )
-        if existing:
+        repo = PlanRepository(db)
+        if repo.get_by_name(org_id, data.name):
             raise DuplicateEntityException(f"Subscription plan '{data.name}' already exists.")
+
+        # Determine boolean flags from configuration or defaults
+        auto_close = bool(data.auto_close_configuration and data.auto_close_configuration.get("enabled", False))
+        closable_early = bool(data.early_closure_configuration is None or data.early_closure_configuration.get("allowed", True))
+        pausable = bool(data.pause_configuration is None or data.pause_configuration.get("allowed", True))
+        renewable = bool(data.renewal_configuration is None or data.renewal_configuration.get("allowed", True))
 
         plan = SubscriptionPlan(
             organization_id=org_id,
@@ -34,6 +36,10 @@ class PlanService:
             minimum_quantity=data.minimum_quantity,
             start_availability_date=data.start_availability_date,
             end_availability_date=data.end_availability_date,
+            is_auto_close_at_end=auto_close,
+            is_closable_early=closable_early,
+            is_pausable=pausable,
+            is_renewable=renewable,
             auto_close_configuration=data.auto_close_configuration or {},
             early_closure_configuration=data.early_closure_configuration or {},
             pause_configuration=data.pause_configuration or {},
@@ -57,30 +63,19 @@ class PlanService:
 
     @staticmethod
     def get_plan(db: Session, org_id: uuid.UUID, plan_id: uuid.UUID) -> SubscriptionPlan:
-        plan = (
-            db.query(SubscriptionPlan)
-            .filter(SubscriptionPlan.organization_id == org_id, SubscriptionPlan.id == plan_id)
-            .first()
-        )
+        repo = PlanRepository(db)
+        plan = repo.get_by_id(org_id, plan_id)
         if not plan:
             raise EntityNotFoundException("SubscriptionPlan", str(plan_id))
         return plan
 
     @staticmethod
     def update_plan(db: Session, org_id: uuid.UUID, plan_id: uuid.UUID, data: PlanUpdate) -> SubscriptionPlan:
+        repo = PlanRepository(db)
         plan = PlanService.get_plan(db, org_id, plan_id)
 
         if data.name and data.name != plan.name:
-            existing = (
-                db.query(SubscriptionPlan)
-                .filter(
-                    SubscriptionPlan.organization_id == org_id,
-                    SubscriptionPlan.name == data.name,
-                    SubscriptionPlan.id != plan_id,
-                )
-                .first()
-            )
-            if existing:
+            if repo.get_by_name(org_id, data.name, exclude_id=plan_id):
                 raise DuplicateEntityException(f"Plan name '{data.name}' already in use.")
             plan.name = data.name
 
@@ -98,19 +93,18 @@ class PlanService:
 
         update_dict = data.model_dump(exclude_unset=True)
         for key, value in update_dict.items():
-            if key not in ("name", "plan_price", "billing_frequency") and value is not None:
+            if key not in ("name", "plan_price") and value is not None:
                 setattr(plan, key, value)
-            elif key == "billing_frequency" and value is not None:
-                plan.billing_frequency = value.value
 
-        db.commit()
-        db.refresh(plan)
-        return plan
+        if data.auto_close_configuration is not None:
+            plan.is_auto_close_at_end = bool(data.auto_close_configuration.get("enabled", False))
+        if data.early_closure_configuration is not None:
+            plan.is_closable_early = bool(data.early_closure_configuration.get("allowed", True))
+        if data.pause_configuration is not None:
+            plan.is_pausable = bool(data.pause_configuration.get("allowed", True))
+        if data.renewal_configuration is not None:
+            plan.is_renewable = bool(data.renewal_configuration.get("allowed", True))
 
-    @staticmethod
-    def delete_or_archive_plan(db: Session, org_id: uuid.UUID, plan_id: uuid.UUID) -> SubscriptionPlan:
-        plan = PlanService.get_plan(db, org_id, plan_id)
-        plan.status = "ARCHIVED"
         db.commit()
         db.refresh(plan)
         return plan
@@ -120,55 +114,29 @@ class PlanService:
         db: Session,
         org_id: uuid.UUID,
         search: Optional[str] = None,
+        billing_frequency: Optional[str] = None,
         status: Optional[str] = None,
-        frequency: Optional[str] = None,
-        page: int = 1,
-        per_page: int = 20,
+        skip: int = 0,
+        limit: int = 50,
     ) -> Tuple[List[SubscriptionPlan], int]:
-        query = db.query(SubscriptionPlan).filter(SubscriptionPlan.organization_id == org_id)
-
-        if status:
-            query = query.filter(SubscriptionPlan.status == status.upper())
-
-        if frequency:
-            query = query.filter(SubscriptionPlan.billing_frequency == frequency.upper())
-
-        if search:
-            search_pattern = f"%{search}%"
-            query = query.filter(
-                or_(
-                    SubscriptionPlan.name.ilike(search_pattern),
-                    SubscriptionPlan.description.ilike(search_pattern),
-                )
-            )
-
-        total = query.count()
-        items = query.order_by(SubscriptionPlan.created_at.desc()).offset((page - 1) * per_page).limit(per_page).all()
-        return items, total
+        repo = PlanRepository(db)
+        return repo.list(org_id, search=search, billing_frequency=billing_frequency, status=status, skip=skip, limit=limit)
 
     @staticmethod
-    def validate_plan_availability(plan: SubscriptionPlan, check_date: Optional[date] = None) -> bool:
-        """Verify if a plan is currently available for subscription."""
+    def get_plan_price_history(db: Session, org_id: uuid.UUID, plan_id: uuid.UUID) -> List[PlanPriceHistory]:
+        PlanService.get_plan(db, org_id, plan_id)
+        repo = PlanRepository(db)
+        return repo.get_price_history(plan_id)
+
+    get_price_history = get_plan_price_history
+
+    @staticmethod
+    def validate_plan_availability(plan: SubscriptionPlan, target_date: Optional[date] = None) -> bool:
+        check_date = target_date or date.today()
         if plan.status != "ACTIVE":
-            raise BusinessRuleValidationException(f"Plan '{plan.name}' is not ACTIVE (status: {plan.status}).")
-
-        target_date = check_date or date.today()
-        if plan.start_availability_date and target_date < plan.start_availability_date:
-            raise BusinessRuleValidationException(
-                f"Plan '{plan.name}' is not yet available. Available from {plan.start_availability_date}."
-            )
-        if plan.end_availability_date and target_date > plan.end_availability_date:
-            raise BusinessRuleValidationException(
-                f"Plan '{plan.name}' availability expired on {plan.end_availability_date}."
-            )
+            return False
+        if plan.start_availability_date and check_date < plan.start_availability_date:
+            return False
+        if plan.end_availability_date and check_date > plan.end_availability_date:
+            return False
         return True
-
-    @staticmethod
-    def get_price_history(db: Session, org_id: uuid.UUID, plan_id: uuid.UUID) -> List[PlanPriceHistory]:
-        plan = PlanService.get_plan(db, org_id, plan_id)
-        return (
-            db.query(PlanPriceHistory)
-            .filter(PlanPriceHistory.plan_id == plan.id)
-            .order_by(PlanPriceHistory.created_at.desc())
-            .all()
-        )
