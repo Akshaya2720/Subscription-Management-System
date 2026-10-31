@@ -2,8 +2,6 @@
 __pycache__/
 *.py[cod]
 *$py.class
-
-# C extensions
 *.so
 
 # Distribution / packaging
@@ -71,8 +69,14 @@ htmlcov/
 backend/*.db
 backend/*.sqlite
 
-# Node / Frontend
+# Node & Frontend
 node_modules/
+dist
+dist-ssr
+*.local
+tsconfig.tsbuildinfo
+
+# Logs
 logs
 *.log
 npm-debug.log*
@@ -80,7 +84,6 @@ yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
-tsconfig.tsbuildinfo
 
 # OS files
 .DS_Store
