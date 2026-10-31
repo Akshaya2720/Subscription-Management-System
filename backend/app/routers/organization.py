@@ -7,10 +7,16 @@ from sqlalchemy.orm import Session
 
 from backend.app.core.permissions import PermissionEnum
 from backend.app.db.session import get_db
-from backend.app.dependencies.auth import get_current_membership, require_permissions
+from backend.app.dependencies.auth import (
+    get_current_membership,
+    get_current_user,
+    require_permissions,
+)
 from backend.app.models.membership import Membership
 from backend.app.models.organization import Organization, OrganizationSettings
+from backend.app.models.user import User
 from backend.app.schemas.organization import (
+    OrganizationCreate,
     OrganizationResponse,
     OrganizationSettingsResponse,
     OrganizationSettingsUpdate,
@@ -19,6 +25,28 @@ from backend.app.schemas.organization import (
 from backend.app.services import organization_service
 
 router = APIRouter(prefix="/api/v1/organizations", tags=["Organizations"])
+
+
+@router.post(
+    "",
+    response_model=OrganizationResponse,
+    status_code=status.HTTP_201_CREATED,
+    summary="Create a new organization",
+)
+def create_new_organization(
+    payload: OrganizationCreate,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+) -> Organization:
+    """Create a new organization for the authenticated user and assign them the ADMIN role.
+
+    Requires an authenticated user session.
+    """
+    return organization_service.create_organization(
+        db=db,
+        user=current_user,
+        payload=payload,
+    )
 
 
 @router.get(

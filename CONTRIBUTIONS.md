@@ -163,7 +163,7 @@ CONTRIBUTIONS.md
 Executed full pytest suite against all functional domains:
 
 ```
-====================== 55 passed, 112 warnings in 12.90s ======================
+====================== 57 passed, 116 warnings in 17.73s ======================
 ```
 
 ### Breakdown of Verified Scenarios:
@@ -178,7 +178,8 @@ Executed full pytest suite against all functional domains:
    - Reset-password flow with token consumption and session invalidation.
    - Authenticated current user profile retrieval (`/auth/me`) and profile update.
    - Password change with old password verification and complexity validation.
-2. **RBAC & Isolation Tests (`test_rbac.py` - 15 tests):**
+2. **RBAC & Isolation Tests (`test_rbac.py` - 17 tests):**
+   - Organization creation by authenticated user (`POST /organizations`) and duplicate email rejection.
    - Admin privileges (create staff, update org, manage customers).
    - Staff restrictions (cannot create staff, cannot modify organization settings, can manage operational customers).
    - Cross-organization customer isolation (Organization A cannot access Organization B's customer).

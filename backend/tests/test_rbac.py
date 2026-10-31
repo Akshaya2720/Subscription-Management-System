@@ -50,6 +50,36 @@ class TestAdminPermissions:
         )
         assert resp.status_code == 201
 
+    def test_create_organization_authenticated(self, client: TestClient):
+        reg_data = register_and_login(client)
+        token = reg_data["access_token"]
+        resp = client.post(
+            "/api/v1/organizations",
+            headers=auth_headers(token),
+            json={
+                "name": "Second Organization",
+                "email": "second@org.com",
+                "industry": "Finance",
+            },
+        )
+        assert resp.status_code == 201
+        data = resp.json()
+        assert data["name"] == "Second Organization"
+        assert data["email"] == "second@org.com"
+
+    def test_create_organization_duplicate_email(self, client: TestClient):
+        reg_data = register_and_login(client)
+        token = reg_data["access_token"]
+        resp = client.post(
+            "/api/v1/organizations",
+            headers=auth_headers(token),
+            json={
+                "name": "Duplicate Org",
+                "email": "org@testco.com",  # already used
+            },
+        )
+        assert resp.status_code == 409
+
     def test_admin_can_view_organization(self, client: TestClient):
         reg_data = register_and_login(client)
         token = reg_data["access_token"]
