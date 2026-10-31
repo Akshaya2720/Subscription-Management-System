@@ -6,19 +6,16 @@ import {
   AlertTriangle,
   Send,
   CheckCircle2,
-  HelpCircle,
-  TrendingDown,
   ShieldAlert,
   Loader2,
   Bot,
   User,
 } from 'lucide-react';
-import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '../../components/common/Card';
+import { Card, CardContent } from '../../components/common/Card';
 import { Button } from '../../components/common/Button';
 import { Badge } from '../../components/common/Badge';
 import { aiService } from '../../services/aiService';
 import { AIInsight, AIAssistantMessage } from '../../types';
-import { formatDate } from '../../utils';
 
 export const AIInsightsDashboard: React.FC = () => {
   const queryClient = useQueryClient();
@@ -94,15 +91,15 @@ export const AIInsightsDashboard: React.FC = () => {
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
           <div className="flex items-center gap-2">
-            <h1 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-white">
+            <h1 className="text-2xl font-bold tracking-tight text-[#1d1d1f]">
               AI Insights & Intelligent Assistant
             </h1>
-            <span className="inline-flex items-center gap-1 rounded-full bg-brand-50 px-2.5 py-0.5 text-xs font-semibold text-brand-700 dark:bg-brand-950/60 dark:text-brand-300">
+            <span className="inline-flex items-center gap-1 rounded-full bg-blue-50 px-2.5 py-0.5 text-xs font-semibold text-[#0071e3] border border-blue-200">
               <Sparkles className="h-3.5 w-3.5" />
               Real Telemetry
             </span>
           </div>
-          <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
+          <p className="text-xs sm:text-sm text-[#6e6e73] mt-1">
             Proactive anomaly detection across invoice cycles, unexpected discount spikes, and natural language analytics
           </p>
         </div>
@@ -111,14 +108,14 @@ export const AIInsightsDashboard: React.FC = () => {
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
         {/* Left Column: Anomalies & Detected Insights */}
         <div className="lg:col-span-7 space-y-4">
-          <h3 className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+          <h3 className="text-xs font-bold uppercase tracking-wider text-[#6e6e73]">
             Detected Anomalies & Risk Signals ({insights.length})
           </h3>
 
           {isLoading ? (
             <div className="space-y-3">
               {[1, 2].map((i) => (
-                <div key={i} className="h-32 rounded-xl bg-slate-100 dark:bg-slate-800 animate-pulse" />
+                <div key={i} className="h-32 rounded-2xl bg-white border border-black/[0.08] animate-pulse" />
               ))}
             </div>
           ) : (
@@ -131,10 +128,10 @@ export const AIInsightsDashboard: React.FC = () => {
                   key={insight.id}
                   className={`border transition-all ${
                     isHigh
-                      ? 'border-rose-200 dark:border-rose-900 bg-rose-50/20'
+                      ? 'border-rose-200 bg-rose-50/40'
                       : isMedium
-                      ? 'border-amber-200 dark:border-amber-900 bg-amber-50/20'
-                      : 'border-slate-200 dark:border-slate-800'
+                      ? 'border-amber-200 bg-amber-50/40'
+                      : 'border-black/[0.08] bg-white'
                   }`}
                 >
                   <CardContent className="p-5">
@@ -145,9 +142,9 @@ export const AIInsightsDashboard: React.FC = () => {
                         ) : isMedium ? (
                           <AlertTriangle className="h-5 w-5 text-amber-600 shrink-0" />
                         ) : (
-                          <BrainCircuit className="h-5 w-5 text-brand-600 shrink-0" />
+                          <BrainCircuit className="h-5 w-5 text-[#0071e3] shrink-0" />
                         )}
-                        <h4 className="text-sm font-bold text-slate-900 dark:text-white">
+                        <h4 className="text-sm font-bold text-[#1d1d1f]">
                           {insight.title}
                         </h4>
                       </div>
@@ -159,23 +156,23 @@ export const AIInsightsDashboard: React.FC = () => {
                       </Badge>
                     </div>
 
-                    <p className="mt-2 text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
+                    <p className="mt-2 text-xs text-[#1d1d1f] leading-relaxed">
                       {insight.explanation}
                     </p>
 
-                    <div className="mt-3 rounded-lg bg-white/70 p-2.5 text-xs text-slate-700 dark:bg-slate-800/80 dark:text-slate-200 border border-slate-100 dark:border-slate-800">
-                      <span className="font-semibold text-brand-600 dark:text-brand-400">
+                    <div className="mt-3 rounded-xl bg-white p-3 text-xs text-[#1d1d1f] border border-black/[0.08] shadow-2xs">
+                      <span className="font-semibold text-[#0071e3]">
                         Recommended Action:{' '}
                       </span>
                       {insight.recommended_action}
                     </div>
 
-                    <div className="mt-4 flex items-center justify-between pt-2 border-t border-slate-100 dark:border-slate-800/60 text-xs">
-                      <span className="font-mono text-slate-400 text-[11px]">
+                    <div className="mt-4 flex items-center justify-between pt-2 border-t border-black/[0.06] text-xs">
+                      <span className="font-mono text-[#86868b] text-[11px]">
                         Ref: {insight.entity_reference}
                       </span>
                       {insight.is_reviewed ? (
-                        <span className="inline-flex items-center gap-1 font-semibold text-emerald-600">
+                        <span className="inline-flex items-center gap-1 font-semibold text-emerald-700">
                           <CheckCircle2 className="h-3.5 w-3.5" /> Reviewed
                         </span>
                       ) : (
@@ -197,17 +194,17 @@ export const AIInsightsDashboard: React.FC = () => {
         </div>
 
         {/* Right Column: AI Assistant Chat Interface */}
-        <div className="lg:col-span-5 flex flex-col h-[650px] rounded-2xl border border-slate-200 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-900 overflow-hidden">
+        <div className="lg:col-span-5 flex flex-col h-[650px] rounded-3xl border border-black/[0.08] bg-white shadow-sm overflow-hidden">
           {/* Header */}
-          <div className="flex items-center gap-3 border-b border-slate-100 bg-slate-50/70 p-4 dark:border-slate-800 dark:bg-slate-800/50">
-            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-brand-600 text-white shadow-xs">
+          <div className="flex items-center gap-3 border-b border-black/[0.06] bg-[#fbfbfd] p-4">
+            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#1d1d1f] text-white shadow-2xs">
               <Bot className="h-5 w-5" />
             </div>
             <div>
-              <h3 className="text-xs font-bold text-slate-900 dark:text-white">
+              <h3 className="text-xs font-bold text-[#1d1d1f]">
                 Member 3 Assistant Endpoint
               </h3>
-              <p className="text-[10px] text-slate-500">FastAPI Natural Language Agent</p>
+              <p className="text-[10px] text-[#6e6e73]">FastAPI Natural Language Agent</p>
             </div>
           </div>
 
@@ -221,24 +218,24 @@ export const AIInsightsDashboard: React.FC = () => {
                   className={`flex items-start gap-2.5 ${isUser ? 'flex-row-reverse' : ''}`}
                 >
                   <div
-                    className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-lg text-xs font-bold ${
+                    className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-xs font-bold ${
                       isUser
-                        ? 'bg-slate-800 text-white dark:bg-slate-700'
-                        : 'bg-brand-600 text-white'
+                        ? 'bg-[#1d1d1f] text-white'
+                        : 'bg-[#0071e3] text-white'
                     }`}
                   >
                     {isUser ? <User className="h-3.5 w-3.5" /> : <Bot className="h-3.5 w-3.5" />}
                   </div>
                   <div
-                    className={`max-w-[85%] rounded-xl p-3 text-xs leading-relaxed ${
+                    className={`max-w-[85%] rounded-2xl p-3.5 text-xs leading-relaxed ${
                       isUser
-                        ? 'bg-brand-600 text-white'
-                        : 'bg-slate-100 text-slate-800 dark:bg-slate-800 dark:text-slate-200'
+                        ? 'bg-[#0071e3] text-white'
+                        : 'bg-[#f5f5f7] text-[#1d1d1f] border border-black/[0.04]'
                     }`}
                   >
                     <p className="whitespace-pre-line">{m.content}</p>
                     {m.sources && m.sources.length > 0 && (
-                      <div className="mt-2 pt-1 border-t border-slate-200/40 text-[10px] text-slate-500 dark:text-slate-400">
+                      <div className="mt-2 pt-1 border-t border-black/[0.06] text-[10px] text-[#6e6e73]">
                         Sources: {m.sources.join(', ')}
                       </div>
                     )}
@@ -247,16 +244,16 @@ export const AIInsightsDashboard: React.FC = () => {
               );
             })}
             {isAsking && (
-              <div className="flex items-center gap-2 text-xs text-slate-400 italic">
-                <Loader2 className="h-4 w-4 animate-spin text-brand-600" />
+              <div className="flex items-center gap-2 text-xs text-[#6e6e73] italic">
+                <Loader2 className="h-4 w-4 animate-spin text-[#0071e3]" />
                 Querying platform telemetry and calculating authoritative response...
               </div>
             )}
           </div>
 
           {/* Quick Prompts */}
-          <div className="border-t border-slate-100 bg-slate-50/50 p-2.5 dark:border-slate-800 dark:bg-slate-900/50">
-            <p className="text-[10px] font-semibold text-slate-400 uppercase tracking-wider mb-1.5 px-1">
+          <div className="border-t border-black/[0.06] bg-[#fbfbfd] p-3">
+            <p className="text-[10px] font-semibold text-[#86868b] uppercase tracking-wider mb-2 px-1">
               Suggested Questions:
             </p>
             <div className="flex flex-wrap gap-1.5">
@@ -265,7 +262,7 @@ export const AIInsightsDashboard: React.FC = () => {
                   key={idx}
                   onClick={() => handleSendMessage(q)}
                   disabled={isAsking}
-                  className="rounded-md border border-slate-200 bg-white px-2 py-1 text-[11px] font-medium text-slate-700 hover:border-brand-500 hover:text-brand-600 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300 dark:hover:border-brand-500"
+                  className="rounded-full border border-[#d2d2d7] bg-white px-3 py-1 text-[11px] font-medium text-[#1d1d1f] hover:border-[#0071e3] hover:text-[#0071e3] transition-colors shadow-2xs"
                 >
                   {q}
                 </button>
@@ -274,7 +271,7 @@ export const AIInsightsDashboard: React.FC = () => {
           </div>
 
           {/* Input Box */}
-          <div className="p-3 border-t border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900">
+          <div className="p-3 border-t border-black/[0.06] bg-white">
             <form
               onSubmit={(e) => {
                 e.preventDefault();
@@ -287,7 +284,7 @@ export const AIInsightsDashboard: React.FC = () => {
                 value={inputPrompt}
                 onChange={(e) => setInputPrompt(e.target.value)}
                 placeholder="Ask about overdue bills, churn risk, SLA breaches..."
-                className="flex-1 rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-xs text-slate-900 placeholder-slate-400 focus:border-brand-500 focus:bg-white focus:outline-none focus:ring-2 focus:ring-brand-500/20 dark:border-slate-700 dark:bg-slate-800 dark:text-white"
+                className="flex-1 rounded-full border border-[#d2d2d7] bg-white px-4 py-2 text-xs text-[#1d1d1f] placeholder-[#86868b] focus:border-[#0071e3] focus:outline-none focus:ring-2 focus:ring-[#0071e3]/20 shadow-2xs"
               />
               <Button
                 type="submit"

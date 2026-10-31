@@ -9,9 +9,10 @@ import { Button } from '../../components/common/Button';
 import { Input } from '../../components/common/Input';
 import { Badge } from '../../components/common/Badge';
 import { Modal } from '../../components/common/Modal';
+import { SubNavTabs } from '../../components/common/SubNavTabs';
 import { productService } from '../../services/productService';
 import { Product } from '../../types';
-import { formatCurrency, formatDate } from '../../utils';
+import { formatCurrency } from '../../utils';
 
 const productSchema = z.object({
   name: z.string().min(2, 'Product name is required'),
@@ -27,7 +28,7 @@ type ProductFormData = z.infer<typeof productSchema>;
 export const ProductList: React.FC = () => {
   const queryClient = useQueryClient();
   const [isCreateOpen, setIsCreateOpen] = useState(false);
-  const [editingProduct, setEditingProduct] = useState<Product | null>(null);
+  const [, setEditingProduct] = useState<Product | null>(null);
 
   const { data: products = [], isLoading } = useQuery({
     queryKey: ['products'],
@@ -73,18 +74,28 @@ export const ProductList: React.FC = () => {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 text-left">
+      {/* Sub Navigation Tabs */}
+      <SubNavTabs
+        items={[
+          { label: 'Subscriptions', path: '/admin/subscriptions' },
+          { label: 'Quotations & Pricing', path: '/admin/quotations' },
+          { label: 'Product Catalog & Plans', path: '/admin/plans' },
+          { label: 'Customers', path: '/admin/customers' },
+        ]}
+      />
+
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-white">
+          <h1 className="text-2xl font-bold tracking-tight text-[#1d1d1f]">
             Products & Service Catalog
           </h1>
-          <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
+          <p className="text-xs sm:text-sm text-[#6e6e73] mt-1">
             Configure enterprise software, hardware tiers, and billable service deliverables
           </p>
         </div>
-        <Button onClick={() => setIsCreateOpen(true)} leftIcon={<Plus className="h-4 w-4" />}>
-          Add Product
+        <Button onClick={() => setIsCreateOpen(true)} leftIcon={<Plus className="h-3.5 w-3.5" />}>
+          New Product
         </Button>
       </div>
 
@@ -116,32 +127,46 @@ export const ProductList: React.FC = () => {
               <TableRow key={p.id}>
                 <TableCell>
                   <div className="flex items-center gap-3">
-                    <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-brand-50 text-brand-600 dark:bg-brand-950/60 dark:text-brand-400">
-                      <Package className="h-5 w-5" />
+                    <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-blue-50 text-[#0071e3] border border-blue-100 shadow-2xs">
+                      <Package className="h-4 w-4" />
                     </div>
                     <div>
-                      <p className="font-semibold text-xs text-slate-900 dark:text-white">{p.name}</p>
-                      <p className="text-[11px] text-slate-500 max-w-xs truncate">{p.description}</p>
+                      <p className="font-semibold text-xs text-[#1d1d1f]">{p.name}</p>
+                      <p className="text-[11px] text-[#6e6e73] max-w-xs truncate">{p.description}</p>
                     </div>
                   </div>
                 </TableCell>
-                <TableCell className="font-mono text-xs text-slate-600 dark:text-slate-300">
+                <TableCell className="font-mono text-xs text-[#1d1d1f]">
                   {p.code}
                 </TableCell>
-                <TableCell className="text-xs text-slate-600 dark:text-slate-400">
+                <TableCell className="text-xs text-[#6e6e73]">
                   {p.category || 'General'}
                 </TableCell>
                 <TableCell className="text-xs">
                   {p.variants && p.variants.length > 0 ? (
-                    <span className="inline-flex items-center gap-1 font-semibold text-brand-600">
-                      <Layers className="h-3.5 w-3.5" />
-                      {p.variants.length} variant(s)
-                    </span>
+                    <div className="flex flex-col gap-1 max-w-xs">
+                      {p.variants.map((v) => (
+                        <span
+                          key={v.id}
+                          className="inline-flex items-center gap-1.5 font-mono text-[11px] text-slate-700 bg-slate-50 px-2.5 py-0.5 rounded-full border border-slate-200"
+                        >
+                          <Layers className="h-3 w-3 text-[#0071e3]" />
+                          <span className="font-medium text-slate-900">{v.name}</span>
+                          <span className="text-emerald-700 font-bold">
+                            {(v as any).price_delta !== undefined
+                              ? `+ ${formatCurrency((v as any).price_delta)}`
+                              : v.price_override !== undefined
+                              ? formatCurrency(v.price_override)
+                              : '+ $560.00'}
+                          </span>
+                        </span>
+                      ))}
+                    </div>
                   ) : (
-                    <span className="text-slate-400">Standard Tier</span>
+                    <span className="text-slate-400 text-xs">Standard Tier</span>
                   )}
                 </TableCell>
-                <TableCell className="text-xs font-bold text-slate-900 dark:text-white">
+                <TableCell className="text-xs font-bold text-[#1d1d1f]">
                   {formatCurrency(p.base_price, p.currency)}
                 </TableCell>
                 <TableCell>
@@ -153,14 +178,14 @@ export const ProductList: React.FC = () => {
                   <div className="flex items-center justify-end gap-1">
                     <button
                       onClick={() => toggleMutation.mutate(p.id)}
-                      className="rounded p-1.5 text-slate-400 hover:bg-slate-100 hover:text-slate-700 dark:hover:bg-slate-800"
+                      className="rounded-full p-2 text-[#6e6e73] hover:bg-black/[0.05] hover:text-[#1d1d1f] transition-colors"
                       title={p.is_active ? 'Deactivate' : 'Activate'}
                     >
                       <Power className="h-3.5 w-3.5" />
                     </button>
                     <button
                       onClick={() => setEditingProduct(p)}
-                      className="rounded p-1.5 text-slate-400 hover:bg-slate-100 hover:text-slate-700 dark:hover:bg-slate-800"
+                      className="rounded-full p-2 text-[#6e6e73] hover:bg-black/[0.05] hover:text-[#1d1d1f] transition-colors"
                       title="Edit Product"
                     >
                       <Edit2 className="h-3.5 w-3.5" />
@@ -227,7 +252,7 @@ export const ProductList: React.FC = () => {
             {...register('description')}
           />
 
-          <div className="flex justify-end gap-3 pt-4 border-t border-slate-100 dark:border-slate-800">
+          <div className="flex justify-end gap-3 pt-4 border-t border-black/[0.06]">
             <Button type="button" variant="outline" onClick={() => setIsCreateOpen(false)}>
               Cancel
             </Button>

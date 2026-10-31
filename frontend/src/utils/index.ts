@@ -63,9 +63,9 @@ export function getStatusBadgeVariant(status: string): {
     case 'approved':
     case 'completed':
       return {
-        bg: 'bg-emerald-50 dark:bg-emerald-950/40',
-        text: 'text-emerald-700 dark:text-emerald-400',
-        border: 'border-emerald-200 dark:border-emerald-800',
+        bg: 'bg-emerald-50',
+        text: 'text-emerald-800 font-semibold',
+        border: 'border-emerald-200/80',
         label: status.toUpperCase(),
       };
     case 'pending':
@@ -75,18 +75,18 @@ export function getStatusBadgeVariant(status: string): {
     case 'running':
     case 'in_progress':
       return {
-        bg: 'bg-indigo-50 dark:bg-indigo-950/40',
-        text: 'text-indigo-700 dark:text-indigo-400',
-        border: 'border-indigo-200 dark:border-indigo-800',
+        bg: 'bg-blue-50',
+        text: 'text-[#0071e3] font-semibold',
+        border: 'border-blue-200/80',
         label: status.replace('_', ' ').toUpperCase(),
       };
     case 'paused':
     case 'partially_paid':
     case 'draft':
       return {
-        bg: 'bg-amber-50 dark:bg-amber-950/40',
-        text: 'text-amber-700 dark:text-amber-400',
-        border: 'border-amber-200 dark:border-amber-800',
+        bg: 'bg-amber-50',
+        text: 'text-amber-800 font-semibold',
+        border: 'border-amber-200/80',
         label: status.replace('_', ' ').toUpperCase(),
       };
     case 'discrepancy_detected':
@@ -96,16 +96,16 @@ export function getStatusBadgeVariant(status: string): {
     case 'cancelled':
     case 'closed':
       return {
-        bg: 'bg-rose-50 dark:bg-rose-950/40',
-        text: 'text-rose-700 dark:text-rose-400',
-        border: 'border-rose-200 dark:border-rose-800',
+        bg: 'bg-rose-50',
+        text: 'text-rose-800 font-semibold',
+        border: 'border-rose-200/80',
         label: status.replace('_', ' ').toUpperCase(),
       };
     default:
       return {
-        bg: 'bg-slate-50 dark:bg-slate-800',
-        text: 'text-slate-700 dark:text-slate-300',
-        border: 'border-slate-200 dark:border-slate-700',
+        bg: 'bg-[#f5f5f7]',
+        text: 'text-[#1d1d1f] font-semibold',
+        border: 'border-black/[0.08]',
         label: status.toUpperCase(),
       };
   }

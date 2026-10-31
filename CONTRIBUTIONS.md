@@ -1,8 +1,8 @@
-# VERISUB Contributions & Engineering Log
+# VERISUB — Contributions & Engineering Log
 
 ---
 
-# PART 1: Database Architecture, Authentication & Integration Lead
+# Part 1: Database Architecture, Authentication & Integration Lead
 
 **Role:** Database Architect, Authentication and Integration Lead  
 **Branch:** `feature/database-auth`  
@@ -56,152 +56,15 @@ All deliverables are production-grade implementations adhering to SQLAlchemy 2.0
   - `require_permissions(*permissions)`: Checks effective permissions resolved across all assigned membership roles.
 - **Multi-Tenant Protection:** Every customer, user, and organization query enforces `organization_id` matching to eliminate cross-tenant data leaks.
 
-### 2.4 API Routers & Central Application (`/api/v1/`)
-- **Authentication (`/api/v1/auth`):**
-  - `POST /register`: Atomic registration of organization, settings, admin user, membership, and default roles.
-  - `POST /login`: Multi-tenant login with organization disambiguation.
-  - `POST /refresh`: Refresh token rotation.
-  - `POST /logout`: Refresh token revocation.
-  - `POST /forgot-password`: Password reset dispatch.
-  - `POST /reset-password`: Reset confirmation and token consumption.
-  - `GET /me`: Authenticated user profile with memberships.
-  - `PATCH /me`: Profile update.
-  - `POST /change-password`: Password change.
-- **Organizations (`/api/v1/organizations`):**
-  - `POST /`: Create a new organization context as an authenticated user (`create_organization`).
-  - `GET /current`: Current organization profile.
-  - `PATCH /current`: Update organization attributes (`MANAGE_ORGANIZATION`).
-  - `GET /current/settings`: Get tenant settings (`MANAGE_SETTINGS`).
-  - `PATCH /current/settings`: Update tenant settings (`MANAGE_SETTINGS`).
-- **Users (`/api/v1/users`):**
-  - `GET /`: Paginated organization staff listing (`MANAGE_STAFF`).
-  - `POST /staff`: Create staff account in current organization (`MANAGE_STAFF`, ADMIN only).
-  - `GET /{user_id}`: User lookup with tenant verification.
-  - `PATCH /{user_id}`: Update user state.
-  - `DELETE /{user_id}`: Deactivate user organization membership.
-- **Customers (`/api/v1/customers`):**
-  - `POST /`: Create customer record with tenant isolation (`MANAGE_CUSTOMERS`).
-  - `GET /`: Paginated customer search and filtering (`MANAGE_CUSTOMERS`).
-  - `GET /{customer_id}`: Customer lookup with tenant isolation.
-  - `PATCH /{customer_id}`: Update customer record.
-  - `DELETE /{customer_id}`: Soft-delete/deactivate customer.
-  - `POST /{customer_id}/addresses`: Add customer address.
-  - `POST /{customer_id}/contacts`: Add customer contact.
-
-### 2.5 Database Migrations (Alembic)
-- Fully configured `alembic.ini` and `backend/alembic/env.py`.
-- Migration `0347c260dea1_initial_schema.py` auto-generates and manages all 13 tables, foreign keys, unique constraints, and indexes.
-- Verified both upgrade (`upgrade head`) and downgrade (`downgrade base`).
-
+---
 ---
 
-## 3. Files Created and Modified
-
-```
-backend/
-├── .env.example
-├── alembic.ini
-├── requirements.txt
-├── alembic/
-│   ├── env.py
-│   ├── script.py.mako
-│   └── versions/
-│       ├── __init__.py
-│       └── 0347c260dea1_initial_schema.py
-├── app/
-│   ├── main.py
-│   ├── core/
-│   │   ├── config.py
-│   │   ├── permissions.py
-│   │   └── security.py
-│   ├── db/
-│   │   ├── base.py
-│   │   └── session.py
-│   ├── dependencies/
-│   │   ├── __init__.py
-│   │   └── auth.py
-│   ├── models/
-│   │   ├── __init__.py
-│   │   ├── customer.py
-│   │   ├── membership.py
-│   │   ├── organization.py
-│   │   ├── role.py
-│   │   ├── token.py
-│   │   └── user.py
-│   ├── routers/
-│   │   ├── __init__.py
-│   │   ├── auth.py
-│   │   ├── customers.py
-│   │   ├── organization.py
-│   │   └── users.py
-│   ├── schemas/
-│   │   ├── __init__.py
-│   │   ├── auth.py
-│   │   ├── common.py
-│   │   ├── customer.py
-│   │   ├── organization.py
-│   │   └── user.py
-│   └── services/
-│       ├── __init__.py
-│       ├── auth_service.py
-│       ├── customer_service.py
-│       ├── organization_service.py
-│       └── user_service.py
-└── tests/
-    ├── __init__.py
-    ├── conftest.py
-    ├── test_auth.py
-    ├── test_customer.py
-    └── test_rbac.py
-.gitignore
-CONTRIBUTIONS.md
-```
-
----
-
-## 4. Test Suite & Verification Results
-
-Executed full pytest suite against all functional domains:
-
-```
-====================== 57 passed, 116 warnings in 17.73s ======================
-```
-
-### Breakdown of Verified Scenarios:
-1. **Authentication Tests (`test_auth.py` - 26 tests):**
-   - Organization registration with default ADMIN role.
-   - Duplicate organization email & duplicate admin email rejection (409 Conflict).
-   - Password complexity enforcement (length, uppercase, lowercase, digit, special character).
-   - Login credential verification, invalid credentials rejection (401 Unauthorized).
-   - Token refresh rotation and invalid refresh token rejection.
-   - Logout token revocation and subsequent refresh rejection.
-   - Forgot-password flow with safe development-mode token output when SMTP is unconfigured.
-   - Reset-password flow with token consumption and session invalidation.
-   - Authenticated current user profile retrieval (`/auth/me`) and profile update.
-   - Password change with old password verification and complexity validation.
-2. **RBAC & Isolation Tests (`test_rbac.py` - 17 tests):**
-   - Organization creation by authenticated user (`POST /organizations`) and duplicate email rejection.
-   - Admin privileges (create staff, update org, manage customers).
-   - Staff restrictions (cannot create staff, cannot modify organization settings, can manage operational customers).
-   - Cross-organization customer isolation (Organization A cannot access Organization B's customer).
-   - Cross-organization customer listing isolation.
-   - Forged `X-Organization-ID` header protection (returns 403 Forbidden).
-   - Staff pagination, detail lookup, and deactivation.
-   - Duplicate staff email rejection within the organization.
-3. **Customer Operations Tests (`test_customer.py` - 14 tests):**
-   - Customer creation with unique `customer_code` per organization.
-   - Duplicate customer code rejection within the same organization.
-   - Paginated customer listings, search by company name, and status filtering.
-   - Customer detail lookup and 404 handling.
-   - Customer update and soft-deletion (status transitioned to `inactive`).
-
----
-
-# PART 2: Subscription Engine Backend Developer Contribution
+# Part 2: Subscription Engine Backend Developer Contribution
 
 **Role**: Subscription Engine Backend Developer  
-**Assigned Branch**: `feature/subscription-engine`  
-**Target Branch for PR**: `develop`
+**Developer**: Shibil-jazz (`mhdshibil734@gmail.com`)  
+**Branch**: `feature/subscription-engine`  
+**Target Pull Request Base**: `develop`  
 
 ---
 
@@ -329,8 +192,9 @@ A full suite of 19 automated integration and unit tests was written using `pytes
 **Result**: 19 passed in ~1.0s.
 
 ---
+---
 
-# PART 3: Frontend Architecture & Contribution Documentation
+# Part 3: Frontend Architecture & Contribution Documentation
 
 **Role:** Frontend Architect and UI/UX Developer  
 **Branch:** `feature/frontend-dashboard`  

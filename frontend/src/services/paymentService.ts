@@ -20,7 +20,12 @@ export const paymentService = {
     notes?: string;
   }): Promise<Payment> {
     try {
-      const res = await apiClient.post('/payments', payload);
+      const res = await apiClient.post(`/invoices/${payload.invoice_id}/payments`, {
+        amount: payload.amount,
+        payment_method: payload.payment_method === 'stripe' ? 'SIMULATED' : payload.payment_method.toUpperCase(),
+        reference: payload.reference,
+        notes: payload.notes,
+      });
       return res.data;
     } catch {
       const invoice = localStore.getInvoices().find((i) => i.id === payload.invoice_id);

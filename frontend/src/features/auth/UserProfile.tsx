@@ -4,7 +4,7 @@ import { Button } from '../../components/common/Button';
 import { Input } from '../../components/common/Input';
 import { Badge } from '../../components/common/Badge';
 import { authService } from '../../services/auth';
-import { User, Shield, Check } from 'lucide-react';
+import { Shield, Check } from 'lucide-react';
 
 export const UserProfile: React.FC = () => {
   const [currentUser] = useState(authService.getCurrentUser());
@@ -19,10 +19,10 @@ export const UserProfile: React.FC = () => {
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-xl font-bold tracking-tight text-slate-900 dark:text-white">
+        <h2 className="text-xl font-bold tracking-tight text-[#1d1d1f]">
           User Profile & Security
         </h2>
-        <p className="text-xs text-slate-500 dark:text-slate-400">
+        <p className="text-xs text-[#6e6e73] mt-0.5">
           Manage your personal account credentials, role permissions, and active sessions
         </p>
       </div>
@@ -56,11 +56,11 @@ export const UserProfile: React.FC = () => {
                   disabled
                 />
                 <div className="space-y-1.5 text-left">
-                  <label className="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300">
+                  <label className="block text-xs font-semibold uppercase tracking-wider text-[#6e6e73]">
                     Assigned Role
                   </label>
                   <div className="pt-2">
-                    <Badge variant="purple" size="md">
+                    <Badge variant="info" size="md">
                       {currentUser?.role?.toUpperCase() || 'ADMIN'}
                     </Badge>
                   </div>
@@ -68,7 +68,7 @@ export const UserProfile: React.FC = () => {
               </div>
 
               {isSaved && (
-                <div className="flex items-center gap-2 rounded-lg bg-emerald-50 p-3 text-xs text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-300">
+                <div className="flex items-center gap-2 rounded-xl bg-emerald-50 border border-emerald-200/80 p-3.5 text-xs font-medium text-emerald-800">
                   <Check className="h-4 w-4" />
                   Profile settings saved successfully.
                 </div>
@@ -85,15 +85,15 @@ export const UserProfile: React.FC = () => {
         <Card>
           <CardHeader>
             <div className="flex items-center gap-2">
-              <Shield className="h-5 w-5 text-brand-600" />
+              <Shield className="h-5 w-5 text-[#0071e3]" />
               <CardTitle>Active Permissions</CardTitle>
             </div>
             <CardDescription>Access control policies enforced by backend JWT</CardDescription>
           </CardHeader>
           <CardContent className="space-y-3">
-            <div className="rounded-lg bg-slate-50 p-3 dark:bg-slate-800/60 border border-slate-100 dark:border-slate-800">
-              <p className="text-xs font-bold text-slate-900 dark:text-white">Role Scope</p>
-              <p className="text-xs text-slate-500 mt-1">
+            <div className="rounded-2xl bg-[#f5f5f7] p-3.5 border border-black/[0.04]">
+              <p className="text-xs font-bold text-[#1d1d1f]">Role Scope</p>
+              <p className="text-xs text-[#6e6e73] mt-1 leading-relaxed">
                 {currentUser?.role === 'admin'
                   ? 'Super Administrator (Full platform read/write authority across all modules)'
                   : currentUser?.role === 'staff'
@@ -103,10 +103,10 @@ export const UserProfile: React.FC = () => {
             </div>
 
             <div className="space-y-1 pt-2">
-              <p className="text-xs font-semibold text-slate-700 dark:text-slate-300 uppercase tracking-wider">
+              <p className="text-xs font-semibold text-[#6e6e73] uppercase tracking-wider">
                 Granted Capabilities:
               </p>
-              <ul className="text-xs text-slate-600 dark:text-slate-400 space-y-1 list-disc pl-4">
+              <ul className="text-xs text-[#424245] space-y-1.5 list-disc pl-4">
                 <li>JWT Token Authorization</li>
                 <li>Contract-to-Bill Verification Access</li>
                 <li>Live Telemetry Auditing</li>

@@ -21,14 +21,14 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
         {label && (
           <label
             htmlFor={inputId}
-            className="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300"
+            className="block text-[11px] font-semibold uppercase tracking-wider text-[#6e6e73]"
           >
             {label}
           </label>
         )}
-        <div className="relative rounded-lg shadow-sm">
+        <div className="relative rounded-xl shadow-2xs">
           {leftIcon && (
-            <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400">
+            <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5 text-[#6e6e73]">
               {leftIcon}
             </div>
           )}
@@ -37,25 +37,25 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
             type={type}
             ref={ref}
             className={cn(
-              'block w-full rounded-lg border bg-white px-3.5 py-2 text-sm text-slate-900 placeholder-slate-400 transition-colors focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/20 disabled:cursor-not-allowed disabled:bg-slate-50 disabled:text-slate-500 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100 dark:placeholder-slate-500',
-              leftIcon && 'pl-10',
-              rightIcon && 'pr-10',
+              'block w-full rounded-xl border border-[#d2d2d7] bg-white px-3.5 py-2 text-xs text-[#1d1d1f] placeholder-[#86868b] transition-all focus:border-[#0071e3] focus:outline-none focus:ring-2 focus:ring-[#0071e3]/20 disabled:cursor-not-allowed disabled:bg-slate-100 disabled:text-slate-400',
+              leftIcon && 'pl-9',
+              rightIcon && 'pr-9',
               error
-                ? 'border-rose-300 text-rose-900 focus:border-rose-500 focus:ring-rose-500/20 dark:border-rose-700'
-                : 'border-slate-300',
+                ? 'border-rose-400 text-rose-800 focus:border-rose-500 focus:ring-rose-200'
+                : 'hover:border-[#a1a1a6]',
               className
             )}
             {...props}
           />
           {rightIcon && (
-            <div className="absolute inset-y-0 right-0 flex items-center pr-3">
+            <div className="absolute inset-y-0 right-0 flex items-center pr-3.5 text-[#6e6e73]">
               {rightIcon}
             </div>
           )}
         </div>
-        {error && <p className="text-xs font-medium text-rose-600 dark:text-rose-400">{error}</p>}
+        {error && <p className="text-[11px] font-medium text-rose-600">{error}</p>}
         {helperText && !error && (
-          <p className="text-xs text-slate-500 dark:text-slate-400">{helperText}</p>
+          <p className="text-[11px] text-[#6e6e73]">{helperText}</p>
         )}
       </div>
     );

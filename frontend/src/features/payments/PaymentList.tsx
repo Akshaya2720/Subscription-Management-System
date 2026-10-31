@@ -2,13 +2,7 @@ import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import {
   CreditCard,
-  Plus,
   Upload,
-  CheckCircle2,
-  AlertCircle,
-  FileText,
-  DollarSign,
-  ArrowRight,
   Sparkles,
 } from 'lucide-react';
 import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell, TableLoading, TableEmpty } from '../../components/common/Table';
@@ -16,10 +10,10 @@ import { Button } from '../../components/common/Button';
 import { Badge } from '../../components/common/Badge';
 import { Modal } from '../../components/common/Modal';
 import { Tabs } from '../../components/common/Tabs';
+import { SubNavTabs } from '../../components/common/SubNavTabs';
 import { paymentService } from '../../services/paymentService';
 import { invoiceService } from '../../services/invoiceService';
-import { Payment } from '../../types';
-import { formatCurrency, formatDateTime, formatDate, getStatusBadgeVariant } from '../../utils';
+import { formatCurrency, formatDateTime, getStatusBadgeVariant } from '../../utils';
 
 export const PaymentList: React.FC = () => {
   const queryClient = useQueryClient();
@@ -63,13 +57,23 @@ export const PaymentList: React.FC = () => {
   });
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 text-left">
+      {/* Sub Navigation Tabs */}
+      <SubNavTabs
+        items={[
+          { label: 'Invoices', path: '/admin/invoices' },
+          { label: 'Payments & Reconciliation', path: '/admin/payments', badge: `${payments.length}` },
+          { label: 'Automated Billing Runs', path: '/admin/billing' },
+          { label: 'Discount Rules', path: '/admin/discounts' },
+        ]}
+      />
+
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-white">
+          <h1 className="text-2xl font-bold tracking-tight text-[#1d1d1f]">
             Payments & Bank Reconciliation
           </h1>
-          <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
+          <p className="text-xs sm:text-sm text-[#6e6e73] mt-1">
             Track customer payments, Stripe & ACH transactions, and automated statement reconciliation
           </p>
         </div>
@@ -77,7 +81,7 @@ export const PaymentList: React.FC = () => {
         {activeTab === 'reconciliation' && (
           <Button
             onClick={() => setUploadModalOpen(true)}
-            leftIcon={<Upload className="h-4 w-4" />}
+            leftIcon={<Upload className="h-3.5 w-3.5" />}
           >
             Upload Statement CSV
           </Button>
@@ -127,28 +131,28 @@ export const PaymentList: React.FC = () => {
                 const badge = getStatusBadgeVariant(p.status);
                 return (
                   <TableRow key={p.id}>
-                    <TableCell className="font-semibold text-xs text-slate-900 dark:text-white">
+                    <TableCell className="font-semibold text-xs text-[#0071e3]">
                       <div className="flex items-center gap-2">
-                        <CreditCard className="h-4 w-4 text-brand-600" />
+                        <CreditCard className="h-4 w-4 text-[#0071e3]" />
                         {p.payment_number}
                       </div>
                     </TableCell>
-                    <TableCell className="text-xs font-mono font-medium text-brand-600">
+                    <TableCell className="text-xs font-mono font-medium text-[#0071e3]">
                       {p.invoice_number || 'INV-SETTLE'}
                     </TableCell>
-                    <TableCell className="text-xs">
+                    <TableCell className="text-xs font-medium text-[#1d1d1f]">
                       {p.customer?.name || 'Customer Account'}
                     </TableCell>
-                    <TableCell className="text-xs capitalize text-slate-600 dark:text-slate-300">
+                    <TableCell className="text-xs capitalize text-[#6e6e73]">
                       {p.payment_method.replace('_', ' ')}
                     </TableCell>
-                    <TableCell className="text-xs font-mono text-slate-500">
+                    <TableCell className="text-xs font-mono text-[#6e6e73]">
                       {p.reference}
                     </TableCell>
-                    <TableCell className="text-xs text-slate-500">
+                    <TableCell className="text-xs text-[#6e6e73]">
                       {formatDateTime(p.payment_date)}
                     </TableCell>
-                    <TableCell className="text-xs font-bold text-slate-900 dark:text-white">
+                    <TableCell className="text-xs font-bold text-[#1d1d1f]">
                       {formatCurrency(p.amount, p.currency)}
                     </TableCell>
                     <TableCell>
@@ -169,36 +173,36 @@ export const PaymentList: React.FC = () => {
         <div className="space-y-6">
           {/* Summary KPIs */}
           <div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
-            <div className="rounded-xl border border-slate-200 bg-white p-4 shadow-2xs dark:border-slate-800 dark:bg-slate-900">
-              <span className="text-[11px] font-semibold text-slate-500 uppercase">Total Transactions</span>
-              <p className="mt-1 text-2xl font-bold text-slate-900 dark:text-white">
+            <div className="rounded-2xl border border-black/[0.08] bg-white p-4 shadow-2xs">
+              <span className="text-[11px] font-semibold text-[#6e6e73] uppercase">Total Transactions</span>
+              <p className="mt-1 text-2xl font-bold text-[#1d1d1f]">
                 {reconciliation?.total_records || 0}
               </p>
-              <p className="text-[11px] text-slate-400 mt-0.5">{reconciliation?.file_name}</p>
+              <p className="text-[11px] text-[#6e6e73] mt-0.5">{reconciliation?.file_name}</p>
             </div>
 
-            <div className="rounded-xl border border-slate-200 bg-white p-4 shadow-2xs dark:border-slate-800 dark:bg-slate-900">
-              <span className="text-[11px] font-semibold text-slate-500 uppercase">Auto-Matched</span>
-              <p className="mt-1 text-2xl font-bold text-emerald-600">
+            <div className="rounded-2xl border border-black/[0.08] bg-white p-4 shadow-2xs">
+              <span className="text-[11px] font-semibold text-[#6e6e73] uppercase">Auto-Matched</span>
+              <p className="mt-1 text-2xl font-bold text-emerald-700">
                 {reconciliation?.matched_count || 0}
               </p>
-              <p className="text-[11px] text-emerald-600 mt-0.5">High confidence &gt; 98%</p>
+              <p className="text-[11px] text-emerald-700 mt-0.5 font-medium">High confidence &gt; 98%</p>
             </div>
 
-            <div className="rounded-xl border border-slate-200 bg-white p-4 shadow-2xs dark:border-slate-800 dark:bg-slate-900">
-              <span className="text-[11px] font-semibold text-slate-500 uppercase">Unmatched (Review)</span>
-              <p className="mt-1 text-2xl font-bold text-amber-600">
+            <div className="rounded-2xl border border-black/[0.08] bg-white p-4 shadow-2xs">
+              <span className="text-[11px] font-semibold text-[#6e6e73] uppercase">Unmatched (Review)</span>
+              <p className="mt-1 text-2xl font-bold text-amber-700">
                 {reconciliation?.unmatched_count || 0}
               </p>
-              <p className="text-[11px] text-amber-600 mt-0.5">Requires manual attribution</p>
+              <p className="text-[11px] text-amber-700 mt-0.5 font-medium">Requires manual attribution</p>
             </div>
 
-            <div className="rounded-xl border border-slate-200 bg-white p-4 shadow-2xs dark:border-slate-800 dark:bg-slate-900">
-              <span className="text-[11px] font-semibold text-slate-500 uppercase">Potential Duplicates</span>
-              <p className="mt-1 text-2xl font-bold text-rose-600">
+            <div className="rounded-2xl border border-black/[0.08] bg-white p-4 shadow-2xs">
+              <span className="text-[11px] font-semibold text-[#6e6e73] uppercase">Potential Duplicates</span>
+              <p className="mt-1 text-2xl font-bold text-rose-700">
                 {reconciliation?.duplicate_count || 0}
               </p>
-              <p className="text-[11px] text-rose-600 mt-0.5">Flagged for deduplication</p>
+              <p className="text-[11px] text-rose-700 mt-0.5 font-medium">Flagged for deduplication</p>
             </div>
           </div>
 
@@ -223,15 +227,15 @@ export const PaymentList: React.FC = () => {
               <TableBody>
                 {reconciliation.transactions.map((tx) => (
                   <TableRow key={tx.id}>
-                    <TableCell className="text-xs text-slate-500">{tx.date}</TableCell>
-                    <TableCell className="text-xs font-semibold text-slate-900 dark:text-white">
+                    <TableCell className="text-xs text-[#6e6e73]">{tx.date}</TableCell>
+                    <TableCell className="text-xs font-semibold text-[#1d1d1f]">
                       {tx.description}
                     </TableCell>
-                    <TableCell className="text-xs font-mono text-slate-500">{tx.reference}</TableCell>
-                    <TableCell className="text-xs font-bold text-slate-900 dark:text-white">
+                    <TableCell className="text-xs font-mono text-[#6e6e73]">{tx.reference}</TableCell>
+                    <TableCell className="text-xs font-bold text-[#1d1d1f]">
                       {formatCurrency(tx.amount)}
                     </TableCell>
-                    <TableCell className="text-xs font-mono text-brand-600">
+                    <TableCell className="text-xs font-mono text-[#0071e3]">
                       {tx.matched_invoice_number || '—'}
                     </TableCell>
                     <TableCell>
@@ -277,15 +281,15 @@ export const PaymentList: React.FC = () => {
           maxWidth="md"
         >
           <div className="space-y-4">
-            <div className="flex flex-col items-center justify-center rounded-2xl border-2 border-dashed border-slate-300 p-8 text-center dark:border-slate-700 bg-slate-50 dark:bg-slate-900">
-              <Upload className="h-10 w-10 text-brand-600 mb-2" />
-              <p className="text-xs font-semibold text-slate-900 dark:text-white">
+            <div className="flex flex-col items-center justify-center rounded-2xl border-2 border-dashed border-black/[0.1] p-8 text-center bg-[#f5f5f7]">
+              <Upload className="h-10 w-10 text-[#0071e3] mb-2" />
+              <p className="text-xs font-semibold text-[#1d1d1f]">
                 bank_statement_november_2026.csv
               </p>
-              <p className="text-[11px] text-slate-500 mt-1">Ready for parsing (32 rows detected)</p>
+              <p className="text-[11px] text-[#6e6e73] mt-1">Ready for parsing (32 rows detected)</p>
             </div>
 
-            <div className="flex justify-end gap-3 pt-4 border-t border-slate-100 dark:border-slate-800">
+            <div className="flex justify-end gap-3 pt-4 border-t border-black/[0.06]">
               <Button variant="outline" onClick={() => setUploadModalOpen(false)}>
                 Cancel
               </Button>
@@ -311,27 +315,27 @@ export const PaymentList: React.FC = () => {
           maxWidth="lg"
         >
           <div className="space-y-3">
-            <p className="text-xs font-semibold text-slate-600 dark:text-slate-400">
+            <p className="text-xs font-semibold text-[#6e6e73]">
               Select Outstanding Customer Invoice:
             </p>
-            <div className="divide-y divide-slate-100 dark:divide-slate-800 border rounded-xl overflow-hidden text-xs max-h-60 overflow-y-auto">
+            <div className="divide-y divide-black/[0.05] border border-black/[0.08] rounded-2xl overflow-hidden text-xs max-h-60 overflow-y-auto">
               {invoices
                 .filter((i) => i.balance_due > 0)
                 .map((inv) => (
                   <div
                     key={inv.id}
-                    className="flex items-center justify-between p-3 hover:bg-slate-50 dark:hover:bg-slate-800 cursor-pointer"
+                    className="flex items-center justify-between p-3 hover:bg-black/[0.02] cursor-pointer"
                     onClick={() =>
                       matchTxMutation.mutate({ txId: selectedTxForMatch, invoiceId: inv.id })
                     }
                   >
                     <div>
-                      <p className="font-semibold text-slate-900 dark:text-white">{inv.invoice_number}</p>
-                      <p className="text-[11px] text-slate-500">{inv.customer?.name}</p>
+                      <p className="font-semibold text-[#1d1d1f]">{inv.invoice_number}</p>
+                      <p className="text-[11px] text-[#6e6e73]">{inv.customer?.name}</p>
                     </div>
                     <div className="text-right">
-                      <p className="font-bold text-rose-600">{formatCurrency(inv.balance_due)}</p>
-                      <span className="text-[10px] text-brand-600 font-medium">Click to bind</span>
+                      <p className="font-bold text-rose-700">{formatCurrency(inv.balance_due)}</p>
+                      <span className="text-[10px] text-[#0071e3] font-medium">Click to bind</span>
                     </div>
                   </div>
                 ))}

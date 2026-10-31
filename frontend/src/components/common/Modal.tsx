@@ -56,46 +56,44 @@ export const Modal: React.FC<ModalProps> = ({
             exit={{ opacity: 0 }}
             transition={{ duration: 0.15 }}
             onClick={onClose}
-            className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm"
+            className="fixed inset-0 bg-black/35 backdrop-blur-sm"
           />
 
-          {/* Modal Content */}
+          {/* Modal Dialog */}
           <motion.div
-            initial={{ opacity: 0, scale: 0.96, y: 10 }}
+            initial={{ opacity: 0, scale: 0.96, y: 8 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.96, y: 10 }}
-            transition={{ duration: 0.2, ease: 'easeOut' }}
+            exit={{ opacity: 0, scale: 0.96, y: 8 }}
+            transition={{ type: 'spring', damping: 28, stiffness: 380 }}
             className={cn(
-              'relative w-full rounded-2xl bg-white shadow-2xl dark:bg-slate-900 border border-slate-200 dark:border-slate-800 my-8 overflow-hidden z-10 text-left',
+              'relative w-full rounded-3xl border border-black/[0.08] bg-white text-left shadow-2xl z-10 overflow-hidden',
               maxWidths[maxWidth]
             )}
           >
             {/* Header */}
-            <div className="flex items-start justify-between border-b border-slate-100 px-6 py-5 dark:border-slate-800">
+            <div className="flex items-start justify-between p-6 border-b border-black/[0.06]">
               <div>
-                <h3 className="text-lg font-semibold text-slate-900 dark:text-white">
+                <h3 className="text-base font-semibold text-[#1d1d1f] tracking-tight">
                   {title}
                 </h3>
                 {description && (
-                  <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
-                    {description}
-                  </p>
+                  <p className="mt-1 text-xs text-[#6e6e73]">{description}</p>
                 )}
               </div>
               <button
                 onClick={onClose}
-                className="rounded-lg p-1.5 text-slate-400 hover:bg-slate-100 hover:text-slate-500 dark:hover:bg-slate-800 dark:hover:text-slate-300"
+                className="rounded-full p-2 text-[#6e6e73] hover:bg-black/[0.05] hover:text-[#1d1d1f] transition-colors"
               >
-                <X className="w-5 h-5" />
+                <X className="h-4 w-4" />
               </button>
             </div>
 
-            {/* Body */}
-            <div className="px-6 py-5 max-h-[70vh] overflow-y-auto">{children}</div>
+            {/* Content Body */}
+            <div className="p-6 max-h-[75vh] overflow-y-auto text-[#1d1d1f]">{children}</div>
 
-            {/* Footer */}
+            {/* Footer Actions */}
             {footer && (
-              <div className="flex items-center justify-end gap-3 border-t border-slate-100 bg-slate-50 px-6 py-4 dark:border-slate-800 dark:bg-slate-900/50">
+              <div className="flex items-center justify-end gap-3 p-5 border-t border-black/[0.06] bg-[#fbfbfd]">
                 {footer}
               </div>
             )}

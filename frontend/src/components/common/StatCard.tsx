@@ -20,10 +20,10 @@ export const StatCard: React.FC<StatCardProps> = ({
   title,
   value,
   change,
-  changeLabel = 'vs last month',
+  changeLabel = 'vs last period',
   icon,
-  iconBg = 'bg-brand-50 dark:bg-brand-950/60',
-  iconColor = 'text-brand-600 dark:text-brand-400',
+  iconBg = 'bg-blue-50 border border-blue-100',
+  iconColor = 'text-[#0071e3]',
   badge,
   subtitle,
   className,
@@ -33,23 +33,23 @@ export const StatCard: React.FC<StatCardProps> = ({
   const isNeutral = change !== undefined && change === 0;
 
   return (
-    <Card className={cn('relative overflow-hidden hover:shadow-md transition-shadow', className)}>
+    <Card className={cn('relative overflow-hidden group hover:border-black/[0.12] transition-all duration-300', className)}>
       <CardContent className="p-5">
         <div className="flex items-center justify-between">
-          <p className="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+          <p className="text-[11px] font-semibold tracking-wider uppercase text-[#6e6e73]">
             {title}
           </p>
-          <div className={cn('flex h-10 w-10 items-center justify-center rounded-xl', iconBg, iconColor)}>
+          <div className={cn('flex h-9 w-9 items-center justify-center rounded-xl transition-transform duration-300 group-hover:scale-105 shadow-2xs', iconBg, iconColor)}>
             {icon}
           </div>
         </div>
 
         <div className="mt-3 flex items-baseline justify-between">
-          <h3 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-white">
+          <h3 className="text-2xl font-bold tracking-tight text-[#1d1d1f] font-sans">
             {value}
           </h3>
           {badge && (
-            <span className="inline-flex items-center rounded-full bg-slate-100 px-2 py-0.5 text-xs font-medium text-slate-700 dark:bg-slate-800 dark:text-slate-300">
+            <span className="inline-flex items-center rounded-full bg-slate-100 border border-slate-200/80 px-2 py-0.5 text-[10px] font-medium text-[#1d1d1f]">
               {badge}
             </span>
           )}
@@ -59,23 +59,23 @@ export const StatCard: React.FC<StatCardProps> = ({
           <div className="mt-2.5 flex items-center gap-1.5 text-xs">
             <span
               className={cn(
-                'inline-flex items-center font-semibold',
-                isPositive && 'text-emerald-600 dark:text-emerald-400',
-                isNegative && 'text-rose-600 dark:text-rose-400',
-                isNeutral && 'text-slate-500'
+                'inline-flex items-center gap-0.5 font-semibold text-xs',
+                isPositive && 'text-emerald-700',
+                isNegative && 'text-rose-700',
+                isNeutral && 'text-[#6e6e73]'
               )}
             >
-              {isPositive && <TrendingUp className="mr-0.5 h-3.5 w-3.5" />}
-              {isNegative && <TrendingDown className="mr-0.5 h-3.5 w-3.5" />}
-              {isNeutral && <Minus className="mr-0.5 h-3.5 w-3.5" />}
-              {isPositive ? `+${change}%` : `${change}%`}
+              {isPositive && <TrendingUp className="h-3.5 w-3.5" />}
+              {isNegative && <TrendingDown className="h-3.5 w-3.5" />}
+              {isNeutral && <Minus className="h-3.5 w-3.5" />}
+              {change > 0 ? `+${change}%` : `${change}%`}
             </span>
-            <span className="text-slate-500 dark:text-slate-400">{changeLabel}</span>
+            <span className="text-[#6e6e73] text-[11px] truncate">{changeLabel}</span>
           </div>
         )}
 
-        {subtitle && (
-          <p className="mt-2 text-xs text-slate-500 dark:text-slate-400">{subtitle}</p>
+        {subtitle && !change && (
+          <p className="mt-2 text-xs text-[#6e6e73] truncate">{subtitle}</p>
         )}
       </CardContent>
     </Card>

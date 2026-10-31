@@ -8,7 +8,6 @@ import {
   Printer,
   CheckCircle2,
   DollarSign,
-  Download,
 } from 'lucide-react';
 import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell, TableLoading, TableEmpty } from '../../components/common/Table';
 import { Button } from '../../components/common/Button';
@@ -16,9 +15,10 @@ import { Input } from '../../components/common/Input';
 import { Select } from '../../components/common/Select';
 import { Badge } from '../../components/common/Badge';
 import { Modal } from '../../components/common/Modal';
+import { SubNavTabs } from '../../components/common/SubNavTabs';
 import { invoiceService } from '../../services/invoiceService';
 import { paymentService } from '../../services/paymentService';
-import { Invoice, InvoiceStatus } from '../../types';
+import { Invoice } from '../../types';
 import { formatCurrency, formatDate, getStatusBadgeVariant } from '../../utils';
 
 export const InvoiceList: React.FC = () => {
@@ -67,14 +67,24 @@ export const InvoiceList: React.FC = () => {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 text-left">
+      {/* Sub Navigation Tabs */}
+      <SubNavTabs
+        items={[
+          { label: 'Invoices', path: '/admin/invoices', badge: `${invoices.length} Total` },
+          { label: 'Payments & Reconciliation', path: '/admin/payments' },
+          { label: 'Automated Billing Runs', path: '/admin/billing' },
+          { label: 'Discount Rules', path: '/admin/discounts' },
+        ]}
+      />
+
       {/* Title */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-white">
+          <h1 className="text-2xl font-bold tracking-tight text-[#1d1d1f]">
             Invoice Management & Ledger
           </h1>
-          <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
+          <p className="text-xs sm:text-sm text-[#6e6e73] mt-1">
             Track line-item subtotals, calculated taxes, SLA credits, settlement balances, and printable invoices
           </p>
         </div>
@@ -83,22 +93,22 @@ export const InvoiceList: React.FC = () => {
       {/* Search and Filters */}
       <div className="flex flex-col sm:flex-row items-center gap-3">
         <div className="relative flex-1 w-full">
-          <Search className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+          <Search className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-[#86868b]" />
           <input
             type="text"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Search by invoice number or customer name..."
-            className="w-full rounded-lg border border-slate-200 bg-white pl-9 pr-4 py-2 text-xs text-slate-900 placeholder-slate-400 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/20 dark:border-slate-800 dark:bg-slate-900 dark:text-white"
+            className="w-full rounded-full border border-[#d2d2d7] bg-white pl-10 pr-4 py-2 text-xs text-[#1d1d1f] placeholder-[#86868b] focus:border-[#0071e3] focus:outline-none focus:ring-2 focus:ring-[#0071e3]/20 shadow-2xs"
           />
         </div>
 
         <div className="flex items-center gap-2 w-full sm:w-auto">
-          <Filter className="h-4 w-4 text-slate-400 shrink-0" />
+          <Filter className="h-4 w-4 text-[#86868b] shrink-0" />
           <select
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
-            className="rounded-lg border border-slate-200 bg-white px-3 py-2 text-xs font-medium text-slate-700 outline-none focus:border-brand-500 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-200 w-full sm:w-auto"
+            className="rounded-full border border-[#d2d2d7] bg-white px-4 py-2 text-xs font-medium text-[#1d1d1f] outline-none focus:border-[#0071e3] shadow-2xs w-full sm:w-auto cursor-pointer"
           >
             <option value="all">All Invoices</option>
             <option value="draft">Draft</option>
@@ -142,29 +152,29 @@ export const InvoiceList: React.FC = () => {
 
               return (
                 <TableRow key={inv.id}>
-                  <TableCell className="font-semibold text-xs text-slate-900 dark:text-white">
+                  <TableCell className="font-semibold text-xs text-[#0071e3]">
                     <div className="flex items-center gap-2">
-                      <Receipt className="h-4 w-4 text-brand-600" />
+                      <Receipt className="h-4 w-4 text-[#0071e3]" />
                       {inv.invoice_number}
                     </div>
                   </TableCell>
                   <TableCell className="text-xs">
-                    <p className="font-medium text-slate-900 dark:text-white">{inv.customer?.name || 'Customer'}</p>
-                    <p className="text-[11px] text-slate-400">{inv.customer?.company_name}</p>
+                    <p className="font-medium text-[#1d1d1f]">{inv.customer?.name || 'Customer'}</p>
+                    <p className="text-[11px] text-[#6e6e73]">{inv.customer?.company_name}</p>
                   </TableCell>
-                  <TableCell className="text-xs text-slate-500">
+                  <TableCell className="text-xs text-[#6e6e73]">
                     {formatDate(inv.issue_date)}
                   </TableCell>
-                  <TableCell className="text-xs text-slate-500">
+                  <TableCell className="text-xs text-[#6e6e73]">
                     {formatDate(inv.due_date)}
                   </TableCell>
-                  <TableCell className="text-xs font-bold text-slate-900 dark:text-white">
+                  <TableCell className="text-xs font-bold text-[#1d1d1f]">
                     {formatCurrency(inv.total_amount, inv.currency)}
                   </TableCell>
-                  <TableCell className="text-xs text-emerald-600 font-medium">
+                  <TableCell className="text-xs text-emerald-700 font-semibold">
                     {formatCurrency(inv.paid_amount, inv.currency)}
                   </TableCell>
-                  <TableCell className="text-xs font-bold text-slate-900 dark:text-white">
+                  <TableCell className="text-xs font-bold text-[#1d1d1f]">
                     {formatCurrency(inv.balance_due, inv.currency)}
                   </TableCell>
                   <TableCell>
@@ -176,7 +186,7 @@ export const InvoiceList: React.FC = () => {
                     <div className="flex items-center justify-end gap-1">
                       <Button
                         size="sm"
-                        variant="ghost"
+                        variant="outline"
                         onClick={() => handleOpenInvoice(inv)}
                         leftIcon={<Eye className="h-3.5 w-3.5" />}
                       >
@@ -202,24 +212,24 @@ export const InvoiceList: React.FC = () => {
         >
           <div className="space-y-6 print:m-0 print:p-0" id="printable-invoice">
             {/* Top Overview Cards */}
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 rounded-xl bg-slate-50 p-4 dark:bg-slate-800/60">
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 rounded-2xl bg-[#f5f5f7] border border-black/[0.06] p-4">
               <div>
-                <span className="text-[11px] text-slate-500">Subtotal</span>
-                <p className="text-sm font-semibold">{formatCurrency(viewingInvoice.subtotal, viewingInvoice.currency)}</p>
+                <span className="text-[11px] text-[#6e6e73]">Subtotal</span>
+                <p className="text-sm font-semibold text-[#1d1d1f]">{formatCurrency(viewingInvoice.subtotal, viewingInvoice.currency)}</p>
               </div>
               <div>
-                <span className="text-[11px] text-slate-500">Taxes (8.0%)</span>
-                <p className="text-sm font-semibold">{formatCurrency(viewingInvoice.tax_amount, viewingInvoice.currency)}</p>
+                <span className="text-[11px] text-[#6e6e73]">Taxes (8.0%)</span>
+                <p className="text-sm font-semibold text-[#1d1d1f]">{formatCurrency(viewingInvoice.tax_amount, viewingInvoice.currency)}</p>
               </div>
               <div>
-                <span className="text-[11px] text-slate-500">Total Invoice</span>
-                <p className="text-sm font-bold text-slate-900 dark:text-white">
+                <span className="text-[11px] text-[#6e6e73]">Total Invoice</span>
+                <p className="text-sm font-bold text-[#1d1d1f]">
                   {formatCurrency(viewingInvoice.total_amount, viewingInvoice.currency)}
                 </p>
               </div>
               <div>
-                <span className="text-[11px] text-slate-500">Balance Due</span>
-                <p className="text-sm font-bold text-rose-600">
+                <span className="text-[11px] text-[#6e6e73]">Balance Due</span>
+                <p className="text-sm font-bold text-rose-700">
                   {formatCurrency(viewingInvoice.balance_due, viewingInvoice.currency)}
                 </p>
               </div>
@@ -227,12 +237,12 @@ export const InvoiceList: React.FC = () => {
 
             {/* Line items table */}
             <div className="space-y-2">
-              <h4 className="text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">
+              <h4 className="text-xs font-bold uppercase tracking-wider text-[#1d1d1f]">
                 Itemized Inclusions & Telemetry Delivery
               </h4>
-              <div className="rounded-xl border border-slate-200 overflow-hidden dark:border-slate-800">
+              <div className="rounded-2xl border border-black/[0.08] overflow-hidden">
                 <table className="w-full text-xs">
-                  <thead className="bg-slate-50 border-b border-slate-200 dark:bg-slate-800 dark:border-slate-800">
+                  <thead className="bg-[#fbfbfd] border-b border-black/[0.06] text-[#6e6e73]">
                     <tr>
                       <th className="p-3 text-left">Service Line Item</th>
                       <th className="p-3 text-right">Quantity</th>
@@ -241,16 +251,16 @@ export const InvoiceList: React.FC = () => {
                       <th className="p-3 text-right">Amount</th>
                     </tr>
                   </thead>
-                  <tbody>
+                  <tbody className="divide-y divide-black/[0.04]">
                     {viewingInvoice.line_items.map((item) => (
-                      <tr key={item.id} className="border-b border-slate-100 dark:border-slate-800">
-                        <td className="p-3 font-semibold text-slate-900 dark:text-white">
+                      <tr key={item.id} className="hover:bg-black/[0.01]">
+                        <td className="p-3 font-semibold text-[#1d1d1f]">
                           {item.description}
                         </td>
-                        <td className="p-3 text-right">{item.quantity}</td>
-                        <td className="p-3 text-right">{formatCurrency(item.unit_price)}</td>
-                        <td className="p-3 text-right">{formatCurrency(item.tax_amount)}</td>
-                        <td className="p-3 text-right font-bold">{formatCurrency(item.total_amount)}</td>
+                        <td className="p-3 text-right text-[#1d1d1f]">{item.quantity}</td>
+                        <td className="p-3 text-right text-[#1d1d1f]">{formatCurrency(item.unit_price)}</td>
+                        <td className="p-3 text-right text-[#6e6e73]">{formatCurrency(item.tax_amount)}</td>
+                        <td className="p-3 text-right font-bold text-[#1d1d1f]">{formatCurrency(item.total_amount)}</td>
                       </tr>
                     ))}
                   </tbody>
@@ -259,7 +269,7 @@ export const InvoiceList: React.FC = () => {
             </div>
 
             {/* Actions: Print, Record Payment */}
-            <div className="flex flex-wrap items-center justify-between gap-3 pt-4 border-t border-slate-100 dark:border-slate-800">
+            <div className="flex flex-wrap items-center justify-between gap-3 pt-4 border-t border-black/[0.06]">
               <Button
                 variant="outline"
                 size="sm"
@@ -278,7 +288,7 @@ export const InvoiceList: React.FC = () => {
                   Record Payment ({formatCurrency(viewingInvoice.balance_due)})
                 </Button>
               ) : (
-                <span className="flex items-center gap-1.5 text-xs font-semibold text-emerald-600">
+                <span className="flex items-center gap-1.5 text-xs font-semibold text-emerald-700">
                   <CheckCircle2 className="h-4 w-4" /> Fully Settled
                 </span>
               )}
@@ -324,7 +334,7 @@ export const InvoiceList: React.FC = () => {
               onChange={(e) => setPaymentRef(e.target.value)}
             />
 
-            <div className="flex justify-end gap-3 pt-4 border-t border-slate-100 dark:border-slate-800">
+            <div className="flex justify-end gap-3 pt-4 border-t border-black/[0.06]">
               <Button variant="outline" onClick={() => setRecordPaymentOpen(false)}>
                 Cancel
               </Button>

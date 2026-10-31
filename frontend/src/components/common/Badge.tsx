@@ -15,22 +15,22 @@ export const Badge: React.FC<BadgeProps> = ({
 }) => {
   const variants = {
     default:
-      'bg-slate-100 text-slate-800 border-slate-200 dark:bg-slate-800 dark:text-slate-200 dark:border-slate-700',
+      'bg-slate-100 text-[#1d1d1f] border-slate-200/80',
     success:
-      'bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-950/40 dark:text-emerald-400 dark:border-emerald-800',
+      'bg-emerald-50 text-emerald-800 border-emerald-200 font-semibold',
     warning:
-      'bg-amber-50 text-amber-700 border-amber-200 dark:bg-amber-950/40 dark:text-amber-400 dark:border-amber-800',
+      'bg-amber-50 text-amber-900 border-amber-200 font-semibold',
     danger:
-      'bg-rose-50 text-rose-700 border-rose-200 dark:bg-rose-950/40 dark:text-rose-400 dark:border-rose-800',
+      'bg-rose-50 text-rose-800 border-rose-200 font-semibold',
     info:
-      'bg-blue-50 text-blue-700 border-blue-200 dark:bg-blue-950/40 dark:text-blue-400 dark:border-blue-800',
+      'bg-blue-50 text-[#0071e3] border-blue-200 font-semibold',
     purple:
-      'bg-brand-50 text-brand-700 border-brand-200 dark:bg-brand-950/40 dark:text-brand-400 dark:border-brand-800',
+      'bg-purple-50 text-purple-800 border-purple-200 font-semibold',
   };
 
   const sizes = {
-    sm: 'text-[11px] px-2 py-0.5 rounded',
-    md: 'text-xs px-2.5 py-0.5 rounded-full',
+    sm: 'text-[10px] px-2.5 py-0.5 rounded-full font-medium',
+    md: 'text-xs px-3 py-1 rounded-full font-medium',
   };
 
   return (

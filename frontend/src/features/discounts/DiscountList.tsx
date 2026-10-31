@@ -1,15 +1,15 @@
 import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { Percent, Plus, Tag, Check, Calendar } from 'lucide-react';
+import { Plus, Tag } from 'lucide-react';
 import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell, TableLoading, TableEmpty } from '../../components/common/Table';
 import { Button } from '../../components/common/Button';
 import { Input } from '../../components/common/Input';
 import { Select } from '../../components/common/Select';
 import { Badge } from '../../components/common/Badge';
 import { Modal } from '../../components/common/Modal';
+import { SubNavTabs } from '../../components/common/SubNavTabs';
 import { settingsService } from '../../services/settingsService';
-import { Discount } from '../../types';
-import { formatCurrency, formatDate } from '../../utils';
+import { formatDate } from '../../utils';
 
 export const DiscountList: React.FC = () => {
   const queryClient = useQueryClient();
@@ -46,16 +46,26 @@ export const DiscountList: React.FC = () => {
 
   return (
     <div className="space-y-6 text-left">
+      {/* Sub Navigation Tabs */}
+      <SubNavTabs
+        items={[
+          { label: 'Invoices', path: '/admin/invoices' },
+          { label: 'Payments & Reconciliation', path: '/admin/payments' },
+          { label: 'Automated Billing Runs', path: '/admin/billing' },
+          { label: 'Discount Rules', path: '/admin/discounts', badge: `${discounts.length}` },
+        ]}
+      />
+
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-white">
+          <h1 className="text-2xl font-bold tracking-tight text-[#1d1d1f]">
             Promotional Coupons & Plan Discounts
           </h1>
-          <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
+          <p className="text-xs sm:text-sm text-[#6e6e73] mt-1">
             Configure promotional percentage cuts, enterprise bill credits, and redemption limits
           </p>
         </div>
-        <Button onClick={() => setIsCreateOpen(true)} leftIcon={<Plus className="h-4 w-4" />}>
+        <Button onClick={() => setIsCreateOpen(true)} leftIcon={<Plus className="h-3.5 w-3.5" />}>
           Create Coupon
         </Button>
       </div>
@@ -86,25 +96,25 @@ export const DiscountList: React.FC = () => {
           <TableBody>
             {discounts.map((d) => (
               <TableRow key={d.id}>
-                <TableCell className="font-mono text-xs font-bold text-brand-600">
+                <TableCell className="font-mono text-xs font-bold text-[#0071e3]">
                   <div className="flex items-center gap-2">
                     <Tag className="h-3.5 w-3.5" />
                     {d.code}
                   </div>
                 </TableCell>
-                <TableCell className="text-xs font-semibold text-slate-900 dark:text-white">
+                <TableCell className="text-xs font-semibold text-[#1d1d1f]">
                   {d.name}
                 </TableCell>
-                <TableCell className="text-xs capitalize text-slate-500">
+                <TableCell className="text-xs capitalize text-[#6e6e73]">
                   {d.discount_type.replace('_', ' ')}
                 </TableCell>
-                <TableCell className="text-xs font-bold text-emerald-600">
+                <TableCell className="text-xs font-bold text-emerald-700">
                   {d.discount_type === 'percentage' ? `${d.value}% OFF` : `-$${d.value}`}
                 </TableCell>
-                <TableCell className="text-xs text-slate-500">
+                <TableCell className="text-xs text-[#6e6e73]">
                   {formatDate(d.valid_until)}
                 </TableCell>
-                <TableCell className="text-xs text-slate-600 dark:text-slate-300">
+                <TableCell className="text-xs text-[#1d1d1f]">
                   {d.redemption_count} {d.max_redemptions ? `/ ${d.max_redemptions}` : ''}
                 </TableCell>
                 <TableCell className="text-right">
@@ -164,7 +174,7 @@ export const DiscountList: React.FC = () => {
             onChange={(e) => setValidUntil(e.target.value)}
           />
 
-          <div className="flex justify-end gap-3 pt-4 border-t border-slate-100 dark:border-slate-800">
+          <div className="flex justify-end gap-3 pt-4 border-t border-black/[0.06]">
             <Button variant="outline" onClick={() => setIsCreateOpen(false)}>
               Cancel
             </Button>

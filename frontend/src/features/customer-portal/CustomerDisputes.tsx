@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { AlertTriangle, Plus, CheckCircle2, Clock } from 'lucide-react';
-import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '../../components/common/Card';
+import { AlertTriangle, Plus } from 'lucide-react';
+import { Card, CardContent } from '../../components/common/Card';
 import { Button } from '../../components/common/Button';
 import { Input } from '../../components/common/Input';
 import { Select } from '../../components/common/Select';
@@ -59,10 +59,10 @@ export const CustomerDisputes: React.FC = () => {
     <div className="space-y-6 text-left">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-white">
+          <h1 className="text-2xl font-bold tracking-tight text-[#1d1d1f]">
             Billing Inquiries & Disputes
           </h1>
-          <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
+          <p className="text-xs sm:text-sm text-[#6e6e73] mt-1">
             Submit questions regarding invoice line items, request SLA adjustments, and track resolution status
           </p>
         </div>
@@ -77,8 +77,8 @@ export const CustomerDisputes: React.FC = () => {
             <CardContent className="p-5">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
-                  <AlertTriangle className="h-4 w-4 text-amber-500" />
-                  <h4 className="font-bold text-xs text-slate-900 dark:text-white">
+                  <AlertTriangle className="h-4 w-4 text-amber-600" />
+                  <h4 className="font-bold text-xs text-[#1d1d1f]">
                     {d.dispute_number}: {d.reason}
                   </h4>
                 </div>
@@ -87,13 +87,13 @@ export const CustomerDisputes: React.FC = () => {
                 </Badge>
               </div>
 
-              <p className="text-xs text-slate-600 dark:text-slate-400 mt-2">
+              <p className="text-xs text-[#6e6e73] mt-2">
                 {d.description}
               </p>
 
-              <div className="mt-3 flex items-center justify-between pt-2 border-t text-[11px] text-slate-400">
-                <span>Invoice: <strong className="text-brand-600">{d.invoice_number}</strong></span>
-                <span>Amount: <strong className="text-slate-900 dark:text-white">{formatCurrency(d.amount_disputed)}</strong></span>
+              <div className="mt-3 flex items-center justify-between pt-2 border-t border-black/[0.06] text-[11px] text-[#6e6e73]">
+                <span>Invoice: <strong className="text-[#0071e3]">{d.invoice_number}</strong></span>
+                <span>Amount: <strong className="text-[#1d1d1f]">{formatCurrency(d.amount_disputed)}</strong></span>
                 <span>Submitted: {formatDate(d.created_at)}</span>
               </div>
             </CardContent>
@@ -135,7 +135,7 @@ export const CustomerDisputes: React.FC = () => {
               value={description}
               onChange={(e) => setDescription(e.target.value)}
             />
-            <div className="flex justify-end gap-3 pt-4 border-t border-slate-100 dark:border-slate-800">
+            <div className="flex justify-end gap-3 pt-4 border-t border-black/[0.06]">
               <Button variant="outline" onClick={() => setIsFilingOpen(false)}>
                 Cancel
               </Button>

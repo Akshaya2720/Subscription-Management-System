@@ -7,6 +7,7 @@ import { Input } from '../../components/common/Input';
 import { Select } from '../../components/common/Select';
 import { Badge } from '../../components/common/Badge';
 import { Modal } from '../../components/common/Modal';
+import { SubNavTabs } from '../../components/common/SubNavTabs';
 import { quotationService } from '../../services/quotationService';
 import { customerService } from '../../services/customerService';
 import { productService } from '../../services/productService';
@@ -153,17 +154,27 @@ export const QuotationList: React.FC = () => {
   });
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 text-left">
+      {/* Sub Navigation Tabs */}
+      <SubNavTabs
+        items={[
+          { label: 'Subscriptions', path: '/admin/subscriptions' },
+          { label: 'Quotations & Pricing', path: '/admin/quotations', badge: `${quotations.length}` },
+          { label: 'Product Catalog & Plans', path: '/admin/plans' },
+          { label: 'Customers', path: '/admin/customers' },
+        ]}
+      />
+
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-white">
+          <h1 className="text-2xl font-bold tracking-tight text-[#1d1d1f]">
             Quotations & Proposals
           </h1>
-          <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
+          <p className="text-xs sm:text-sm text-[#6e6e73] mt-1">
             Authoritative backend tax and discount computation, quotation lifecycle, and 1-click subscription conversion
           </p>
         </div>
-        <Button onClick={() => setIsCreateOpen(true)} leftIcon={<Plus className="h-4 w-4" />}>
+        <Button onClick={() => setIsCreateOpen(true)} leftIcon={<Plus className="h-3.5 w-3.5" />}>
           Draft Quotation
         </Button>
       </div>
@@ -197,25 +208,25 @@ export const QuotationList: React.FC = () => {
               const badge = getStatusBadgeVariant(q.status);
               return (
                 <TableRow key={q.id}>
-                  <TableCell className="font-semibold text-xs text-slate-900 dark:text-white">
+                  <TableCell className="font-semibold text-xs text-[#0071e3]">
                     <div className="flex items-center gap-2">
-                      <FileCheck className="h-4 w-4 text-brand-600" />
+                      <FileCheck className="h-4 w-4 text-[#0071e3]" />
                       {q.quotation_number}
                     </div>
                   </TableCell>
-                  <TableCell className="text-xs font-medium">
+                  <TableCell className="text-xs font-medium text-[#1d1d1f]">
                     {q.customer?.name || 'Client Entity'}
                   </TableCell>
-                  <TableCell className="text-xs text-slate-500">
+                  <TableCell className="text-xs text-[#6e6e73]">
                     {formatDate(q.valid_until)}
                   </TableCell>
-                  <TableCell className="text-xs">
+                  <TableCell className="text-xs text-[#1d1d1f]">
                     {formatCurrency(q.subtotal, q.currency)}
                   </TableCell>
-                  <TableCell className="text-xs text-emerald-600 font-medium">
+                  <TableCell className="text-xs text-emerald-700 font-medium">
                     {q.discount_amount > 0 ? `-${formatCurrency(q.discount_amount, q.currency)}` : '—'}
                   </TableCell>
-                  <TableCell className="text-xs font-bold text-slate-900 dark:text-white">
+                  <TableCell className="text-xs font-bold text-[#1d1d1f]">
                     {formatCurrency(q.total_amount, q.currency)}
                   </TableCell>
                   <TableCell>
@@ -225,13 +236,14 @@ export const QuotationList: React.FC = () => {
                   </TableCell>
                   <TableCell className="text-right">
                     <div className="flex items-center justify-end gap-1">
-                      <button
+                      <Button
+                        size="sm"
+                        variant="outline"
                         onClick={() => setViewingQuotation(q)}
-                        className="rounded p-1.5 text-slate-400 hover:bg-slate-100 hover:text-slate-700 dark:hover:bg-slate-800"
-                        title="View Details"
+                        leftIcon={<Eye className="h-3.5 w-3.5" />}
                       >
-                        <Eye className="h-4 w-4" />
-                      </button>
+                        Inspect
+                      </Button>
                     </div>
                   </TableCell>
                 </TableRow>
@@ -317,7 +329,7 @@ export const QuotationList: React.FC = () => {
               size="sm"
               onClick={handleCalculatePricing}
               isLoading={isCalculating}
-              leftIcon={<Sparkles className="h-3.5 w-3.5 text-brand-600" />}
+              leftIcon={<Sparkles className="h-3.5 w-3.5 text-[#0071e3]" />}
             >
               Calculate Backend Price & Tax
             </Button>
@@ -325,31 +337,31 @@ export const QuotationList: React.FC = () => {
 
           {/* Authoritative Price Summary Box */}
           {backendCalculation && (
-            <div className="rounded-xl border border-slate-200 bg-slate-50 p-4 dark:border-slate-800 dark:bg-slate-900/60 space-y-2">
-              <div className="flex items-center justify-between text-xs text-slate-500">
+            <div className="rounded-2xl border border-black/[0.08] bg-[#f5f5f7] p-4 space-y-2">
+              <div className="flex items-center justify-between text-xs text-[#6e6e73]">
                 <span>Subtotal (Authoritative)</span>
-                <span className="font-semibold text-slate-900 dark:text-white">
+                <span className="font-semibold text-[#1d1d1f]">
                   {formatCurrency(backendCalculation.subtotal)}
                 </span>
               </div>
-              <div className="flex items-center justify-between text-xs text-emerald-600">
+              <div className="flex items-center justify-between text-xs text-emerald-700">
                 <span>Calculated Discount</span>
                 <span>-{formatCurrency(backendCalculation.discount_amount)}</span>
               </div>
-              <div className="flex items-center justify-between text-xs text-slate-500">
+              <div className="flex items-center justify-between text-xs text-[#6e6e73]">
                 <span>State & City Tax (8.0%)</span>
                 <span>+{formatCurrency(backendCalculation.tax_amount)}</span>
               </div>
-              <div className="flex items-center justify-between border-t border-slate-200 pt-2 text-sm font-bold text-slate-900 dark:text-white">
+              <div className="flex items-center justify-between border-t border-black/[0.06] pt-2 text-sm font-bold text-[#1d1d1f]">
                 <span>Total Quotation Commitment</span>
-                <span className="text-brand-600 dark:text-brand-400">
+                <span className="text-[#0071e3]">
                   {formatCurrency(backendCalculation.total_amount)}
                 </span>
               </div>
             </div>
           )}
 
-          <div className="flex justify-end gap-3 pt-4 border-t border-slate-100 dark:border-slate-800">
+          <div className="flex justify-end gap-3 pt-4 border-t border-black/[0.06]">
             <Button variant="outline" onClick={() => setIsCreateOpen(false)}>
               Cancel
             </Button>
@@ -374,9 +386,9 @@ export const QuotationList: React.FC = () => {
           maxWidth="2xl"
         >
           <div className="space-y-6">
-            <div className="flex items-center justify-between rounded-xl bg-slate-50 p-4 dark:bg-slate-800/60">
+            <div className="flex items-center justify-between rounded-2xl bg-[#f5f5f7] border border-black/[0.06] p-4">
               <div>
-                <span className="text-xs text-slate-500">Status</span>
+                <span className="text-xs text-[#6e6e73]">Status</span>
                 <div className="mt-1">
                   <Badge variant={viewingQuotation.status === 'converted' ? 'success' : 'default'} size="md">
                     {viewingQuotation.status.toUpperCase()}
@@ -384,14 +396,14 @@ export const QuotationList: React.FC = () => {
                 </div>
               </div>
               <div>
-                <span className="text-xs text-slate-500">Total Amount</span>
-                <p className="text-lg font-bold text-brand-600 dark:text-brand-400">
+                <span className="text-xs text-[#6e6e73]">Total Amount</span>
+                <p className="text-lg font-bold text-[#0071e3]">
                   {formatCurrency(viewingQuotation.total_amount, viewingQuotation.currency)}
                 </p>
               </div>
               <div>
-                <span className="text-xs text-slate-500">Expiry Date</span>
-                <p className="text-xs font-semibold text-slate-900 dark:text-white">
+                <span className="text-xs text-[#6e6e73]">Expiry Date</span>
+                <p className="text-xs font-semibold text-[#1d1d1f]">
                   {formatDate(viewingQuotation.valid_until)}
                 </p>
               </div>
@@ -399,12 +411,12 @@ export const QuotationList: React.FC = () => {
 
             {/* Line items table */}
             <div className="space-y-2">
-              <h4 className="text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">
+              <h4 className="text-xs font-bold uppercase tracking-wider text-[#1d1d1f]">
                 Quotation Line Items
               </h4>
-              <div className="rounded-xl border border-slate-200 overflow-hidden dark:border-slate-800">
+              <div className="rounded-2xl border border-black/[0.08] overflow-hidden">
                 <table className="w-full text-xs">
-                  <thead className="bg-slate-50 border-b border-slate-200 dark:bg-slate-800 dark:border-slate-800">
+                  <thead className="bg-[#fbfbfd] border-b border-black/[0.06] text-[#6e6e73]">
                     <tr>
                       <th className="p-3 text-left">Description</th>
                       <th className="p-3 text-right">Qty</th>
@@ -412,13 +424,13 @@ export const QuotationList: React.FC = () => {
                       <th className="p-3 text-right">Line Total</th>
                     </tr>
                   </thead>
-                  <tbody>
+                  <tbody className="divide-y divide-black/[0.04]">
                     {viewingQuotation.items.map((item) => (
-                      <tr key={item.id} className="border-b border-slate-100 dark:border-slate-800">
-                        <td className="p-3 font-semibold">{item.product_name} - {item.plan_name}</td>
-                        <td className="p-3 text-right">{item.quantity}</td>
-                        <td className="p-3 text-right">{formatCurrency(item.unit_price)}</td>
-                        <td className="p-3 text-right font-bold">{formatCurrency(item.total_amount)}</td>
+                      <tr key={item.id} className="hover:bg-black/[0.01]">
+                        <td className="p-3 font-semibold text-[#1d1d1f]">{item.product_name} - {item.plan_name}</td>
+                        <td className="p-3 text-right text-[#1d1d1f]">{item.quantity}</td>
+                        <td className="p-3 text-right text-[#1d1d1f]">{formatCurrency(item.unit_price)}</td>
+                        <td className="p-3 text-right font-bold text-[#1d1d1f]">{formatCurrency(item.total_amount)}</td>
                       </tr>
                     ))}
                   </tbody>
@@ -427,7 +439,7 @@ export const QuotationList: React.FC = () => {
             </div>
 
             {/* Actions: Convert to Subscription, Approve, Cancel */}
-            <div className="flex flex-wrap items-center justify-between gap-3 pt-4 border-t border-slate-100 dark:border-slate-800">
+            <div className="flex flex-wrap items-center justify-between gap-3 pt-4 border-t border-black/[0.06]">
               <div className="flex gap-2">
                 {viewingQuotation.status !== 'approved' && viewingQuotation.status !== 'converted' && (
                   <Button
@@ -463,7 +475,7 @@ export const QuotationList: React.FC = () => {
                   Convert to Active Subscription
                 </Button>
               ) : (
-                <div className="flex items-center gap-1.5 text-xs font-semibold text-emerald-600">
+                <div className="flex items-center gap-1.5 text-xs font-semibold text-emerald-700">
                   <Check className="h-4 w-4" /> Active Subscription Established
                 </div>
               )}

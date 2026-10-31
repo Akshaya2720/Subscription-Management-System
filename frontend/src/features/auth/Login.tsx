@@ -70,34 +70,34 @@ export const Login: React.FC = () => {
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-slate-50 p-4 dark:bg-slate-950">
-      <div className="w-full max-w-md rounded-2xl border border-slate-200 bg-white p-8 shadow-xl dark:border-slate-800 dark:bg-slate-900">
-        {/* Brand Header */}
+    <div className="flex min-h-screen items-center justify-center bg-[#f5f5f7] p-6 selection:bg-[#0071e3] selection:text-white">
+      <div className="w-full max-w-md rounded-3xl border border-black/[0.08] bg-white p-8 shadow-apple-card sm:p-10">
+        {/* Apple Monomark Brand Header */}
         <div className="text-center">
-          <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl bg-brand-600 text-white font-black text-xl shadow-md">
+          <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-[#1d1d1f] text-white font-black text-2xl shadow-sm tracking-tight">
             V
           </div>
-          <h2 className="mt-4 text-2xl font-bold tracking-tight text-slate-900 dark:text-white">
-            Welcome to VERISUB
+          <h2 className="mt-5 text-2xl font-bold tracking-tight text-[#1d1d1f]">
+            Sign in to VERISUB
           </h2>
-          <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
+          <p className="mt-1.5 text-xs text-[#6e6e73]">
             Intelligent Subscription & Billing Verification Platform
           </p>
         </div>
 
-        {/* Demo Role Selection Quick Pills */}
-        <div className="mt-6 rounded-xl bg-slate-50 p-1.5 dark:bg-slate-800/60 border border-slate-100 dark:border-slate-800">
-          <p className="text-[11px] font-semibold text-center text-slate-500 uppercase tracking-wider mb-1">
+        {/* Demo Persona Segmented Control */}
+        <div className="mt-6 rounded-2xl bg-[#f5f5f7] p-1.5 border border-black/[0.04]">
+          <p className="text-[11px] font-semibold text-center text-[#86868b] uppercase tracking-wider mb-1.5">
             Quick Persona Login
           </p>
-          <div className="grid grid-cols-3 gap-1">
+          <div className="grid grid-cols-3 gap-1 bg-[#e8e8ed]/70 p-1 rounded-xl">
             <button
               type="button"
               onClick={() => handleRoleSelect('admin')}
               className={`rounded-lg py-1.5 text-xs font-semibold transition-all ${
                 selectedRole === 'admin'
-                  ? 'bg-brand-600 text-white shadow-xs'
-                  : 'text-slate-600 hover:text-slate-900 dark:text-slate-300'
+                  ? 'bg-white text-[#1d1d1f] shadow-xs'
+                  : 'text-[#6e6e73] hover:text-[#1d1d1f]'
               }`}
             >
               Admin
@@ -107,8 +107,8 @@ export const Login: React.FC = () => {
               onClick={() => handleRoleSelect('staff')}
               className={`rounded-lg py-1.5 text-xs font-semibold transition-all ${
                 selectedRole === 'staff'
-                  ? 'bg-brand-600 text-white shadow-xs'
-                  : 'text-slate-600 hover:text-slate-900 dark:text-slate-300'
+                  ? 'bg-white text-[#1d1d1f] shadow-xs'
+                  : 'text-[#6e6e73] hover:text-[#1d1d1f]'
               }`}
             >
               Staff
@@ -118,8 +118,8 @@ export const Login: React.FC = () => {
               onClick={() => handleRoleSelect('customer')}
               className={`rounded-lg py-1.5 text-xs font-semibold transition-all ${
                 selectedRole === 'customer'
-                  ? 'bg-brand-600 text-white shadow-xs'
-                  : 'text-slate-600 hover:text-slate-900 dark:text-slate-300'
+                  ? 'bg-white text-[#1d1d1f] shadow-xs'
+                  : 'text-[#6e6e73] hover:text-[#1d1d1f]'
               }`}
             >
               Customer
@@ -129,7 +129,7 @@ export const Login: React.FC = () => {
 
         {/* Server Error Alert */}
         {serverError && (
-          <div className="mt-4 rounded-lg bg-rose-50 p-3 text-xs text-rose-700 dark:bg-rose-950/40 dark:text-rose-400">
+          <div className="mt-4 rounded-xl bg-rose-50 border border-rose-200/80 p-3.5 text-xs font-medium text-rose-800">
             {serverError}
           </div>
         )}
@@ -140,7 +140,7 @@ export const Login: React.FC = () => {
             label="Work Email"
             type="email"
             placeholder="name@company.com"
-            leftIcon={<Mail className="h-4 w-4" />}
+            leftIcon={<Mail className="h-4 w-4 text-[#86868b]" />}
             error={errors.email?.message}
             {...register('email')}
           />
@@ -150,12 +150,12 @@ export const Login: React.FC = () => {
               label="Password"
               type={showPassword ? 'text' : 'password'}
               placeholder="••••••••"
-              leftIcon={<Lock className="h-4 w-4" />}
+              leftIcon={<Lock className="h-4 w-4 text-[#86868b]" />}
               rightIcon={
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200"
+                  className="text-[#86868b] hover:text-[#1d1d1f] transition-colors"
                 >
                   {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                 </button>
@@ -165,37 +165,41 @@ export const Login: React.FC = () => {
             />
           </div>
 
-          <div className="flex items-center justify-between text-xs">
-            <label className="flex items-center gap-2 cursor-pointer text-slate-600 dark:text-slate-400">
-              <input type="checkbox" defaultChecked className="rounded border-slate-300 text-brand-600 focus:ring-brand-500" />
+          <div className="flex items-center justify-between text-xs pt-1">
+            <label className="flex items-center gap-2 cursor-pointer text-[#424245] select-none">
+              <input
+                type="checkbox"
+                defaultChecked
+                className="h-4 w-4 rounded border-[#d2d2d7] text-[#0071e3] focus:ring-[#0071e3]"
+              />
               Remember me
             </label>
             <Link
               to="/auth/forgot-password"
-              className="font-semibold text-brand-600 hover:text-brand-500 dark:text-brand-400"
+              className="font-medium text-[#0071e3] hover:underline"
             >
               Forgot password?
             </Link>
           </div>
 
-          <Button type="submit" className="w-full mt-2" isLoading={isLoading} size="lg">
+          <Button type="submit" className="w-full mt-3" isLoading={isLoading} size="lg">
             Sign In to {selectedRole === 'customer' ? 'Customer Portal' : 'Workspace'}
           </Button>
         </form>
 
         {/* Footer */}
-        <div className="mt-6 text-center text-xs text-slate-500">
+        <div className="mt-6 text-center text-xs text-[#6e6e73]">
           Need an enterprise account?{' '}
           <Link
             to="/auth/register-org"
-            className="font-semibold text-brand-600 hover:underline dark:text-brand-400"
+            className="font-semibold text-[#0071e3] hover:underline"
           >
             Register Organization
           </Link>
         </div>
 
-        <div className="mt-6 flex items-center justify-center gap-2 border-t border-slate-100 pt-4 text-[11px] text-slate-400 dark:border-slate-800">
-          <ShieldCheck className="h-3.5 w-3.5 text-emerald-500" />
+        <div className="mt-6 flex items-center justify-center gap-2 border-t border-black/[0.06] pt-4 text-[11px] text-[#86868b]">
+          <ShieldCheck className="h-4 w-4 text-emerald-600" />
           <span>Secured with JWT & SHA-256 Hash Chain Integrity</span>
         </div>
       </div>
