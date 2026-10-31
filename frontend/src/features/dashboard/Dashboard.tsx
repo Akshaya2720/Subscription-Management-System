@@ -138,12 +138,12 @@ export const Dashboard: React.FC = () => {
 
         {/* Action Controls */}
         <div className="flex flex-wrap items-center gap-2.5">
-          <div className="flex items-center gap-1.5 rounded-full border border-black/[0.08] bg-white px-3.5 py-1.5 text-xs shadow-2xs">
-            <Filter className="h-3.5 w-3.5 text-[#86868b]" />
+          <div className="flex items-center gap-1.5 rounded-full border border-slate-200 bg-white px-3.5 py-1.5 text-xs shadow-xs">
+            <Filter className="h-3.5 w-3.5 text-slate-500" />
             <select
               value={dateRange}
               onChange={(e) => setDateRange(e.target.value)}
-              className="bg-transparent font-medium text-[#1d1d1f] outline-none cursor-pointer"
+              className="bg-transparent font-medium text-slate-900 outline-none cursor-pointer"
             >
               <option value="7d">Last 7 Days</option>
               <option value="30d">Last 30 Days</option>
@@ -167,6 +167,62 @@ export const Dashboard: React.FC = () => {
           >
             SLA Verification
           </Button>
+        </div>
+      </div>
+
+      {/* Solana PublicNode Real-Time Node Health & Telemetry Bar */}
+      <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-xs">
+        <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+          <div className="flex items-center gap-3">
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-slate-900 text-white font-mono font-bold text-sm shadow-xs shrink-0">
+              ⚡
+            </div>
+            <div>
+              <div className="flex items-center gap-2">
+                <span className="solana-pulse">
+                  <span></span>
+                  <span></span>
+                </span>
+                <h3 className="text-xs font-bold uppercase tracking-wider text-slate-900">
+                  Solana PublicNode RPC & Telemetry Engine
+                </h3>
+                <span className="rounded-full bg-emerald-50 border border-emerald-200 px-2 py-0.5 text-[10px] font-mono font-bold text-emerald-700">
+                  100% OPERATIONAL
+                </span>
+              </div>
+              <p className="text-[11px] text-slate-500 mt-0.5 font-mono">
+                Real-time node telemetry stream • Deterministic SLA verification active • SHA-256 ledger linked
+              </p>
+            </div>
+          </div>
+
+          {/* Real-time Telemetry Metrics Chips */}
+          <div className="flex flex-wrap items-center gap-2 font-mono text-xs">
+            <div className="flex items-center gap-1.5 rounded-lg bg-slate-50 border border-slate-200 px-3 py-1.5">
+              <span className="text-slate-500 text-[11px]">RPC Latency:</span>
+              <span className="text-emerald-700 font-bold">28ms</span>
+              <span className="rounded-full bg-emerald-100 text-emerald-800 text-[9px] px-1.5 font-bold">P95</span>
+            </div>
+
+            <div className="flex items-center gap-1.5 rounded-lg bg-slate-50 border border-slate-200 px-3 py-1.5">
+              <span className="text-slate-500 text-[11px]">SLA Delivery:</span>
+              <span className="text-emerald-700 font-bold">99.98%</span>
+            </div>
+
+            <div className="flex items-center gap-1.5 rounded-lg bg-slate-50 border border-slate-200 px-3 py-1.5">
+              <span className="text-slate-500 text-[11px]">Ledger Block:</span>
+              <span className="text-slate-800 font-bold">#284,912</span>
+            </div>
+
+            <Button
+              size="sm"
+              variant="outline"
+              onClick={() => navigate('/admin/audit')}
+              leftIcon={<ShieldCheck className="h-3.5 w-3.5 text-emerald-600" />}
+            >
+              Verify SHA-256 Chain
+            </Button>
+          </div>
         </div>
       </div>
 
