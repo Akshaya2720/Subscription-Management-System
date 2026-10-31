@@ -63,7 +63,16 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Register API v1 Routers
+# Register Foundation, Auth, and RBAC Routers (Member 1)
+from backend.app.routers import auth as auth_router_module
+from backend.app.routers import organization as org_router_module
+from backend.app.routers import users as users_router_module
+
+app.include_router(auth_router_module.router)
+app.include_router(org_router_module.router)
+app.include_router(users_router_module.router)
+
+# Register API v1 Routers (Member 2)
 api_v1_prefix = settings.API_V1_STR
 app.include_router(auth_router, prefix=api_v1_prefix)
 app.include_router(user_router, prefix=api_v1_prefix)
