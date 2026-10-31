@@ -14,6 +14,7 @@ import {
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '../../components/common/Card';
 import { Button } from '../../components/common/Button';
 import { Tabs } from '../../components/common/Tabs';
+import { SubNavTabs } from '../../components/common/SubNavTabs';
 import { dashboardService } from '../../services/dashboardService';
 import { invoiceService } from '../../services/invoiceService';
 import { customerService } from '../../services/customerService';
@@ -72,20 +73,29 @@ export const ReportsView: React.FC = () => {
 
   return (
     <div className="space-y-6 text-left">
+      {/* Sub Navigation Tabs */}
+      <SubNavTabs
+        items={[
+          { label: 'Organization & Governance', path: '/admin/settings' },
+          { label: 'Audit Trail (SHA-256)', path: '/admin/audit' },
+          { label: 'Financial Reports', path: '/admin/reports', badge: 'Export' },
+        ]}
+      />
+
       {/* Title */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-white">
+          <h1 className="text-xl font-bold tracking-tight text-white">
             Financial & Operational Reports
           </h1>
-          <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
+          <p className="text-xs text-slate-400 mt-1">
             Audit-grade performance metrics, revenue trajectories, invoice aging, and customer cohort activity
           </p>
         </div>
         <Button
-          variant="outline"
+          variant="secondary"
           onClick={handleExportCsv}
-          leftIcon={<Download className="h-4 w-4" />}
+          leftIcon={<Download className="h-3.5 w-3.5" />}
         >
           Export CSV Report
         </Button>

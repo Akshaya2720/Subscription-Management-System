@@ -16,6 +16,7 @@ import { Input } from '../../components/common/Input';
 import { Select } from '../../components/common/Select';
 import { Badge } from '../../components/common/Badge';
 import { Modal } from '../../components/common/Modal';
+import { SubNavTabs } from '../../components/common/SubNavTabs';
 import { invoiceService } from '../../services/invoiceService';
 import { paymentService } from '../../services/paymentService';
 import { Invoice, InvoiceStatus } from '../../types';
@@ -68,13 +69,23 @@ export const InvoiceList: React.FC = () => {
 
   return (
     <div className="space-y-6">
+      {/* Sub Navigation Tabs */}
+      <SubNavTabs
+        items={[
+          { label: 'Invoices', path: '/admin/invoices', badge: `${invoices.length} Total` },
+          { label: 'Payments & Reconciliation', path: '/admin/payments' },
+          { label: 'Automated Billing Runs', path: '/admin/billing' },
+          { label: 'Discount Rules', path: '/admin/discounts' },
+        ]}
+      />
+
       {/* Title */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-white">
+          <h1 className="text-xl font-bold tracking-tight text-white">
             Invoice Management & Ledger
           </h1>
-          <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
+          <p className="text-xs text-slate-400 mt-1">
             Track line-item subtotals, calculated taxes, SLA credits, settlement balances, and printable invoices
           </p>
         </div>

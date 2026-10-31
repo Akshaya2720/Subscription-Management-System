@@ -16,6 +16,7 @@ import { Button } from '../../components/common/Button';
 import { Badge } from '../../components/common/Badge';
 import { Modal } from '../../components/common/Modal';
 import { Tabs } from '../../components/common/Tabs';
+import { SubNavTabs } from '../../components/common/SubNavTabs';
 import { paymentService } from '../../services/paymentService';
 import { invoiceService } from '../../services/invoiceService';
 import { Payment } from '../../types';
@@ -64,12 +65,22 @@ export const PaymentList: React.FC = () => {
 
   return (
     <div className="space-y-6">
+      {/* Sub Navigation Tabs */}
+      <SubNavTabs
+        items={[
+          { label: 'Invoices', path: '/admin/invoices' },
+          { label: 'Payments & Reconciliation', path: '/admin/payments', badge: `${payments.length}` },
+          { label: 'Automated Billing Runs', path: '/admin/billing' },
+          { label: 'Discount Rules', path: '/admin/discounts' },
+        ]}
+      />
+
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-white">
+          <h1 className="text-xl font-bold tracking-tight text-white">
             Payments & Bank Reconciliation
           </h1>
-          <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
+          <p className="text-xs text-slate-400 mt-1">
             Track customer payments, Stripe & ACH transactions, and automated statement reconciliation
           </p>
         </div>
@@ -77,7 +88,7 @@ export const PaymentList: React.FC = () => {
         {activeTab === 'reconciliation' && (
           <Button
             onClick={() => setUploadModalOpen(true)}
-            leftIcon={<Upload className="h-4 w-4" />}
+            leftIcon={<Upload className="h-3.5 w-3.5" />}
           >
             Upload Statement CSV
           </Button>
