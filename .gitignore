@@ -1,13 +1,15 @@
-# Python
+# Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
 *$py.class
 *.so
+
+# Distribution / packaging
 .Python
-env/
 build/
 develop-eggs/
 dist/
+dist-ssr/
 downloads/
 eggs/
 .eggs/
@@ -17,23 +19,58 @@ parts/
 sdist/
 var/
 wheels/
+share/python-wheels/
 *.egg-info/
 .installed.cfg
 *.egg
+MANIFEST
 
 # Virtual environments
 .venv/
 venv/
 ENV/
+env/
+
+# Environment files
+.env
+.env.local
+.env.*.local
+backend/.env
+frontend/.env
+!.env.example
+!backend/.env.example
+!frontend/.env.example
+
+# IDE & Editor files
+.vscode/
+.vscode/*
+!.vscode/extensions.json
+.idea/
+*.swp
+*.swo
+*.sw?
+*~
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
 
 # Testing & Coverage
 .pytest_cache/
 .coverage
 htmlcov/
 .tox/
+.nox/
+
+# SQLite databases
+*.db
+*.sqlite
+*.sqlite3
+backend/*.db
+backend/*.sqlite
 
 # Node & Frontend
-node_modules
+node_modules/
 dist
 dist-ssr
 *.local
@@ -48,24 +85,6 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
-# IDE & OS
-.vscode/*
-!.vscode/extensions.json
-.idea/
+# OS files
 .DS_Store
-*.suo
-*.ntvs*
-*.njsproj
-*.sln
-*.swp
-*.swo
-*.sw?
-
-# Environment variables
-.env
-.env.local
-
-# Database
-*.db
-*.sqlite
-*.sqlite3
+Thumbs.db

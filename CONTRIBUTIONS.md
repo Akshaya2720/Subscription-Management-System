@@ -1,12 +1,70 @@
-# VERISUB — System Contributions Documentation
+# VERISUB — Contributions & Engineering Log
 
 ---
 
-# PART 1: Subscription Engine Backend Developer Contribution
+# Part 1: Database Architecture, Authentication & Integration Lead
+
+**Role:** Database Architect, Authentication and Integration Lead  
+**Branch:** `feature/database-auth`  
+**Repository:** `https://github.com/Akshaya2720/Subscription-Management-System`
+
+---
+
+## 1. Overview of Implemented Modules
+
+As the Database Architect, Authentication, and Integration Lead for VERISUB, I have designed and implemented the complete shared backend foundation, authentication engine, role-based access control (RBAC), multi-tenant organization isolation, and customer management system.
+
+All deliverables are production-grade implementations adhering to SQLAlchemy 2.0, Pydantic v2, FastAPI, and Alembic standards.
+
+---
+
+## 2. Core Architecture & Implemented Components
+
+### 2.1 Database Architecture (SQLAlchemy 2.0 & PostgreSQL/SQLite)
+- **Base & Mixins:**
+  - `Base`: Declarative base with SQLAlchemy 2.0 typed mapped columns.
+  - `TimestampMixin`: Timezone-aware `created_at` and `updated_at` timestamps using `func.now()`.
+- **Foundational Models (13 Normalized Relational Tables):**
+  - `Organization`: Primary tenant model with status indexing and UUID primary keys.
+  - `OrganizationSettings`: 1:1 tenant settings covering default currency, timezone, tax configuration (JSON), and billing preferences (JSON).
+  - `User`: Central user identity with unique email index, Argon2id password hash, and active/verification flags.
+  - `Membership`: Multi-tenant organization membership model enabling users to join multiple organizations with unique `(organization_id, user_id)` constraint.
+  - `Role`: System roles (`ADMIN`, `STAFF`, `CUSTOMER`).
+  - `Permission`: 12 granular platform permissions (e.g. `MANAGE_ORGANIZATION`, `MANAGE_STAFF`, `MANAGE_CUSTOMERS`, etc.).
+  - `RolePermission`: Association table linking roles to permissions.
+  - `MembershipRole`: Association table linking organization memberships to assigned roles.
+  - `Customer`: B2B customer business profile decoupled from user logins, scoped by `organization_id` with unique `customer_code` per organization.
+  - `CustomerAddress`: Structured customer addresses (billing, shipping).
+  - `CustomerContact`: Customer points of contact with primary contact management.
+  - `RefreshToken`: Cryptographically hashed refresh tokens with expiration and explicit revocation tracking (`revoked_at`).
+  - `PasswordResetToken`: Secure single-use hashed reset tokens with expiration and consumption timestamp (`used_at`).
+
+### 2.2 Security & Authentication Engine
+- **Argon2id Hashing:** Password hashing using `argon2.PasswordHasher(type=argon2.Type.ID)`.
+- **Password Complexity Validation:** Enforces minimum 9 characters, uppercase, lowercase, digit, and special characters.
+- **JWT Generation & Claims:** Scoped access tokens (`HS256`, 30 min default) and refresh tokens (7 days default) with user ID (`sub`) and tenant organization context.
+- **Refresh Token Rotation:** Refresh endpoint rotates the token pair and revokes the consumed token, preventing replay attacks.
+- **Logout & Revocation:** Secure session invalidation in database.
+- **Password Reset Flow:** Secure token generation and hashing. Transparent dev-mode fallback when SMTP is unconfigured.
+- **Password Change:** Secure credential update with mandatory current password re-verification and session revocation.
+
+### 2.3 Role-Based Access Control (RBAC) & Tenant Isolation
+- **Dependency Factories:**
+  - `get_current_user`: Extracts and decodes JWT, verifies user active status.
+  - `get_current_membership`: Validates tenant context from `X-Organization-ID` header and verifies active membership in database.
+  - `require_role(*roles)`: Enforces role requirements.
+  - `require_permissions(*permissions)`: Checks effective permissions resolved across all assigned membership roles.
+- **Multi-Tenant Protection:** Every customer, user, and organization query enforces `organization_id` matching to eliminate cross-tenant data leaks.
+
+---
+---
+
+# Part 2: Subscription Engine Backend Developer Contribution
 
 **Role**: Subscription Engine Backend Developer  
-**Assigned Branch**: `feature/subscription-engine`  
-**Target Branch for PR**: `develop`
+**Developer**: Shibil-jazz (`mhdshibil734@gmail.com`)  
+**Branch**: `feature/subscription-engine`  
+**Target Pull Request Base**: `develop`  
 
 ---
 
@@ -136,7 +194,7 @@ A full suite of 19 automated integration and unit tests was written using `pytes
 ---
 ---
 
-# PART 2: Frontend Architecture & Contribution Documentation
+# Part 3: Frontend Architecture & Contribution Documentation
 
 **Role:** Frontend Architect and UI/UX Developer  
 **Branch:** `feature/frontend-dashboard`  
