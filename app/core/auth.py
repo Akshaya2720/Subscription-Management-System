@@ -1,45 +1,12 @@
+"""Authentication and Multi-Tenant Context Dependencies for VERISUB."""
+
 import uuid
-from datetime import datetime, timezone
 from typing import Optional
 from fastapi import Depends, HTTPException, Header, status
-from sqlalchemy import Column, String, Boolean, DateTime, ForeignKey, Uuid, select
-from sqlalchemy.orm import Mapped, mapped_column, relationship, Session
+from sqlalchemy.orm import Session
 
-from app.core.database import Base, get_db
-
-
-class Organization(Base):
-    __tablename__ = "organizations"
-
-    id: Mapped[uuid.UUID] = mapped_column(Uuid(as_uuid=True), primary_key=True, default=uuid.uuid4)
-    name: Mapped[str] = mapped_column(String(255), nullable=False)
-    slug: Mapped[str] = mapped_column(String(100), unique=True, index=True, nullable=False)
-    is_active: Mapped[bool] = mapped_column(Boolean, default=True, nullable=False)
-    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=lambda: datetime.now(timezone.utc), nullable=False)
-    updated_at: Mapped[datetime] = mapped_column(
-        DateTime(timezone=True),
-        default=lambda: datetime.now(timezone.utc),
-        onupdate=lambda: datetime.now(timezone.utc),
-        nullable=False,
-    )
-
-    users = relationship("User", back_populates="organization", cascade="all, delete-orphan")
-
-
-class User(Base):
-    __tablename__ = "users"
-
-    id: Mapped[uuid.UUID] = mapped_column(Uuid(as_uuid=True), primary_key=True, default=uuid.uuid4)
-    organization_id: Mapped[uuid.UUID] = mapped_column(
-        Uuid(as_uuid=True), ForeignKey("organizations.id", ondelete="CASCADE"), nullable=False, index=True
-    )
-    email: Mapped[str] = mapped_column(String(255), unique=True, index=True, nullable=False)
-    full_name: Mapped[str] = mapped_column(String(255), nullable=False)
-    role: Mapped[str] = mapped_column(String(50), default="admin", nullable=False)
-    is_active: Mapped[bool] = mapped_column(Boolean, default=True, nullable=False)
-    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=lambda: datetime.now(timezone.utc), nullable=False)
-
-    organization = relationship("Organization", back_populates="users")
+from app.core.database import get_db
+from app.models.auth import Organization, User, UserRole
 
 
 def get_current_organization(
@@ -111,8 +78,9 @@ def get_current_user(
             id=uuid.UUID("00000000-0000-0000-0000-000000000002"),
             organization_id=org.id,
             email=f"admin@{org.slug}.local",
+            password_hash="argon2id_dev_dummy_hash",
             full_name="Admin User",
-            role="admin",
+            role=UserRole.ADMIN,
             is_active=True,
         )
         db.add(default_user)
