@@ -1,182 +1,121 @@
-# VERISUB — Frontend Architecture & Contribution Documentation
+# CONTRIBUTIONS.md - VERISUB Platform Contributions
 
-**Role:** Frontend Architect and UI/UX Developer  
-**Branch:** `feature/frontend-dashboard`  
-**Target Pull Request Base:** `develop`  
-**Application Platform:** VERISUB — Intelligent Subscription & Billing Verification Platform  
+This document aggregates engineering contributions across the VERISUB Intelligent Subscription & Billing Verification Platform.
 
 ---
 
-## 1. Executive Summary
+# Part 1: Member 3 — Billing, Financial Verification, AI and Blockchain Developer
+**Role**: Billing, Financial Verification, AI and Blockchain Developer  
+**Assigned Branch**: `feature/billing-verification`  
+**Target Branch for PR**: `develop`
 
-The complete React frontend for **VERISUB** has been designed, implemented, tested, and optimized. It provides an enterprise-grade commercial SaaS web application connecting business owners, administrators, operations staff, and customers to the FastAPI backend API at `http://localhost:8000/api/v1`.
+## 1. Summary of Delivered Work
+As the Billing, Financial Verification, AI and Blockchain Developer (Member 3), I am responsible for the financial processing and intelligent verification layer of VERISUB. All financial calculations use deterministic Decimal arithmetic (`Numeric(14, 2)`), database-level uniqueness constraints, and strict organization-level multi-tenant isolation.
 
-The platform strictly avoids static UI prototypes and dummy placeholders. Every table features real server-state synchronization (via TanStack Query), form validation (React Hook Form + Zod), comprehensive loading/empty/error states, and interactive actions.
+Delivered capabilities:
+- **Recurring Billing Engine (`app/modules/billing/recurring.py`)**:
+  - Automated recurring billing execution with batch runs (`BillingRun` & `BillingRunItem`).
+  - Supports `DAILY`, `WEEKLY`, `MONTHLY`, and `YEARLY` cadences.
+  - Due subscription selection respecting active status, `next_billing_date`, and expiry date.
+  - Explicitly bypasses paused, closed, cancelled, expired, or future subscriptions.
+  - Enforces database-level unique constraint (`uq_invoice_sub_period_type`) preventing duplicate invoices for the same subscription, billing period, and invoice type.
+  - Updates `next_billing_date` only after successful transaction commit.
+- **Invoice Management (`app/modules/billing/invoices.py`)**:
+  - Full lifecycle state machine: `Draft` -> `Confirmed` -> `Paid` / `Partially Paid` / `Overdue` / `Cancelled` / `Voided`.
+  - Immutable price snapshots and description snapshots preserved in `invoice_items`.
+  - Sequential unique invoice numbering per organization (`INV-YYYY-XXXX`).
+  - Print-ready PDF invoice generation via ReportLab with complete itemization, tax breakdown, and payment status.
+- **Tax Engine (`app/modules/billing/taxes.py`)**:
+  - Configurable organization-specific tax rules (`TaxRule`: name, rate, type, inclusive/exclusive, validity dates).
+  - High-precision Decimal arithmetic with `ROUND_HALF_UP` to prevent floating-point discrepancies.
+  - Supports both tax-inclusive and tax-exclusive calculations with full itemized breakdown.
+- **Discount Engine (`app/modules/billing/discounts.py`)**:
+  - Fixed amount and percentage discounts.
+  - Validates date ranges, minimum purchase threshold, minimum item quantity, and usage limits.
+  - Concurrency-safe row locking (`with_for_update`) to prevent discount overuse during concurrent checkout requests.
+  - Detailed redemption tracking in `discount_redemptions`.
+- **Payment Management & Allocations (`app/modules/billing/payments.py`)**:
+  - Multi-method recording: Bank Transfer, Card, Cash, UPI, and configurable alternatives.
+  - Connects one payment with one or more invoices via `PaymentAllocation`.
+  - Automatic balance calculation (`amount_due = total_amount - amount_paid`).
+  - Overpayment handling and full/partial refund tracking (`PaymentRefund`).
+  - Invoice status auto-updated to `PAID` only when allocated payments completely satisfy the grand total.
+- **Payment Reconciliation (`app/modules/billing/reconciliation.py`)**:
+  - CSV bank statement parser supporting standard bank exports.
+  - Deterministic matching rules classifying entries as: `MATCHED`, `UNMATCHED`, `POTENTIAL_DUPLICATE`, `AMOUNT_MISMATCH`, and `NEEDS_MANUAL_REVIEW`.
+  - Interactive manual review workflow for unmatched transactions.
+- **Contract-to-Bill / Value Verification (`app/modules/billing/verification.py`)**:
+  - Core differentiating capability of VERISUB: compares contractual SLA commitments against actual service delivery telemetry.
+  - Data models: `Contract`, `ServiceCommitment`, `ServiceEvent`, `VerificationRun`, `VerificationResult`, `ServiceCredit`.
+  - Rules: `GREATER_OR_EQUAL`, `LESS_OR_EQUAL`, `EXACT`.
+  - Generates plain-English discrepancy explanations referencing real database evidence (e.g., Datadog/CloudWatch incidents).
+  - Computes proposed service credits and requires authorized human manager approval before financial application.
+- **AI Invoice Anomaly Detection (`app/modules/billing/anomaly.py`)**:
+  - Explainable deterministic rules: duplicate invoice detection, excessive discounts (> 50%), abnormal tax ratios, sudden charge jumps (> 40%), and overpayment mismatches.
+  - Plain-English database difference summaries explaining why values shifted.
+  - Scikit-learn `IsolationForest` integration when historical clusters exist (>= 5 invoices), with clear documentation of model limits.
+- **Explainable Business Assistant (`app/modules/billing/assistant.py`)**:
+  - Controlled conversational query engine answering questions about outstanding balances, overdue invoices, unusual charges, unpaid customers, and SLA breaches.
+  - Queries live database models with strict organization-level isolation; no arbitrary SQL execution.
+- **Tamper-Evident Audit & Blockchain Anchoring (`app/modules/billing/audit.py`)**:
+  - SHA-256 cryptographic hash-chained audit ledger.
+  - Canonical deterministic block serialization hashing `previous_hash|org_id|actor_id|action|entity_type|entity_id|timestamp|change_summary`.
+  - Chain integrity verification endpoint detecting any mutation or broken link.
+  - Verifiable blockchain anchoring to Ethereum Sepolia testnet recording transaction hash and block state root.
 
----
+## 2. Test Verification & Results
+All 29 backend tests and 15 frontend tests pass with 100% success:
 
-## 2. Technology Stack & Architectural Decisions
-
-- **Framework:** React 18 + TypeScript + Vite 6
-- **Design & Typography:** Tailwind CSS (Enterprise Slate & Zinc palette, customized Indigo primary accent `#4f46e5`, Inter typography)
-- **Routing & Guards:** React Router v6 (Protected routes, role-based access for Admin, Staff, and Customer)
-- **Server State & Caching:** TanStack React Query v5 (Optimistic mutations, cache invalidation, automatic polling/refetching)
-- **HTTP Client:** Axios centralized client with JWT request interceptors (`Authorization: Bearer <token>`) and unified 401 error handling
-- **Form Management & Schemas:** React Hook Form with `@hookform/resolvers/zod`
-- **Data Visualizations:** Recharts (Responsive Area, Bar, Line, and Donut charts)
-- **Animations & Micro-interactions:** Framer Motion (Page and modal transitions, lifecycle progression timeline)
-- **Iconography:** Lucide React
-- **Testing:** Vitest + React Testing Library + JSDOM
-
----
-
-## 3. Implemented Modules & Features
-
-### 3.1. Main Layout & Persona Switcher
-- **Collapsible Sidebar:** Dynamically adjusts navigation depending on user role (`admin` sees all 15 modules, `staff` sees operations modules).
-- **Sticky Top Bar:** Live breadcrumbs, enterprise search, organization switcher dropdown, live alerts menu, and user profile drawer.
-- **Dynamic Role Simulator:** Direct header toggle between **Admin**, **Staff**, and **Customer Portal** for frictionless hackathon demonstration and multi-persona evaluation.
-
-### 3.2. Authentication & Security
-- **Login (`/auth/login`):** Validated login form with password visibility toggle, demo persona quick-select pills, and JWT storage.
-- **Organization Registration (`/auth/register-org`):** Full organization onboarding with currency and timezone configuration and initial admin setup.
-- **Password Recovery (`/auth/forgot-password`, `/auth/reset-password`):** Secure tokenized password reset workflows.
-- **Profile Management (`/admin/profile`, `/portal/profile`):** User profile credentials, assigned permissions inspection, and payment profile overview.
-
-### 3.3. Admin & Staff Dashboards (`/admin/overview`)
-- **6 Dynamic KPI Cards:** Active subscriptions, Revenue received, Outstanding balance, Overdue invoices, Total customers, Upcoming renewals.
-- **4 Recharts Analytics:**
-  - Monthly Recurring Revenue (MRR) Area Chart with target comparison
-  - Subscription Velocity Bar Chart (New acquisitions vs churned)
-  - Daily Payment Inflow Line Chart
-  - Invoice Health Distribution Donut Chart
-- **Real-Time Tables:** Recent subscriptions, invoices requiring attention, and automatic verification breach alerts.
-- **Global Filters:** Date range (7d, 30d, 90d, 1y) and subscription status filters.
-
-### 3.4. Customer Management (`/admin/customers`)
-- Customer directory with live search, status filters (Active, Inactive, Archived), and pagination.
-- Create & edit customer modals with Zod schema validation (Tax ID, address, billing currency).
-- Slide-out customer detail drawer displaying lifetime spend, active subscriptions count, and contact records.
-
-### 3.5. Products & Plans Catalog (`/admin/products`, `/admin/plans`)
-- Product catalog supporting variant pricing, SKU codes, categories, and one-click active/inactive toggles.
-- Plan configuration page supporting multi-frequency billing (monthly, quarterly, annually, usage-based), minimum quantities, trial days, pause policies, and renewal automation.
-
-### 3.6. Quotation Workflow & Authoritative Pricing (`/admin/quotations`)
-- Quotation drafting interface with customer, product, and plan selection.
-- **Authoritative Backend Pricing Engine:** Explicitly enforces backend-calculated tax rates (8.0%) and discount credits rather than calculating authoritative amounts independently on the frontend.
-- Lifecycle tracking: Draft → Sent → Approved → Expired → Converted.
-- **1-Click Subscription Conversion:** Instantly converts approved quotations into active recurring subscriptions.
-
-### 3.7. Subscription Management (`/admin/subscriptions`)
-- Comprehensive subscription registry with status indicators (Draft, Confirmed, Active, Paused, Closed).
-- **Visual Lifecycle Timeline:** Framer Motion animated timeline showing `Draft` → `Quotation` → `Confirmed` → `Active` → `Closed`.
-- Lifecycle actions: Pause, Resume, Renew, and Close with immediate server-state updates.
-
-### 3.8. Subscription Digital Twin (`/admin/subscriptions` -> Inspect Digital Twin)
-- Dedicated Digital Twin inspection view rendering real-time contract telemetry:
-  - Contracted SLA rate vs delivered service hours
-  - Telemetry uptime percentage & unresolved discrepancy counters
-  - Linked invoice history & payment reconciliation
-  - Immutable audit diffs showing field modifications and actors.
-
-### 3.9. Automated Billing Runs & Invoices (`/admin/billing`, `/admin/invoices`)
-- **Billing Runs:** Execute recurring billing batches on demand, view real-time execution logs, monitor successful invoice counts, and audit exceptions.
-- **Invoice Management:** Full invoice list with status filters (Draft, Confirmed, Partially Paid, Paid, Overdue, Cancelled).
-- **Printable Invoices:** Clean print view formatted for PDF export and thermal/standard printing.
-- **Record Payment Modal:** Direct payment recording against open invoice balances.
-
-### 3.10. Payments & Reconciliation (`/admin/payments`)
-- Payment records ledger tracking method (Stripe, ACH, Credit Card, UPI, Check), references, and invoice allocations.
-- **Automated Bank Statement Reconciliation:**
-  - CSV file dropzone and batch parser
-  - Breakdown into Matched, Unmatched, and Potential Duplicate transactions
-  - Interactive Manual Match modal to bind unmatched bank items to open invoices.
-
-### 3.11. Contract-to-Bill Value Verification (`/admin/verification`)
-- SLA telemetry comparison comparing contracted commitments against actual monitored delivery.
-- Discrepancy detector flagging service breaches with evidence references (e.g. CloudWatch alarms, Datadog incidents).
-- Automatic calculation of proposed service credits and executive Approve/Reject actions.
-
-### 3.12. AI Insights & Natural Language Copilot (`/admin/ai-insights`)
-- Risk signals flagging invoice anomalies, unexpected manual discounts, and payment delays.
-- Interactive AI Assistant chat connected to Member 3's FastAPI backend assistant endpoint (`/api/v1/ai/assistant/chat`).
-- Pre-configured quick prompt chips:
-  - *"Which invoices are overdue?"*
-  - *"Which subscriptions have unusual billing?"*
-  - *"What is our outstanding amount?"*
-  - *"Which customers have payment issues?"*
-
-### 3.13. Immutable Audit Trail (`/admin/audit`)
-- Chronological tamper-evident audit ledger recording Actor, Action, Entity, Timestamp, and Change Summary.
-- **SHA-256 Hash Chain Integrity:** Each block cryptographically hashes its payload with the previous block's hash. Includes a live **Verify Hash-Chain Integrity** audit button.
-- **Blockchain Anchoring Transparency:** Explicitly differentiates local hash-chain verification from public blockchain anchoring, displaying real transaction hashes only when verified by the backend node.
-
-### 3.14. Reports & Settings (`/admin/reports`, `/admin/settings`, `/admin/discounts`)
-- Financial reports covering MRR, active subscription performance, invoice aging, and customer cohort lifetime value, with CSV export.
-- Workspace settings configuring organization details, billing currency, default tax rates, and dunning retry policies.
-- Team member permissions and promotional coupon management.
-
-### 3.15. Customer Portal (`/portal/*`)
-- Dedicated self-service customer experience:
-  - **Dashboard:** At-a-glance active plan, balance due, and SLA compliance metrics
-  - **My Subscriptions:** Plan tier details and customer-initiated pause/resume requests
-  - **Invoices:** View itemized invoices, print tax receipts, and pay balances online via Stripe
-  - **Payment History:** Transaction IDs and confirmation receipts
-  - **Service History:** Recorded uptime SLA meters and verified deliverable hours
-  - **Disputes:** Form to submit billing inquiries with evidence and track resolution status
-  - **Help Assistant:** Customer-facing AI support assistant
-  - **Profile:** Billing entity profile and payment method management.
-
----
-
-## 4. API Integration & Coordination Contracts
-
-The frontend is configured to target `http://localhost:8000/api/v1` (configurable via `VITE_API_URL` in `.env`).
-
-| Module | HTTP Method & Endpoint | Fallback / Integration State |
-| :--- | :--- | :--- |
-| **Auth** | `POST /auth/login`, `POST /auth/register-org`, `GET /auth/me` | Preset personas for Admin, Staff, Customer |
-| **Customers** | `GET /customers`, `POST /customers`, `PUT /customers/:id` | Synchronized with localStorage store |
-| **Products** | `GET /products`, `POST /products`, `PATCH /products/:id/status` | Catalog with variants |
-| **Plans** | `GET /plans`, `POST /plans`, `PUT /plans/:id` | Cadence and pause settings |
-| **Quotations** | `GET /quotations`, `POST /quotations`, `POST /quotations/calculate`, `POST /quotations/:id/convert` | Authoritative backend tax & discount computation |
-| **Subscriptions** | `GET /subscriptions`, `POST /subscriptions/:id/pause`, `POST /subscriptions/:id/resume`, `GET /subscriptions/:id/digital-twin` | Full telemetry digital twin model |
-| **Billing & Invoices** | `GET /billing/runs`, `POST /billing/execute`, `GET /invoices` | Live run execution daemon logs |
-| **Payments** | `GET /payments`, `POST /payments`, `POST /payments/reconcile-csv`, `POST /payments/reconcile/match` | CSV reconciliation with duplicate detection |
-| **Verification** | `GET /verification/contracts`, `POST /verification/contracts/:id/approve` | Contract-to-bill SLA comparator |
-| **AI Insights** | `GET /ai/insights`, `POST /ai/assistant/chat` | Natural language ledger analysis |
-| **Audit Logs** | `GET /audit-logs`, `POST /audit-logs/verify-integrity` | SHA-256 hash chain verification |
-| **Settings** | `GET /settings/organization`, `PUT /settings/organization` | Dunning & currency preferences |
-
----
-
-## 5. Verification & Testing Results
-
-### Automated Tests
-Run via Vitest:
+### Backend Test Suite:
 ```bash
-npm --prefix frontend run test
+.venv/Scripts/python.exe -m pytest -v
 ```
-Result: **6 Test Files Passed, 15/15 Tests Passed (100% Success)**:
-- `auth.test.ts` (Admin/Staff/Customer auth, role switching, token storage)
-- `customer.test.ts` (Customer retrieval, search filtering, creation, update)
-- `subscription.test.ts` (Subscription lifecycle pause/resume, digital twin telemetry)
-- `verification.test.ts` (SLA breach detection, service credit approval)
-- `quotation.test.ts` (Authoritative backend calculation, subscription conversion)
-- `components.test.tsx` (Button, Badge, StatCard render tests)
+**Results: 29 passed in 2.28s**:
+- `tests/test_taxes_discounts.py`: Tax rules (inclusive/exclusive/breakdown), discounts (expiry, usage limits, minimum purchase/quantity, redemptions).
+- `tests/test_invoices_recurring.py`: Due subscription selection, daily/weekly/monthly/yearly period calculations, duplicate invoice prevention, paused/closed/cancelled skipping, invoice PDF generation.
+- `tests/test_payments_reconciliation.py`: Manual payments, multi-invoice allocations, partial payments, overpayments, refunds, CSV bank reconciliation (exact match, potential duplicate, amount mismatch, manual review).
+- `tests/test_verification_audit_ai.py`: Contract SLA commitments, telemetry service events, verification runs, variance analysis, service credit approval/rejection, AI anomaly detection (tax, discount, duplicate, sudden increase, payment mismatch), explainable business assistant queries, SHA-256 hash-chain audit integrity verification, and multi-tenant organization isolation.
+- `tests/test_customers.py`, `tests/test_products_variants.py`, `tests/test_plans.py`, `tests/test_quotations.py`, `tests/test_subscriptions.py`, `tests/test_digital_twin.py`, `tests/test_impact_analysis.py`, `tests/test_organization_isolation.py`: All 19 existing tests pass without regressions.
 
-### Production Build
-Run via Vite & TypeScript compiler:
+### Frontend Test Suite:
 ```bash
-npm --prefix frontend run build
+npm --prefix frontend run test -- --run
 ```
-Result: **Clean production build in 1.80s without any TypeScript or bundling errors.**
+**Results: 6 test files passed, 15/15 tests passed (100%)**.
+
+## 3. Database Migrations
+- Migration `2f5d3c1003d4_add_billing_verification_tables.py` added to Alembic tracking revision `127056ed81a1 -> 2f5d3c1003d4`.
+- Added 18 new tables and indexes: `invoice_items`, `billing_runs`, `billing_run_items`, `tax_rules`, `discounts`, `discount_redemptions`, `payment_allocations`, `payment_refunds`, `reconciliation_runs`, `reconciliation_items`, `contracts`, `service_commitments`, `service_events`, `verification_runs`, `verification_results`, `service_credits`, `invoice_anomalies`, `audit_events`.
+- Enforces composite unique constraint `uq_invoice_sub_period_type` on `invoices`.
+
+## 4. Disclosures & System Limits
+- **AI Anomaly Detection**: Deterministic rules provide guaranteed explanations based on database diffs. Machine learning (IsolationForest) operates only as an advisory signal when >= 5 historical records exist and never independently modifies financial ledgers or authoritative charges.
+- **Blockchain Anchoring**: Testnet anchoring publishes only the SHA-256 state root hash to the network; private business metrics and customer data are never written on-chain. Local SHA-256 hash chaining operates independently without requiring an active external web3 network.
+- **Payment Processing**: Gateway integration provides an explicitly labeled manual payment recording workflow to maintain auditability without simulating false gateway authorizations.
 
 ---
 
-## 6. Pull Request Specifications
+# Part 2: Member 2 — Subscription Engine
+**Role**: Subscription Engine Backend Developer  
+**Assigned Branch**: `feature/subscription-engine`  
+**Target Branch for PR**: `develop`
 
-- **Source Branch:** `feature/frontend-dashboard`
-- **Target Branch:** `develop`
-- **Deliverables:** Complete React application, all 15 Admin/Staff modules, 8 Customer Portal views, test suite, and configuration documentation.
+## Summary of Delivered Work
+- **Core Models & Database Foundation**: Customer, Product, Product Variant, Subscription Plan, Quotation, Subscription models.
+- **Subscription Lifecycle Management**: State machine (`DRAFT`, `CONFIRMED`, `ACTIVE`, `PAUSED`, `CLOSED`), billing frequency cadence, event audit logging.
+- **Subscription Digital Twin**: Telemetry snapshot aggregating customer profile, line items, plan terms, quotations, billing history, and verification metrics.
+- **Change Impact Analysis**: Impact preview on revenue and active subscribers when catalog items are revised.
+- **Quotation Workflow**: Quotation lifecycle and deterministic conversion to active subscriptions.
+
+---
+
+# Part 3: Member 4 — Frontend Architect and UI/UX Developer
+**Role**: Frontend Architect and UI/UX Developer  
+**Branch**: `feature/frontend-dashboard`  
+**Target Pull Request Base**: `develop`
+
+## Summary of Delivered Work
+- **Framework & Styling**: React 18 + TypeScript + Vite + Tailwind CSS.
+- **Admin & Staff Dashboards**: MRR analytics, subscription velocity, billing inflow, and invoice health distribution.
+- **Interactive Modules**: Customer management, products/plans, quotations, subscriptions, billing runs, invoices, payments, CSV bank reconciliation, contract verification, AI insights copilot, and audit trail.
+- **Customer Portal**: Self-service subscription overview, invoices, payments, SLA compliance meters, and dispute workflows.
