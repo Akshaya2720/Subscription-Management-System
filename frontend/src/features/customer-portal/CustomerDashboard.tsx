@@ -23,9 +23,12 @@ export const CustomerDashboard: React.FC = () => {
     queryFn: () => invoiceService.getInvoices(),
   });
 
-  const activeSub = subscriptions.find((s) => s.status === 'active') || subscriptions[0];
-  const pendingInvoices = invoices.filter((i) => i.balance_due > 0);
-  const totalBalanceDue = pendingInvoices.reduce((sum, i) => sum + i.balance_due, 0);
+  const subsList = Array.isArray(subscriptions) ? subscriptions : ((subscriptions as any)?.items || []);
+  const invoicesList = Array.isArray(invoices) ? invoices : ((invoices as any)?.items || []);
+
+  const activeSub = subsList.find((s: any) => s.status === 'active') || subsList[0];
+  const pendingInvoices = invoicesList.filter((i: any) => (i.balance_due || i.amount_due || 0) > 0);
+  const totalBalanceDue = pendingInvoices.reduce((sum: number, i: any) => sum + (i.balance_due || i.amount_due || 0), 0);
 
   return (
     <div className="space-y-6 text-left">
@@ -50,7 +53,7 @@ export const CustomerDashboard: React.FC = () => {
             <Repeat className="h-4 w-4 text-[#0071e3]" />
           </div>
           <p className="mt-2 text-2xl font-bold text-[#1d1d1f]">
-            {subscriptions.filter((s) => s.status === 'active').length}
+            {subsList.filter((s: any) => s.status === 'active').length}
           </p>
           <p className="text-[11px] text-emerald-700 mt-1 font-medium">99.9% Uptime Verified</p>
         </div>
@@ -136,7 +139,7 @@ export const CustomerDashboard: React.FC = () => {
           </CardHeader>
           <CardContent className="p-0">
             <div className="divide-y divide-black/[0.05] text-xs">
-              {invoices.slice(0, 3).map((inv) => (
+              {invoicesList.slice(0, 3).map((inv: any) => (
                 <div key={inv.id} className="flex items-center justify-between p-4 hover:bg-black/[0.01]">
                   <div>
                     <p className="font-semibold text-[#1d1d1f]">{inv.invoice_number}</p>

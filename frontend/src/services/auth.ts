@@ -66,7 +66,18 @@ export const authService = {
       const response = await apiClient.post('/auth/login', payload);
       const data = response.data;
       const token = data.access_token || data.token || 'mock_jwt_token_verisub';
-      const user = data.user || DEMO_USERS[payload.role || 'admin'];
+      const roleStr = String(data.user?.role || payload.role || 'admin').toLowerCase();
+      const role: UserRole = roleStr === 'admin' ? 'admin' : roleStr === 'staff' ? 'staff' : 'customer';
+      const user: User = {
+        id: data.user?.id || 'usr-' + Date.now(),
+        email: data.user?.email || payload.email,
+        full_name: data.user?.full_name || 'Alex Mercer (Platform Admin)',
+        role: role,
+        organization_id: data.user?.organization_id || data.organization?.id || 'org-001',
+        organization_name: data.organization?.name || 'VeriSub Enterprise Cloud',
+        created_at: data.user?.created_at || new Date().toISOString(),
+        permissions: role === 'admin' ? ['all'] : role === 'staff' ? ['customers:read', 'subscriptions:read'] : ['customer_portal'],
+      };
 
       localStorage.setItem('verisub_token', token);
       localStorage.setItem('verisub_user', JSON.stringify(user));

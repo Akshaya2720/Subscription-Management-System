@@ -36,7 +36,7 @@ invoice_router = APIRouter(prefix="/invoices", tags=["Invoices & Billing"])
 
 # ── Tax Rules Endpoints ───────────────────────────────────────────────────────
 
-@tax_router.get("/", response_model=List[TaxRuleResponse])
+@tax_router.get("", response_model=List[TaxRuleResponse])
 def list_tax_rules(
     org: Organization = Depends(get_current_organization),
     current_user: User = Depends(get_current_user),
@@ -47,7 +47,7 @@ def list_tax_rules(
     return service.list_tax_rules(org.id)
 
 
-@tax_router.post("/", response_model=TaxRuleResponse, status_code=status.HTTP_201_CREATED)
+@tax_router.post("", response_model=TaxRuleResponse, status_code=status.HTTP_201_CREATED)
 def create_tax_rule(
     data: TaxRuleCreate,
     org: Organization = Depends(get_current_organization),
@@ -61,7 +61,7 @@ def create_tax_rule(
 
 # ── Discounts Endpoints ───────────────────────────────────────────────────────
 
-@discount_router.get("/", response_model=List[DiscountResponse])
+@discount_router.get("", response_model=List[DiscountResponse])
 def list_discounts(
     org: Organization = Depends(get_current_organization),
     current_user: User = Depends(get_current_user),
@@ -72,7 +72,7 @@ def list_discounts(
     return service.list_discounts(org.id)
 
 
-@discount_router.post("/", response_model=DiscountResponse, status_code=status.HTTP_201_CREATED)
+@discount_router.post("", response_model=DiscountResponse, status_code=status.HTTP_201_CREATED)
 def create_discount(
     data: DiscountCreate,
     org: Organization = Depends(get_current_organization),
@@ -86,7 +86,7 @@ def create_discount(
 
 # ── Invoices Endpoints ────────────────────────────────────────────────────────
 
-@invoice_router.get("/", response_model=List[InvoiceResponse])
+@invoice_router.get("", response_model=List[InvoiceResponse])
 def list_invoices(
     customer_id: Optional[uuid.UUID] = Query(None),
     status: Optional[InvoiceStatus] = Query(None),
@@ -124,7 +124,7 @@ def get_invoice(
     return inv
 
 
-@invoice_router.post("/", response_model=InvoiceResponse, status_code=status.HTTP_201_CREATED)
+@invoice_router.post("", response_model=InvoiceResponse, status_code=status.HTTP_201_CREATED)
 def create_invoice(
     data: InvoiceCreate,
     org: Organization = Depends(get_current_organization),

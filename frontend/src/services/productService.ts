@@ -6,7 +6,7 @@ export const productService = {
   async getProducts(): Promise<Product[]> {
     try {
       const res = await apiClient.get('/products');
-      return res.data;
+      return Array.isArray(res.data) ? res.data : (res.data?.items || []);
     } catch {
       return localStore.getProducts();
     }
@@ -61,7 +61,7 @@ export const productService = {
   async getPlans(): Promise<Plan[]> {
     try {
       const res = await apiClient.get('/plans');
-      return res.data;
+      return Array.isArray(res.data) ? res.data : (res.data?.items || []);
     } catch {
       return localStore.getPlans();
     }

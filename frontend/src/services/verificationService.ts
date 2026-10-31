@@ -6,7 +6,10 @@ export const verificationService = {
   async getVerifications(): Promise<VerificationContract[]> {
     try {
       const res = await apiClient.get('/verification/contracts');
-      return res.data;
+      const data = res.data;
+      const items = Array.isArray(data) ? data : (data?.items || []);
+      if (items && items.length > 0) return items;
+      return localStore.getVerifications();
     } catch {
       return localStore.getVerifications();
     }

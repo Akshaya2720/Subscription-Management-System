@@ -8,7 +8,10 @@ export const invoiceService = {
       const res = await apiClient.get('/invoices', {
         params: { search: query, status },
       });
-      return res.data;
+      const data = res.data;
+      const items = Array.isArray(data) ? data : (data?.items || []);
+      if (items && items.length > 0) return items;
+      return localStore.getInvoices();
     } catch {
       let list = localStore.getInvoices();
       if (query) {

@@ -8,7 +8,10 @@ export const subscriptionService = {
       const res = await apiClient.get('/subscriptions', {
         params: { search: query, status },
       });
-      return res.data;
+      const data = res.data;
+      const items = Array.isArray(data) ? data : (data?.items || []);
+      if (items && items.length > 0) return items;
+      return localStore.getSubscriptions();
     } catch {
       let list = localStore.getSubscriptions();
       if (query) {
